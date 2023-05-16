@@ -1,11 +1,19 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './app/app';
-import * as serviceWorker from './serviceWorker';
+import AuthPage from './components/AuthPage/AuthPage'; 
+import Dashboard from './components/Dashboard/Dashboard';
+import { BrowserRouter as Routes, Route } from 'react-router-dom';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+class App extends React.Component {
+  render() {
+    return (
+        <Routes>
+            <Route path="/" element={<h1 />}>
+                <Route index element={<AuthPage />} />
+                <Route path="dashboard" element={<Dashboard />} />
+            </Route>
+        </Routes>
+    );
+  }
+}
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+export default App;
