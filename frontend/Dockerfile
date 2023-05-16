@@ -1,12 +1,17 @@
 FROM node:20-alpine
 
-RUN mkdir -p /app
 WORKDIR /app
 
-COPY package.json /app
-COPY yarn.lock /app
-COPY . /app
+COPY package*.json ./
 
-RUN yarn install
+# Copy the rest of the project
+COPY . .
 
-CMD ["yarn", "start"]
+# Build the Vite application
+RUN npm install
+
+# Expose the port on which the container listens
+#EXPOSE 5174
+
+# Start the container with the command "yarn dev" to run the development server
+CMD ["npm", "run", "dev"]
