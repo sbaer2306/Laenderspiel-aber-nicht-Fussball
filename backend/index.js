@@ -2,6 +2,8 @@
 const express = require('express');
 const app = express();
 const session = require('express-session');
+//gameRoutes
+const gameRoutes = require('./routes/gameRoutes');
 
 app.use(session({
   resave: false,
@@ -18,6 +20,8 @@ var userProfile;
  
 app.use(passport.initialize());
 app.use(passport.session());
+//connects endpoint to routes /game/...
+app.use('/game', gameRoutes)
  
 app.get('/success', (req, res) => {
   res.render('pages/success', {user: userProfile});
