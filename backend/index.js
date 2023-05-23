@@ -1,4 +1,4 @@
-/*  EXPRESS */
+/*  old
 const express = require('express');
 const app = express();
 const session = require('express-session');
@@ -38,7 +38,7 @@ passport.deserializeUser(function(obj, cb) {
 
 
 /*  Google AUTH  */
-/*require(dotenv).config()*/
+/*require(dotenv).config()
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const GOOGLE_CLIENT_ID ='test';
 const GOOGLE_CLIENT_SECRET ='test';
@@ -62,4 +62,22 @@ app.get('/auth/google/callback',
   function(req, res) {
     // Successful authentication, redirect success.
     res.redirect('/success');
-  });
+  });*/
+const express = require('express');
+const passport = require('passport');
+require('dotenv').config();
+
+const app = express();
+
+// Initialize Passport middleware
+app.use(passport.initialize());
+
+// Include the auth routes
+const authRoutes = require('./routes/authRoutes');
+app.use('/auth', authRoutes);
+
+// Start the server
+const PORT = process.env.PORT;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
