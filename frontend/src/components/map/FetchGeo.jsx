@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
 import converter from 'osmtogeojson'
 import { GeoJSON } from 'react-leaflet'
 
@@ -15,7 +15,7 @@ function MyData({childToParent}) {
     // useEffect to fetch data on mount
     useEffect(() => {
       // async function!
-      const getData = async () => {
+/*       const getData = async () => {
         // 'await' the data
         const response = await axios.get(url+fetch);
         // save data to state
@@ -25,7 +25,7 @@ function MyData({childToParent}) {
         let lng = response.data.elements[0].members[0].lon;
         setCenter({lat: lat, lng : lng});
       };
-      getData();
+      getData(); */
     }, []);
   
     // render react-leaflet GeoJSON when the data is ready

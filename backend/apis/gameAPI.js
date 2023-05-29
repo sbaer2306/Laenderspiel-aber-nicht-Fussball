@@ -9,3 +9,12 @@ export const getGameFacts = async (game_id) => {
         throw new Error("Failed to fetch game facts");
     }
 }
+
+export const getGeoInformation = async (game_id) => {
+    try{
+        const response = await axios.get(`/game/${game_id}/geo-information`);
+        return response.data;
+    }catch(error){
+        throw new Error("Failed to fetch game facts");
+    }
+}
