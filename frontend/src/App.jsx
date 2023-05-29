@@ -12,8 +12,6 @@ function App() {
       <Router>
         <Routes>
           <Route path='/' element={<HomePage/>} />
-          <Route path='/signup' element={<Signup/>} />
-          <Route path='/login' element={<Login/>} />
           <Route path='/game/:game_id/facts' element={<FirstRound/>} />
           <Route path='/game/:game_id/geo_information' element={<SecondRound/>} />
         </Routes> 
