@@ -1,0 +1,44 @@
+.homepage_container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.gbutton, .guestbutton{
+    width: 300px;
+    margin-top: 10px;
+    background-color: #4285F4;
+    color: #FFFFFF;
+    border-radius: 20px;
+}
+
+.gbutton img {
+    margin-top: -5px;
+    vertical-align: middle;
+}
+
+.gbutton span, .guestbutton span{ 
+    margin-left: 24px;
+    color: #FFFFFF;
+}
+
+.gbutton:focus, .guestbutton:focus{
+    outline: none;
+    border-color: #666;
+}
+
+.gbutton:active, .guestbutton:active{
+    background-color: #666;
+    color: #666;
+    box-shadow: 0 3px #666;
+    transform: translateY(2px);
+    outline: none;
+  }
