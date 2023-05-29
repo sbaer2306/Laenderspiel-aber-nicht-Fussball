@@ -13,7 +13,7 @@ function App() {
         <Routes>
           <Route path='/' element={<HomePage/>} />
           <Route path='/game/:game_id/facts' element={<FirstRound/>} />
-          <Route path='/game/:game_id/geo_information' element={<SecondRound/>} />
+          <Route path='/game/:game_id/geo-information' element={<SecondRound/>} />
         </Routes> 
       </Router>
     </div>

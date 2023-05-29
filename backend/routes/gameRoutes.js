@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-
+const geoController = require('../controller/geoController')
 
 //ROUTES
 //Game
@@ -60,16 +60,7 @@ router.post('/:game_id/facts/rating', async (req, res) => {
 });
 
 //Geo-Information
-router.get('/:game_id/geo-information', async (req, res) => {
-    try {
-        const gameId = req.params.game_id;
-        //const facts = await gameService.getGameFacts(gameId); 
-        res.status(200).json(facts);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
+router.get('/:game_id/geo-information', geoController.getOsmData);
 
 
 //Export router
