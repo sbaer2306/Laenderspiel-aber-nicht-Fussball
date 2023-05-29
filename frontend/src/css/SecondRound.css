@@ -1,0 +1,11 @@
+.leaflet-container{
+    height: 75vh;
+    width: 150vh;
+    border-radius: 10px;
+  }
+
+.container_second_round{
+  width: 80%;
+  padding: 1rem;
+  margin: auto;
+}
