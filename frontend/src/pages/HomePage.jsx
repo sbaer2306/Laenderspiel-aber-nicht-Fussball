@@ -12,9 +12,6 @@ export const HomePage = () => {
             <img src={glogo} alt="google-logo" width="18px"/>
             <span>Mit Google anmelden</span>
           </button>
-          <button className="guestbutton">
-            <span>als Gast spielen</span>
-          </button>  
         </div>
     </div>
   )
