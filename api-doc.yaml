@@ -345,6 +345,86 @@ paths:
         '404':
           description: Profile Not Found
 
+  /game:
+    post:
+      summary: Create a new game
+      description: Creates a new game with a random country based on the chosen difficulty level.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                difficulty:
+                  type: string
+                  enum: ['easy', 'medium', 'hard']
+                  example: 'easy'
+      responses:
+        '201':
+          description: Game Created Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+          links:
+            nextStep:
+              description: Retrieve facts for the newly created game.
+              operationRef: '#/paths/~1game~1{id}~1facts/get'
+              parameters:
+                id: '$response.body#/id'
+        '400':
+          description: Invalid request
+        '500':
+          description: Internal server error
+    
+  /game/{id}:
+      get:
+        summary: Retrieve a game
+        description: Retrieves the details of a game by its id.
+        parameters:
+          - name: id
+            in: path
+            description: The id of the game.
+            required: true
+            schema:
+              type: integer
+        responses:
+          '200':
+            description: Game details retrieved successfully.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Game'
+          '400':
+            description: Invalid request
+          '403':
+            description: Unauthorized - user is not the player of the game
+          '404':
+            description: Game not found
+          '500':
+            description: Internal server error
+            
+      delete:
+        summary: Cancel a game
+        description: Cancels a game session by its id. 
+        parameters:
+          - name: id
+            in: path
+            description: The id of the game.
+            required: true
+            schema:
+              type: integer
+        responses:
+          '200':
+            description: Game successfully cancelled. No content.
+          '401':
+            description: Unauthorized. User doesn't have the necessary credentials for the resource that is being requested.
+          '404':
+            description: Game not found.
+          '500':
+            description: Internal server error.
+
 components:
   schemas:
     User:
@@ -431,6 +511,49 @@ components:
           isPrivate:
             type: boolean
             nullable: true
+    Game:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1341251235
+        user_id:
+          type: integer
+          format: int64
+          example: 198374918
+        current_round:
+          type: integer
+          format: int32
+          example: 1
+        max_rounds:
+          type: integer
+          format: int32
+          example: 3
+        ttl:
+          type: integer
+          format: int32
+          description: "Time to live in seconds"
+          example: 900
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-06-02T16:00:00Z"
+        difficulty:
+          type: number
+          format: float
+          example: 1.0
+        country_id:
+          type: integer
+          format: int64
+          example: 10
+        current_score:
+          type: integer
+          example: 143
+          nullable: true
+        total_score:
+          type: integer
+          example: 1045
+          nullable: true
   securitySchemes:
     oAuth2ClientCredentials:
       type: oauth2
