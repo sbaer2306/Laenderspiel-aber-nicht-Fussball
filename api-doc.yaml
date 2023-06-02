@@ -1,0 +1,442 @@
+openapi: 3.0.3
+info:
+  title: Länderspiel (nicht Fussball)
+  description: |-
+    This API provides a trivia game that tests the players knowledge about countries.
+    Each round of the game consists of different kind of questions. 
+    The player answers the questions and earns points based on conditions, such as the amount of attempts that were needed. 
+    The API keeps track of the players score.
+  version: 2.0.69
+tags:
+  - name: game
+    description: Operations about the game
+  - name: user
+    description: Operations about user
+  - name: ranking
+    description: Operations about ranking
+paths:
+  /signup:
+      post:
+        tags:
+          - user
+        summary: Sign up with 3rd party OAuth and return JWT Token for authentication.
+        description: Creates a new user account using a 3rd party OAuth provider. The username is derived from the users E-Mail adress.
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: Access token provided by the OAuth provider
+                  email:
+                    type: string
+                    description: E-Mail address of the users oAuth provider account
+        responses:
+          '201':
+            description: Created and authenticated.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: success
+                    message:
+                      type: string
+                      example: Created and authenticated user successfully.
+                    token:
+                      type: string
+                      description: JWT token for user authentication
+                      example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+            links:
+              CreateProfile:
+                description: Create your profile after signing up
+                operationId: createProfile
+                operationRef: '#/profile'
+          '400':
+            description: Bad Request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: failed
+                    message:
+                      type: string
+                      example: Bad Request.
+          '409':
+            description: Conflict
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: error
+                    message:
+                      type: string
+                      example: Username is already taken
+          '500':
+            description: Bad Request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: failed
+                    message:
+                      type: string
+                      example: Internal Server Error.
+  /login:
+    post:
+      tags:
+        - user
+      summary: Authenticate user
+      description: Authenticates user with third-party authentication provider
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_token:
+                  type: string
+                  description: >-
+                    Access token returned from third-party authentication
+                    provider
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT token for user authentication
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        '400':
+            description: Bad Request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: failed
+                    message:
+                      type: string
+                      example: Bad Request.
+        '401':
+          description: Unauthorized
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: failed
+                    message:
+                      type: string
+                      example: Unauthorized.
+        '500':
+            description: Bad Request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: failed
+                    message:
+                      type: string
+                      example: Internal Server Error.
+  /logout:
+    post:
+      tags:
+        - user
+      summary: Log out the current user
+      description: |
+        This endpoint logs out the current user and invalidates their session token.
+      responses:
+        '200':
+          description: Successfully logged out
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: failed
+                    message:
+                      type: string
+                      example: Successfully logged out.
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: failed
+                    message:
+                      type: string
+                      example: Unauthorized.
+  /ranking/all-time:
+    get:
+      tags:
+        - ranking
+      summary: Retrieve the top 10 users in all-time ranking
+      description: This endpoint returns the top 10 users with the highest all-time score, along with their user info.
+      responses:
+        '200':
+          description: Top 10 Users Retrieved Successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Top 10 users retrieved successfully.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Ranking'
+                    minItems: 0
+                    maxItems: 10
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+  /ranking/monthly/{year}/{month}:
+    get:
+      tags:
+        - ranking
+      summary: Get monthly ranking for a given month and year
+      description: >-
+        Returns the top 10 users in the monthly ranking for a given month and
+        year along with their profile information.
+      parameters:
+        - name: year
+          in: path
+          description: Year in the format of 'yyyy'
+          required: true
+          schema:
+            type: string
+        - name: month
+          in: path
+          description: Month in the format of 'mm'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Received top 10 users (highest score) for specified month and year
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Top 10 users for specified timeframe retrieved successfully.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Ranking'
+                    minItems: 0
+                    maxItems: 10
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+  /profile/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        description: The ID of the user profile.
+    get:
+      tags:
+        - profile
+      summary: Get the user's profile information
+      responses:
+        '200':
+          description: Successfully retrieved user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Profile Not Found
+
+    post:
+      tags:
+        - profile
+      summary: Create a new user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdate'
+      responses:
+        '201':
+          description: Successfully created user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '400':
+          description: Bad Request
+        '403':
+          description: Unauthorized
+
+    put:
+      tags:
+        - profile
+      summary: Update an existing user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdate'
+      responses:
+        '200':
+          description: Successfully updated user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '400':
+          description: Bad Request
+        '403':
+          description: Unauthorized
+        '404':
+          description: Profile Not Found
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          example: user@example.com
+        username:
+          type: string
+          example: user1
+        registrationDate:
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00Z'
+        lastLoginDate:
+          type: string
+          format: date-time
+          example: '2023-01-01T00:00:00Z'
+    Ranking:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1297459
+        score:
+          type: integer
+          example: 15000
+        lastUpdated:
+          type: string
+          format: date-time
+          example: '2023-05-01T00:00:00Z'
+        username:
+          type: string
+          example: "john_doe2"
+        user_id: 
+          type: integer
+          example: 123132
+    Profile:
+        type: object
+        properties:
+          id:
+            type: integer
+          firstName:
+            type: string
+            nullable: true
+          lastName:
+            type: string
+            nullable: true
+          bio:
+            type: string
+            nullable: true
+          location:
+            type: string
+            nullable: true
+          createdAt:
+            type: string
+            format: date-time
+            nullable: true
+          updatedAt:
+            type: string
+            format: date-time
+            nullable: true
+          isPrivate:
+            type: boolean
+    ProfileUpdate:
+        type: object
+        properties:
+          firstName:
+            type: string
+            nullable: true
+          lastName:
+            type: string
+            nullable: true
+          bio:
+            type: string
+            nullable: true
+          location:
+            type: string
+            nullable: true
+          isPrivate:
+            type: boolean
+            nullable: true
+  securitySchemes:
+    oAuth2ClientCredentials:
+      type: oauth2
+      description: Google OAuth
+      flows: 
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /oauth/token             
+          scopes: {}
