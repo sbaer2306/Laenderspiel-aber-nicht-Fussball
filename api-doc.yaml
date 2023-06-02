@@ -425,8 +425,81 @@ paths:
           '500':
             description: Internal server error.
 
+  /game/{id}/facts:
+    get:
+      summary: Retrieve the facts for the country of the game.
+      parameters:
+        - name: id
+          in: path
+          description: The id of the game.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Game facts retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Facts to guess the country.
+                  data:
+                    $ref: '#/components/schemas/Facts'
+          links:
+            nextStep:
+              description: Retrieve facts for the newly created game.
+              operationRef: '/game/{id}/rating/facts'
+              parameters:
+                id: '$response.body#/id'
+        '400':
+          description: Invalid request
+        '403':
+          description: Unauthorized - user is not the player of the game
+        '404':
+          description: Game not found
+        '500':
+          description: Internal server error
+
 components:
   schemas:
+    Facts:
+      type: object
+      properties:
+        country_name:
+          type: string
+        facts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryFacts'
+          minItems: 7
+          maxItems: 7
+        flags:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlagOption'
+          minItems: 3
+          maxItems: 3
+  
+    CountryFacts:
+      type: object
+      properties:
+        question_keyword:
+          type: string
+        answer:
+          type: string
+
+    FlagOption:
+      type: object
+      properties:
+        country_code:
+          type: string
+        flag_url:
+          type: string
+        correct_option:
+          type: boolean
     User:
       type: object
       properties:
