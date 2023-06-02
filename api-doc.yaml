@@ -8,12 +8,16 @@ info:
     The API keeps track of the players score.
   version: 2.0.69
 tags:
-  - name: game
+  - name: Game
     description: Operations about the game
   - name: user
     description: Operations about user
-  - name: ranking
+  - name: Ranking
     description: Operations about ranking
+  - name: Gamehistory
+    description: Operations about played games of a specific user.
+  - name: Profile
+    description: Operations about the public or private profile of a specific user.
 paths:
   /signup:
       post:
@@ -414,6 +418,8 @@ paths:
             description: Internal server error
             
       delete:
+        tags:
+          - Game
         summary: Cancel a game
         description: Cancels a game session by its id. 
         parameters:
