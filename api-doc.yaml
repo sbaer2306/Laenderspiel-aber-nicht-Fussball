@@ -202,7 +202,7 @@ paths:
   /ranking/all-time:
     get:
       tags:
-        - ranking
+        - Ranking
       summary: Retrieve the top 10 users in all-time ranking
       description: This endpoint returns the top 10 users with the highest all-time score, along with their user info.
       responses:
@@ -233,7 +233,7 @@ paths:
   /ranking/monthly/{year}/{month}:
     get:
       tags:
-        - ranking
+        - Ranking
       summary: Get monthly ranking for a given month and year
       description: >-
         Returns the top 10 users in the monthly ranking for a given month and
@@ -283,7 +283,7 @@ paths:
         description: The ID of the user profile.
     get:
       tags:
-        - profile
+        - Profile
       summary: Get the user's profile information
       responses:
         '200':
@@ -292,16 +292,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Profile'
+        '204':
+          description: Profile is empty
         '400':
           description: Bad Request
         '401':
-          description: Unauthorized
+          description: Unauthenticated
+        '403':
+          description: Unauthorized - user profile is private
         '404':
           description: Profile Not Found
 
     post:
       tags:
-        - profile
+        - Profile
       summary: Create a new user profile
       requestBody:
         required: true
@@ -323,7 +327,7 @@ paths:
 
     put:
       tags:
-        - profile
+        - Profile
       summary: Update an existing user profile
       requestBody:
         required: true
@@ -347,6 +351,8 @@ paths:
 
   /game:
     post:
+      tags:
+        - Game
       summary: Create a new game
       description: Creates a new game with a random country based on the chosen difficulty level.
       requestBody:
@@ -380,6 +386,8 @@ paths:
     
   /game/{id}:
       get:
+        tags:
+          - Game
         summary: Retrieve a game
         description: Retrieves the details of a game by its id.
         parameters:
@@ -427,6 +435,8 @@ paths:
 
   /game/{id}/facts:
     get:
+      tags:
+        - Game
       summary: Retrieve the facts for the country of the game.
       parameters:
         - name: id
@@ -465,6 +475,8 @@ paths:
 
   /user/{id}/played-games:
     get:
+      tags:
+        - Gamehistory
       summary: Get list of played games by user (a.k.a game history).
       description: >-
         Returns a paginated list of all the games a user has played, ordered by
@@ -509,6 +521,8 @@ paths:
         '404':
           description: User not found
     delete:
+      tags:
+        - Gamehistory
       summary: Delete all played games by user.
       description: >-
         Deletes all the games a user has played. Only the owner of the games can
