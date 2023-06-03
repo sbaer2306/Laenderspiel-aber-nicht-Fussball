@@ -59,7 +59,6 @@ paths:
             links:
               CreateProfile:
                 description: Create your profile after signing up
-                operationId: createProfile
                 operationRef: '#/profile'
           '400':
             description: Bad Request
@@ -719,42 +718,56 @@ components:
         id:
           type: integer
           format: int32
+          example: 1
         userId:
           type: integer
           format: int32
+          example: 123
         score:
           type: integer
           format: int32
+          example: 500
         gameDuration:
           type: integer
           format: int32
+          example: 120
         country:
           type: object
           properties:
             id:
               type: integer
               format: int32
+              example: 1
             name:
               type: string
+              example: Germany
             countryCode:
               type: string
+              example: DE
             difficultyMultiplier:
               type: number
               format: float
+              example: 1.5
         createdAt:
           type: string
           format: date-time
+          example: "2023-06-01T10:30:00Z"
+
     PaginatedPlayedGamesResponse:
       type: object
       properties:
         totalItems:
           type: integer
+          example: 100
         totalPages:
           type: integer
+          example: 5
         currentPage:
           type: integer
+          example: 2
         pageSize:
           type: integer
+          example: 20
         playedGames:
           type: array
           items:
@@ -767,11 +780,13 @@ components:
               properties:
                 href:
                   type: string
+                  example: "/user/123/played-games?page=2&pageSize=20"
             next:
               type: object
               properties:
                 href:
                   type: string
+                  example: "/user/123/played-games?page=3&pageSize=20"
   securitySchemes:
     oAuth2ClientCredentials:
       type: oauth2
