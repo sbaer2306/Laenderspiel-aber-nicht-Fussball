@@ -4,6 +4,7 @@ import './App.css'
 import { FirstRound } from './pages/FirstRound'
 import SecondRound from './pages/SecondRound'
 import { HomePage } from './pages/HomePage'
+import { Login } from './pages/Login'
 
 function App() {
 
@@ -12,6 +13,7 @@ function App() {
       <Router>
         <Routes>
           <Route path='/' element={<HomePage/>} />
+          <Route path='/login' element={<Login/>} />
           <Route path='/game/:game_id/facts' element={<FirstRound/>} />
           <Route path='/game/:game_id/geo-information' element={<SecondRound/>} />
         </Routes> 
