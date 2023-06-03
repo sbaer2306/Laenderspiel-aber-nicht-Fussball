@@ -286,6 +286,8 @@ paths:
           minimum: 1
         description: The ID of the user profile.
     get:
+      security:
+        - google_oauth: []
       tags:
         - Profile
       summary: Get the user's profile information
@@ -310,6 +312,8 @@ paths:
     post:
       tags:
         - Profile
+      security:
+        - google_oauth: []
       summary: Create a new user profile
       requestBody:
         required: true
@@ -332,6 +336,8 @@ paths:
     put:
       tags:
         - Profile
+      security:
+        - google_oauth: []
       summary: Update an existing user profile
       requestBody:
         required: true
@@ -478,11 +484,260 @@ paths:
           description: Game not found
         '500':
           description: Internal server error
+  /game/{id}/rating/facts:
+    post:
+      tags:
+        - Game
+      summary: Rating of first round of the game
+      operationId: getRatingRoundOne
+      parameters:
+        - name: id
+          in: path
+          description: id of a game
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                guest_token:
+                  type: string
+                  description: Optional access token for guest users
+                data:
+                    $ref: '#/components/schemas/Facts'
+      description: Returns scoring for first round
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                type: object
+                properties:
+                  score:
+                    type: integer
+                    description: scoring from the first round
+          links:
+            nextStep:
+              description: get to the geo-onformation round
+              operationRef: '/game/{id}/geo-information'
+              parameters:
+                id: '$response.body#/id'
+        '403':
+          description: Forbidden
+        '404':
+          description: Game not Found
+        '406':
+          description: Not Acceptable
+        '500':
+          description: Internal Server Error
+  /game/{id}/geo-information:
+    get:
+      tags:
+        - Game
+      parameters:
+        - name: id
+          in: path
+          description: id of a game
+          required: true
+          schema:
+            type: string
+      summary: second round of the game
+      operationId: getRoundTwo
+      description: Get the coordinates for the country and its center
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                type: object
+                properties:
+                  geometry:
+                    type: array
+                    items: {
+                      type: string
+                    }
+                    description: boundaries of the country
+                  center:
+                    type: array
+                    items: {
+                      type: string
+                    }
+                    description: lat and lng of the center of the countryt
+          links:
+            nextStep:
+              description: rate geo-information
+              operationRef: '/game/{id}/rating/geo-information'
+              parameters:
+                id: '$response.body#/id'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /game/{id}/rating/geo-information:
+    post:
+      tags:
+        - Game
+      operationId: getRatingRoundTwo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: unauthorized user id
+                coordinate:
+                  type: array
+                  items: {
+                    type: string
+                  }
+                  description: lat and lng of guessed coordinate        
+      parameters:
+        - in: path
+          name: id
+          description: ID of the game
+          required: true
+          schema:
+            type: string
+      summary: Rating of second round of the game
+      
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                type: object
+                properties:
+                  score:
+                    type: integer
+                    description: scoring from the second round
+          links:
+            next:
+              operationId: getThirdRound
+              parameters:
+                game_id: $request.path.game_id
+        '403':
+          description: Forbidden
+        '404':
+          description: Game Not Found
+        '406':
+          description: Not Acceptable
+        '500':
+          description: Internal Server Error
 
+  /game/{id}/sights:
+    get:
+      tags:
+        - Game
+      operationId: getThirdRound
+      parameters:
+        - name: id
+          in: path
+          description: id of a game
+          required: true
+          schema:
+            type: string
+      summary: Third round of Länderspiel
+      description: Displaying three sights of 3 cities. The player has to guess the cites based on the provided sights.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+               schema:
+                type: object
+                properties:
+                  city_name:
+                    type: string
+                    description: name of the city
+                  sights:
+                    type: array
+                    minItems: 3
+                    maxItems: 3
+                    items:
+                      $ref: '#/components/schemas/Sight'
+          links:
+            nextStep:
+              description: rate geo-information
+              operationRef: '/game/{id}/rating/sights'
+              parameters:
+                id: '$response.body#/id'
+        '400': 
+          description: Bad Request
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+   
+  /game/{id}/rating/sights:
+    post:
+      tags:
+        - Game
+      parameters:
+        - name: id
+          in: path
+          description: id of a game
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                guest_token:
+                  type: string
+                  description: Optional access token for guest users
+                city_name:
+                  type: string
+                  description: Name of the city guessed
+      summary: Rating of third round of the game
+      description: Returns scoring for third round
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                type: object
+                properties:
+                  score:
+                    type: integer
+                    description: scoring from the third round
+          links:
+            next:
+              operationId: Get next page for scoreboard
+              parameters:
+                artifact-id: /game/scoreboard
+        '403':
+          description: Forbidden
+        '404':
+          description: Game not Found
+        '406':
+          description: Not Acceptable
+        '500':
+          description: Internal Server Error
   /user/{id}/played-games:
     get:
       tags:
         - Gamehistory
+      security:
+        - google_oauth: []
       summary: Get list of played games by user (a.k.a game history).
       description: >-
         Returns a paginated list of all the games a user has played, ordered by
@@ -529,6 +784,8 @@ paths:
     delete:
       tags:
         - Gamehistory
+      security:
+        - google_oauth: []
       summary: Delete all played games by user.
       description: >-
         Deletes all the games a user has played. Only the owner of the games can
@@ -759,6 +1016,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PlayedGame'
+<<<<<<< HEAD
         _links:
           type: object
           properties:
@@ -772,8 +1030,17 @@ components:
               properties:
                 href:
                   type: string
+=======
+    Sight:
+      type: object
+      properties:
+        name:
+          type: string
+        image:
+          type: string
+>>>>>>> f39fa0d (Aenderungen wie geplant)
   securitySchemes:
-    oAuth2ClientCredentials:
+    google_oauth:
       type: oauth2
       description: Google OAuth
       flows: 
