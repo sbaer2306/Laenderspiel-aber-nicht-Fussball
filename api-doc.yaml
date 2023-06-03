@@ -759,6 +759,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PlayedGame'
+        _links:
+          type: object
+          properties:
+            self:
+              type: object
+              properties:
+                href:
+                  type: string
+            next:
+              type: object
+              properties:
+                href:
+                  type: string
   securitySchemes:
     oAuth2ClientCredentials:
       type: oauth2
