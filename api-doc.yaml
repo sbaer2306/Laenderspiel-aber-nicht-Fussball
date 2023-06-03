@@ -1029,7 +1029,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PlayedGame'
-<<<<<<< HEAD
+
         _links:
           type: object
           properties:
@@ -1044,7 +1044,6 @@ components:
               properties:
                 href:
                   type: string
-=======
     Sight:
       type: object
       properties:
@@ -1052,8 +1051,7 @@ components:
           type: string
         image:
           type: string
->>>>>>> f39fa0d (Aenderungen wie geplant)
-                  example: "/user/123/played-games?page=3&pageSize=20"
+          example: "/user/123/played-games?page=3&pageSize=20"
   securitySchemes:
     google_oauth:
       type: oauth2

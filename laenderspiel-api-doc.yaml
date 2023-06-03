@@ -1,0 +1,504 @@
+openapi: 3.0.3
+info:
+  title: Länderspiel (aber nicht Fsssball)
+  description: |-
+    This API provides a trivia game that tests the players knowledge about countries.
+    Each round of the game consists of different kind of questions. 
+    The player answers the questions and earns points based on conditions, such as the amount of attempts that were needed. 
+    The API keeps track of the players score.
+  version: 1.0.11
+tags:
+  - name: game
+    description: Operations about the game
+  - name: user
+    description: Operations about user
+  - name: ranking
+    description: Operations about ranking
+paths:
+  
+  
+  
+  /game/{id}:
+    get:
+      tags:
+        - game
+      parameters:
+        - name: id
+          in: path
+          description: id of a game
+          required: true
+          schema:
+            type: string
+      summary: Get a game
+      description: Returns a game
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/GamePlayed'
+                
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - game
+      parameters:
+        - name: id
+          in: path
+          description: id of a game
+          required: true
+          schema:
+            type: string
+      summary: Delete a game
+      description: Deletes a specific game
+      responses:
+        '200':
+          description: Deleted
+        '204':
+          description: No Content
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  
+  /game:
+    post:
+      tags:
+        - game
+      summary: Start a game
+      requestBody:
+        description: A JSON object that contains the the user_id, if user_id isn't specified, guest_token will be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameCreation'
+      description: Returns the newly created game_id with the country 
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameCreated'
+          links:
+            next: 
+              operationId: getFirstRound   #to point on operationID at /game/{game_id}/facts
+              parameters:
+                game_id: '$response.body#/game_id'
+                guest_token: '$response.body#/guest_token'
+                
+              description:
+                The 'game_id' returned in the response can be used as the 'game_id' parameter 
+                in `GET /game/{game_id}/facts for the first round`
+        '500':
+          description: Internal Server Error
+  
+  /game/{game_id}/facts:
+    get:
+      tags:
+        - game
+      summary: Get facts for the 
+      operationId: getFirstRound
+      parameters:
+        - name: game_id
+          in: path
+          description: id of a game
+          required: true
+          schema:
+            type: string
+      
+      description: Returns the facts for a country
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  facts:
+                    items:
+                      type: object
+                      properties:
+                        capital:
+                          type: string
+                          description: capital of the country
+                        population:
+                          type: string
+                          description: population of the country
+                    description: An array of facts about the specified country
+          links:
+            next:
+              operationId: getRatingRoundOne
+              parameters:
+                game_id: $request.path.game_id
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /game/{game_id}/rating/1:
+    post:
+      tags:
+        - game
+      summary: Rating of first round of the game
+      operationId: getRatingRoundOne
+      parameters:
+        - name: game_id
+          in: path
+          description: id of a game
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                guest_token:
+                  type: string
+                  description: Optional access token for guest users
+      description: Returns scoring for first round
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                type: object
+                properties:
+                  score:
+                    type: integer
+                    description: scoring from the second round
+        '403':
+          description: Forbidden
+        '404':
+          description: Game not Found
+        '406':
+          description: Not Acceptable
+        '500':
+          description: Internal Server Error
+          
+  /game/{game_id}/geo-information:
+    get:
+      tags:
+        - game
+      parameters:
+        - name: game_id
+          in: path
+          description: id of a game
+          required: true
+          schema:
+            type: string
+      summary: second round of the game
+      operationId: getRoundTwo
+      description: Get the coordinates for the country and its center
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                type: object
+                properties:
+                  geometry:
+                    type: array
+                    items: {
+                      type: string
+                    }
+                    description: boundaries of the country
+                  center:
+                    type: array
+                    items: {
+                      type: string
+                    }
+                    description: lat and lng of the center of the countryt
+          links:
+            next:
+              operationId: getRatingRoundTwo
+              parameters:
+                game_id: $request.path.game_id
+            
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+ 
+  /game/{game_id}/rating/2:
+    post:
+      tags:
+        - game
+      operationId: getRatingRoundTwo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: unauthorized user id
+                coordinate:
+                  type: array
+                  items: {
+                    type: string
+                  }
+                  description: lat and lng of guessed coordinate        
+      parameters:
+        - in: path
+          name: game_id
+          description: ID of the game
+          required: true
+          schema:
+            type: string
+      summary: Rating of second round of the game
+      
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                type: object
+                properties:
+                  score:
+                    type: integer
+                    description: scoring from the second round
+          links:
+            next:
+              operationId: getThirdRound
+              parameters:
+                game_id: $request.path.game_id
+        '403':
+          description: Forbidden
+        '404':
+          description: Game Not Found
+        '406':
+          description: Not Acceptable
+        '500':
+          description: Internal Server Error
+            
+  /game/{id}/sights:
+    get:
+      tags:
+        - game
+      operationId: getThirdRound
+      parameters:
+        - name: id
+          in: path
+          description: id of a game
+          required: true
+          schema:
+            type: string
+      summary: Third round of Länderspiel
+      description: Displaying three sights of 3 cities. The player has to guess the cites based on the provided sights.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Name of the sight
+                    image:
+                      type: string
+                      format: uri
+                      description: URL for the image
+                  description: an array containing the cities and their sights
+          links:
+            next:
+              operationId: Get next page for third rating
+              parameters:
+                artifact-id: /game/{id}/rating/3
+        '400': 
+          description: Bad Request
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  
+  /game/{id}/rating/3:
+    post:
+      tags:
+        - game
+      parameters:
+        - name: id
+          in: path
+          description: id of a game
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                guest_token:
+                  type: string
+                  description: Optional access token for guest users
+      summary: Rating of third round of the game
+      description: Returns scoring for third round
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                type: object
+                properties:
+                  score:
+                    type: integer
+                    description: scoring from the third round
+          links:
+            next:
+              operationId: Get next page for scoreboard
+              parameters:
+                artifact-id: /game/scoreboard
+        '403':
+          description: Forbidden
+        '404':
+          description: Game not Found
+        '406':
+          description: Not Acceptable
+        '500':
+          description: Internal Server Error
+          
+#TODO Model user @Basti      Model ranking @Dejan        Model game @David
+components:
+  schemas:
+    Ranking:    # Schema name
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the ranking
+        user_id:
+          type: integer
+          description: ID of the user
+        total_score:
+          type: integer
+          description: Total score of the user
+        updated_at:
+          type: string
+          description: Last update timestamp of the ranking
+        profile:
+          type: object
+          description: Profile information of the user only public information
+          properties:
+            display_name:
+              type: string
+              description: Display name of the user
+   
+   
+   
+    Ranking-Monthly:    # identically except total_score and current_monthly_score but not really necessary? 
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the ranking
+        user_id:
+          type: integer
+          description: ID of the user
+        current_monthly_score:
+          type: integer
+          description: Total score of the user
+        updated_at:
+          type: string
+          description: Last update timestamp of the ranking
+        profile:
+          type: object
+          description: Profile information of the user only public information
+          properties:
+            display_name:
+              type: string
+              description: Display name of the user
+              
+    User:    # Schema name     -> Basti- User Model 
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the user
+        name:
+          type: string
+          description: name of the user
+        created_at:
+          type: string
+          description: Last update timestamp of the ranking
+        profile:
+          type: object
+          description: Profile information of the user only public information
+          properties:
+            display_name:
+              type: string
+              description: Display name of the user
+   
+   
+   
+   
+    GamePlayed:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: ID of the user
+        country:
+          type: string
+          description: Display name of country guessed
+        facts:
+          items:
+            type: string
+          description: An array of facts about the specified country
+        score:
+          type: integer
+          description: get the score
+    
+    
+    GameCreated:    # Schema name   
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the game
+        user_id:
+          type: integer
+          description: ID of the user
+        guest_token:
+          type: string
+          description: Token used for guest users
+          nullable: true
+        country:
+          type: string
+          description: Country that was assigned to the game
+        created_at:
+          type: string
+          description: Timestamp of creation
+        
+    GameCreation:    # Schema name   
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: ID of the user
+        created_at:
+          type: string
+          description: Timestamp of creation
+#TODO @Basti @Dejan @David Gastuser Parameter
