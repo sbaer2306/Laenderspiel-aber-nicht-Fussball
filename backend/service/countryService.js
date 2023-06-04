@@ -1,4 +1,5 @@
 const axios = require('axios');
+//require('dotenv').config();
 
 const options = {
     method: 'GET',
@@ -8,8 +9,8 @@ const options = {
         hateoasMode: 'true',
     },
     headers: {
-        'X-RapidAPI-Key': '00e65e4bd9msh46628eee2602330p1480d2jsn2c9616ca8cca',
-        'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com',
+        //'X-RapidAPI-Key': process.env.X_RAPIDAPI_KEY,
+        //'X-RapidAPI-Host': process.env.X_RAPIDAPI_HOST,
     }
 }
 
