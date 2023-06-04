@@ -3,6 +3,7 @@ import '../css/HomePage.css'
 import glogo from '../assets/g-logo.png'
 
 export const HomePage = () => {
+
   return (
     <div className="homepage_container">
         <h1>Länderspiel (aber nicht {'\u26BD'})</h1>
