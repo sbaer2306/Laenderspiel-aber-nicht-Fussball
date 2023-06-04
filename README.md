@@ -11,7 +11,11 @@ Gruppenmitglieder:
 - Johannes Matus
 - David Weiß
 
-Docker Anleitung:<br>
+### API Dokumentation
+
+ Die API Dokumentation wird unter [/api/doc](http://localhost:3000/api/doc) im Frontend angezeit. Das React package benötigt die Dokumentation allerdings als json, deshalb im Swagger Editor als json exportieren (File > Convert and save as json) und dann im frontend in /src/components/ApiDoc einfügen bzw. altes File überschreiben, damit die Dokumentation auch unter [/api/doc](http://localhost:3000/api/doc) angezeigt wird.
+
+### Docker Anleitung:<br>
 
 ## Vorraussetzung:
 
