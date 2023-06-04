@@ -14,7 +14,13 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.2",
     "react-leaflet": "^4.2.1",
-    "osmtogeojson": "^3.0.0-beta.5"
+    "osmtogeojson": "^3.0.0-beta.5",
+    "@chakra-ui/react": "^2.7.0",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "swagger-ui": "^4.19.0",
+    "swagger-ui-react": "^4.19.0",
+    "react-icons": "^4.9.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
