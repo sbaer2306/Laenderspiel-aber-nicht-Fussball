@@ -37,7 +37,7 @@ Hochschule für angewandte Wisswnschaften Hof<br>
 ### Datenbankoperationen:
 Müssen (noch) manuell durchgeführt werden, falls der db-Container noch nicht rechtzeitig aktiv ist.
 
-6. ```docker exec node_backend_container npx prisma db push --accept-data-loss``` (Migrieren der Daten)
+6. ```docker exec node_backend_container npx prisma db push --accept-data-loss``` (Letzte Migration anwenden)
 7. ```docker exec node_backend_container npx prisma db seed``` (Füllt Datenbank mit sample Daten)
 
 ## API Credentials
