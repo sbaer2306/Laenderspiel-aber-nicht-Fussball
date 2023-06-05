@@ -39,6 +39,7 @@ services:
     environment:
       <<: *common-variables
       MYSQL_HOST_IP: mysql-db
+      DATABASE_URL: "mysql://laenderspiel:laenderspiel@mysql-db:3306/laenderspiel"
     ports:
       - 8000:8000
     volumes:

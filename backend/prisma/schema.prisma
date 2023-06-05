@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int          @id @default(autoincrement())
+  email            String       @unique @db.VarChar(50)
+  OAuthID          String?       @unique @default(cuid()) // OAuth ID is used to identify the user in the OAuth provider, e.g. Google
+  username         String       @unique @db.VarChar(30) @default("")
+  registrationDate DateTime     @default(now())
+  lastLoginDate    DateTime     @default(now())
+  Profile          Profile?
+  PlayedGame       PlayedGame[]
+}
+
+model Profile {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  firstName String?  @db.VarChar(30)
+  lastName  String?  @db.VarChar(30)
+  isPrivate Boolean  @default(false)
+  bio       String?  @default("Hi there!")
+  location  String?  @db.VarChar(70)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model MonthlyRanking {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  score       Int      @default(0)
+  month       Int      @default(1) @db.Int()
+  year        Int      @default(2021)
+  lastUpdated DateTime @default(now())
+
+  @@unique([userId, month, year])
+  @@index([month, year])
+}
+
+model AllTimeRanking {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @unique
+  score       Int      @default(0)
+  lastUpdated DateTime @default(now())
+
+  @@index([score])
+}
+
+model PlayedGame {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
+  score        Int      @default(0)
+  gameDuration Int      @default(0) // seconds
+  country      Country? @relation(fields: [countryId], references: [id])
+  countryId    Int?
+
+  createdAt DateTime @default(now())
+
+  @@index([score])
+}
+
+model Country {
+  id                   Int          @id @default(autoincrement())
+  name                 String       @unique @db.VarChar(70)
+  countryCode          String       @unique @db.VarChar(2) // ISO 3166-1 alpha-2 code --> "GB" for United Kingdom, "US" for United States, etc.
+  difficultyMultiplier Float        @default(1)
+  games                PlayedGame[]
+
+  @@index([countryCode])
+}

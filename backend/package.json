@@ -3,23 +3,27 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type":"module",
   "scripts": {
-    "start": "npx nodemon -L index.js"
+    "start": "npx prisma db && push -L index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^4.15.0",
     "cors": "^2.8.5",
-    "mysql": "^2.18.1",
+    "dotenv": "^16.0.3",
     "ejs": "^3.1.2",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "mysql": "^2.18.1",
     "passport": "^0.4.1",
-    "passport-google-oauth": "^2.0.0",
-    "dotenv": "^16.0.3"
+    "passport-google-oauth": "^2.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "prisma": "^4.15.0",
+    "typescript": "^5.1.3"
   }
 }
