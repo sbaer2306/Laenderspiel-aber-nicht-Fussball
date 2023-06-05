@@ -33,5 +33,6 @@ Gruppenmitglieder:
 2. env. File erstellen mit den Parametern
     - Test
     - Test2
-2. Starten Container: docker-compose up -d
+3. DATABASE_URL= "mysql://root:<rootpasswort>@mysql-db:3306/laenderspiel" in .env backend hinzufügen (migrate braucht privilegien um shadow db anzulegen)
+4. Starten Container: docker-compose up -d
 

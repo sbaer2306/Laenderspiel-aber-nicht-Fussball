@@ -9,4 +9,6 @@ COPY . /app
 
 RUN npm install
 
+RUN npx prisma generate
+
 CMD ["npm", "start"]
