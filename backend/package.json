@@ -5,7 +5,7 @@
   "main": "index.js",
   "type":"module",
   "scripts": {
-    "start": "npx prisma db push -L index.js"
+    "start": "npx prisma db && push -L index.js"
   },
   "keywords": [],
   "author": "",
