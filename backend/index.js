@@ -66,8 +66,10 @@ app.get('/auth/google/callback',
 const express = require('express');
 const passport = require('passport');
 require('dotenv').config();
+const prisma = require('./prisma/prisma.js')
 
 const app = express();
+prisma.initializePrisma();
 
 // Initialize Passport middleware
 app.use(passport.initialize());
