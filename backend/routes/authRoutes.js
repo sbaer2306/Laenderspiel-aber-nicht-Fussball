@@ -5,7 +5,7 @@ const authController = require('../controller/authController');
 const router = express.Router();
 
 // Google OAuth routes
-router.get('/signup', authController.googleAuth);
+router.get('/auth/google', authController.googleAuth);
 router.get('/google/callback', authController.googleCallback, authController.googleCallbackHandler);
 
 module.exports = router;

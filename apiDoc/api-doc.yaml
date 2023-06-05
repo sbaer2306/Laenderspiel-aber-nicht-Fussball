@@ -503,9 +503,6 @@ paths:
             schema:
               type: object
               properties:
-                guest_token:
-                  type: string
-                  description: Optional access token for guest users
                 data:
                     $ref: '#/components/schemas/Facts'
       description: Returns scoring for first round
@@ -665,7 +662,7 @@ paths:
                     minItems: 3
                     maxItems: 3
                     items:
-                      $ref: '#/components/schemas/Sight'
+                      $ref: '#/components/schemas/City'
           links:
             nextStep:
               description: rate geo-information
@@ -699,12 +696,14 @@ paths:
             schema:
               type: object
               properties:
-                guest_token:
-                  type: string
-                  description: Optional access token for guest users
-                city_name:
-                  type: string
-                  description: Name of the city guessed
+                coordinates:
+                  type: array
+                  items:
+                    type: string
+                coordinates_guessed:
+                  type: array
+                  items:
+                    type: string
       summary: Rating of third round of the game
       description: Returns scoring for third round
       responses:
@@ -1029,6 +1028,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PlayedGame'
+            
 
         _links:
           type: object
@@ -1051,7 +1051,21 @@ components:
           type: string
         image:
           type: string
-          example: "/user/123/played-games?page=3&pageSize=20"
+    City:
+      type: object
+      properties:
+        name:
+          type: string
+        sights:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sight'
+            minItems: 3
+            maxItems: 3
+        coordinates:
+          type: array
+          items:
+            type: string
   securitySchemes:
     google_oauth:
       type: oauth2
