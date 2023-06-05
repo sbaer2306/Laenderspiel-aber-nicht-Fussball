@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type":"module",
+  "type": "module",
   "scripts": {
-    "start": "npx prisma db && push -L index.js"
+    "start": "nodemon -L index.js"
+  },
+  "prisma": {
+    "seed": "node prisma/seeds/seed.js"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +25,7 @@
     "passport-google-oauth": "^2.0.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
     "nodemon": "^2.0.22",
     "prisma": "^4.15.0",
     "typescript": "^5.1.3"

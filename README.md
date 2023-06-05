@@ -35,4 +35,6 @@ Gruppenmitglieder:
     - Test2
 3. DATABASE_URL= "mysql://root:<rootpasswort>@mysql-db:3306/laenderspiel" in .env backend hinzufügen (migrate braucht privilegien um shadow db anzulegen)
 4. Starten Container: docker-compose up -d
+5. docker exec node_backend_container npx prisma db push --accept-data-loss (Migrieren der Daten)
+6. docker exec node_backend_container npx prisma db seed (Füllt Datenbank mit sample Daten)
 
