@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type":"module",
   "scripts": {
-    "start": "npx migrate deploy && npx nodemon -L index.js"
+    "start": "npx prisma db push -L index.js"
   },
   "keywords": [],
   "author": "",
