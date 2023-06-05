@@ -11,18 +11,12 @@
 
 .headline{
     z-index: 0;
-}
-.timer_container{
-    z-index: 1;
-    background-color: transparent;
     display: flex;
-    align-items:flex-end;
-    justify-content:flex-end;
+    justify-content: flex-end;
 }
-.timer{
-    width: 30%;
-    margin: auto;
-    border-radius: 10px;
+.headline_right{
+    display: flex;
+    align-items: center;
 }
 .content_container_first_round{
     display: flex;
@@ -31,13 +25,17 @@
     width: 100%;
 }
 .left_content_first_round{
+    flex-grow: 1;
     width: 55%;
+    margin-right: 0.5rem;
 }
 .right_content_first_round{
-    width: 35%;
+    flex-shrink: 0;
+    width: 45%;
 }
 .country_solution_container{
     padding: 1rem;
+    margin-bottom: 1rem;
 }
 .flag_container{
     padding: 1rem;
@@ -48,25 +46,19 @@
 .container_fact_component{
     padding: 0.5rem;
 }
-.title_fact{
-    margin-bottom: 0.2rem;
-}
 .textfield_container_fact{
-    margin-bottom: 0.2rem;
-    height: 90px;
+    height: 70px;
     display: flex;
     align-items: center;
 }
 .textfield_container_fact input{
-    outline: none;
-    border: none;
-    width: 70%;
+    width: 90%;
     height: 100%;
 }
-.icon_container{
+.inputContainer{
+    width: 100%;
+}
+.testButtonContainer{
     width: 20%;
-    height: 100%;
-}
-.icon_container img{
-    width: 50px;
+    padding-right: 1rem;
 }

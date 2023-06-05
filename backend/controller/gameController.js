@@ -12,7 +12,7 @@ async function createGame(req, res){
 
       const game = {
         id: gameID,
-        user_id: 0, //missing in yaml? AuthContextProvider prob
+        user_id: 0, //AuthContextProvider prob
         current_round: 1,
         max_rounds: 3,
         ttl: 900,
@@ -22,6 +22,8 @@ async function createGame(req, res){
         current_score: null,
         total_score: null,
       }
+
+      console.log("game that should be created: ",game);
 
       const links = {
         nextStep: {

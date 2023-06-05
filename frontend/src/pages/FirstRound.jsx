@@ -3,9 +3,11 @@ import React, {useEffect, useState} from 'react'
 //import {getGameFacts} from '../../../backend/apis/gameAPI'
 import '../css/FirstRound.css'
 import { Facts } from '../components/Facts';
+import {Text, CircularProgress} from '@chakra-ui/react';
 
-const titles = ["Gründungsjahr", "Kontinent", "Hauptstadt", "Fläche", "Währung", "Sprache"];
-const solutions = ["1949", "Europa", "Berlin", "357.000", "EURO", "Deutsch"];
+const titles = ["Gründungsjahr", "Kontinent", "Hauptstadt", "Fläche", "Währung", "Sprache", "Bevölkerung"];
+const solutions = [1949, "Europa", "Berlin", 357000, "EURO", "Deutsch", 82000000];
+const country = ["Deutschland"]
 
 
 export const FirstRound = () => {
@@ -28,26 +30,27 @@ export const FirstRound = () => {
   return (
     <div className='container_first_round'>
         <div className='headline'>
-            <h1>Runde 1</h1>
-            <div className='timer_container'>
-                <div className='rounded_shadow'>00:00</div>
+            <div className='headline_right'>
+                <Text mb={1} fontSize='2xl' textAlign="center">
+                Runde 1
+                </Text>
+                <CircularProgress value={20} size='70px' />
             </div>
+            
         </div>
         <div className='content_container_first_round'>
             <div className='left_content_first_round rounded_shadow'>
                 {
-                    Array.from({ length: 6 }, (_, i) => (
+                    Array.from({ length: 7 }, (_, i) => (
                         <Facts key={i} title={titles[i]} solution={solutions[i]} />
                     ))
                 }
             </div>
-            <div className='right_content_first_round rounded_shadow'>
-                <div className='country_solution_container rounded_shadow'>
-                    <h2>Land</h2>
+            <div className='right_content_first_round'>
+                <div className='country_solution_container '>
                     <div className='country_solution rounded_shadow'>
-                        
+                        <Facts key={1} title={"Land"} solution={"Deutschland"} />
                     </div>
-                    <button id="solve" className='solve_button_first_round'>Lösen</button>
                 </div>
                 <div className='flag_container rounded_shadow'>
                     <h3>Flagge</h3>

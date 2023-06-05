@@ -1,5 +1,9 @@
 const axios = require('axios');
-//require('dotenv').config();
+const path = require('path');
+const dotenv = require('dotenv');
+
+const dotenvPath = path.resolve(__dirname, '../../.env');
+dotenv.config({path: dotenvPath});
 
 const options = {
     method: 'GET',
@@ -9,8 +13,8 @@ const options = {
         hateoasMode: 'true',
     },
     headers: {
-        //'X-RapidAPI-Key': process.env.X_RAPIDAPI_KEY,
-        //'X-RapidAPI-Host': process.env.X_RAPIDAPI_HOST,
+        'X-RapidAPI-Key': process.env.RapidKEY,
+        'X-RapidAPI-Host': process.env.RapidHOST,
     }
 }
 
