@@ -1,12 +1,8 @@
-import { PrismaClient } from '@prisma/client'
-import { faker } from '@faker-js/faker';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+const { PrismaClient } = require('@prisma/client');
+const { faker } = require('@faker-js/faker');
+const fs = require('fs');
+const path = require('path');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const prisma = new PrismaClient()
 const USER_COUNT = 20; // How many users should be created?
