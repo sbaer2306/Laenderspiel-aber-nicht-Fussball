@@ -765,10 +765,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "guest_token": {
-                    "type": "string",
-                    "description": "Optional access token for guest users"
-                  },
                   "data": {
                     "$ref": "#/components/schemas/Facts"
                   }
@@ -1003,7 +999,7 @@
                       "minItems": 3,
                       "maxItems": 3,
                       "items": {
-                        "$ref": "#/components/schemas/Sight"
+                        "$ref": "#/components/schemas/City"
                       }
                     }
                   }
@@ -1058,13 +1054,17 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "guest_token": {
-                    "type": "string",
-                    "description": "Optional access token for guest users"
+                  "coordinates": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
                   },
-                  "city_name": {
-                    "type": "string",
-                    "description": "Name of the city guessed"
+                  "coordinates_guessed": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
                   }
                 }
               }
@@ -1550,8 +1550,29 @@
             "type": "string"
           },
           "image": {
-            "type": "string",
-            "example": "/user/123/played-games?page=3&pageSize=20"
+            "type": "string"
+          }
+        }
+      },
+      "City": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "sights": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Sight",
+              "minItems": 3,
+              "maxItems": 3
+            }
+          },
+          "coordinates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       }

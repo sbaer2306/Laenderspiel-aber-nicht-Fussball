@@ -4,7 +4,8 @@ import { FcGoogle } from 'react-icons/fc';
 
 export const HomePage = () => {
   const handleGoogleLogin = () => {
-    alert('TODO: Login')
+      window.open("http://localhost:8000/auth/google", "_self", 'toolbar=no, scrollbars=yes, resizable=no, width=1000, height=auto')
+
   };
 
   return (
