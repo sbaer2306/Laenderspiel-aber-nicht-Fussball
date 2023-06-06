@@ -8,6 +8,12 @@
       "checkJs": false,                                     /* Report errors in .js files. */
       "outDir": "dist",                                    /* Redirect output structure to the directory. */
     },
-  "exclude": ["node_modules"]
+    "exclude": [
+      "node_modules",
+      "controller",
+      "service",
+      "routes",
+      "apis"
+    ]
   }
   

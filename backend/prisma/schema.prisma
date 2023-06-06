@@ -10,12 +10,14 @@ datasource db {
 model User {
   id               Int          @id @default(autoincrement())
   email            String       @unique @db.VarChar(50)
-  OAuthID          String?       @unique @default(cuid()) // OAuth ID is used to identify the user in the OAuth provider, e.g. Google
+  OAuthID          String?      @unique @default(cuid())
   username         String       @unique @db.VarChar(30) @default("")
   registrationDate DateTime     @default(now())
   lastLoginDate    DateTime     @default(now())
   Profile          Profile?
   PlayedGame       PlayedGame[]
+  AllTimeRanking   AllTimeRanking?
+  MonthlyRanking   MonthlyRanking[]
 }
 
 model Profile {
@@ -28,12 +30,13 @@ model Profile {
   location  String?  @db.VarChar(70)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model MonthlyRanking {
   id          Int      @id @default(autoincrement())
   userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   score       Int      @default(0)
   month       Int      @default(1) @db.Int()
   year        Int      @default(2021)
@@ -46,6 +49,7 @@ model MonthlyRanking {
 model AllTimeRanking {
   id          Int      @id @default(autoincrement())
   userId      Int      @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   score       Int      @default(0)
   lastUpdated DateTime @default(now())
 
@@ -55,7 +59,7 @@ model AllTimeRanking {
 model PlayedGame {
   id           Int      @id @default(autoincrement())
   userId       Int
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   score        Int      @default(0)
   gameDuration Int      @default(0) // seconds
   country      Country? @relation(fields: [countryId], references: [id])

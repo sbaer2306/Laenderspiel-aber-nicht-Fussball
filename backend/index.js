@@ -17,6 +17,14 @@ app.get('/example', (req, res) => {
   res.send('Hello, this is the example route!');
 });
 
+const gamehistoryRoutes = require('./routes/playedGameRoutes')
+app.use('/user', gamehistoryRoutes)
+
+const userRoutes = require('./routes/userRoutes');
+app.use('/user', userRoutes);
+
+const rankingRoutes = require('./routes/rankingRoutes');
+app.use('/ranking', rankingRoutes);
 // Start the server
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

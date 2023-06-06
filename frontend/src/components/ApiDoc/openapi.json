@@ -3,7 +3,7 @@
   "info": {
     "title": "Länderspiel (nicht Fussball)",
     "description": "This API provides a trivia game that tests the players knowledge about countries.\nEach round of the game consists of different kind of questions. \nThe player answers the questions and earns points based on conditions, such as the amount of attempts that were needed. \nThe API keeps track of the players score.",
-    "version": "2.0.69"
+    "version": "4.20.0"
   },
   "tags": [
     {
@@ -75,6 +75,9 @@
                       "type": "string",
                       "description": "JWT token for user authentication",
                       "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/User"
                     }
                   }
                 }
@@ -175,16 +178,27 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Created and authenticated.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Authenticated user successfully."
+                    },
                     "token": {
                       "type": "string",
                       "description": "JWT token for user authentication",
                       "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/User"
                     }
                   }
                 }
@@ -271,7 +285,7 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "example": "failed"
+                      "example": "success"
                     },
                     "message": {
                       "type": "string",
@@ -340,14 +354,8 @@
           "400": {
             "description": "Bad Request"
           },
-          "404": {
-            "description": "Not Found"
-          },
           "500": {
             "description": "Internal Server Error"
-          },
-          "503": {
-            "description": "Service Unavailable"
           }
         }
       }
@@ -363,19 +371,19 @@
           {
             "name": "year",
             "in": "path",
-            "description": "Year in the format of 'yyyy'",
+            "description": "Year(number)",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           },
           {
             "name": "month",
             "in": "path",
-            "description": "Month in the format of 'mm'",
+            "description": "Month(number from 1-12, single digits are allowed)",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           }
         ],
@@ -389,7 +397,15 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "Top 10 users for specified timeframe retrieved successfully."
+                      "example": "Top 10 users retrieved successfully for given month and year."
+                    },
+                    "year": {
+                      "type": "integer",
+                      "example": 2023
+                    },
+                    "month": {
+                      "type": "integer",
+                      "example": 3
                     },
                     "data": {
                       "type": "array",
@@ -409,6 +425,95 @@
           },
           "404": {
             "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "description": "The ID of the user to delete."
+        }
+      ],
+      "delete": {
+        "security": [
+          {
+            "google_oauth": []
+          }
+        ],
+        "tags": [
+          "User"
+        ],
+        "summary": "Delete all user data. (game history, profile, scores)",
+        "responses": {
+          "200": {
+            "description": "User and related data successfully deleted"
+          },
+          "403": {
+            "description": "Unauthorized - user is not authorized to delete the data"
+          },
+          "404": {
+            "description": "User Not Found"
+          }
+        }
+      }
+    },
+    "/user/{id}/profile": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "description": "The ID of the user profile."
+        }
+      ],
+      "get": {
+        "security": [
+          {
+            "google_oauth": []
+          }
+        ],
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Get the user's profile information",
+        "description": "Retrieves the profile for the specified id (the user).Profiles can be set private. Profiles will only be delivered to authenticated users. If the profile is private, but the user is the owner, the profile will be delivered anyways.",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved user profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Profile is empty"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Unauthorized - user profile is private."
+          },
+          "404": {
+            "description": "Profile Not Found"
           }
         }
       }
@@ -552,7 +657,7 @@
           "Game"
         ],
         "summary": "Create a new game",
-        "description": "Creates a new game with a random country based on the chosen difficulty level.",
+        "description": "Creates a new game with a random country based on the chosen difficulty level. The Game will live for ttl seconds after that the game is deleted and can not be accessed. If the ttl expires the game will not be saved in the game history of a player.",
         "requestBody": {
           "required": true,
           "content": {
@@ -981,7 +1086,7 @@
           }
         ],
         "summary": "Third round of Länderspiel",
-        "description": "Displaying three sights of 3 cities. The player has to guess the cites based on the provided sights.",
+        "description": "Three sights of 3 cities. The player has to guess the cites based on the provided sights.",
         "responses": {
           "200": {
             "description": "OK",
@@ -1065,6 +1170,10 @@
                     "items": {
                       "type": "string"
                     }
+                  },
+                  "time_to_complete_game": {
+                    "type": "integer",
+                    "example": 408
                   }
                 }
               }
@@ -1072,7 +1181,7 @@
           }
         },
         "summary": "Rating of third round of the game",
-        "description": "Returns scoring for third round",
+        "description": "Scoring of the final round. Since the round completes the game, the time of the users attempt will also be used for scoring the whole game.",
         "responses": {
           "200": {
             "description": "OK",
@@ -1098,14 +1207,14 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request - e.g. wrong coordinate formatting."
+          },
           "403": {
             "description": "Forbidden"
           },
           "404": {
             "description": "Game not Found"
-          },
-          "406": {
-            "description": "Not Acceptable"
           },
           "500": {
             "description": "Internal Server Error"
@@ -1167,9 +1276,6 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid ID or page parameters supplied"
-          },
           "401": {
             "description": "Only authenticated users are allowed to look at the game history."
           },
@@ -1191,7 +1297,7 @@
           }
         ],
         "summary": "Delete all played games by user.",
-        "description": "Deletes all the games a user has played. Only the owner of the games can perform this operation. The overall score is NOT affected by the deletion. The user will still show up within rankings if the score is high enough.",
+        "description": "Deletes ALL the games a user has played (clears game history). Only the owner of the history can perform this operation. The overall score is NOT affected by the deletion. The user will still show up within rankings if the score is high enough.",
         "parameters": [
           {
             "name": "id",
@@ -1205,7 +1311,21 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful deletion"
+            "description": "Successful deletion - deletedNum is the total number of deleted played Games.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "deletedNum": {
+                      "type": "integer",
+                      "description": "Number of deleted records",
+                      "example": 16
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid ID supplied"
@@ -1357,7 +1477,8 @@
             "nullable": true
           },
           "isPrivate": {
-            "type": "boolean"
+            "type": "boolean",
+            "example": false
           }
         }
       },
@@ -1538,10 +1659,26 @@
                     "type": "string"
                   }
                 }
+              },
+              "prev": {
+                "type": "object",
+                "properties": {
+                  "href": {
+                    "type": "string"
+                  }
+                }
               }
             }
           }
-        }
+        },
+        "required": [
+          "totalItems",
+          "totalPages",
+          "currentPage",
+          "pageSize",
+          "playedGames",
+          "_links"
+        ]
       },
       "Sight": {
         "type": "object",
