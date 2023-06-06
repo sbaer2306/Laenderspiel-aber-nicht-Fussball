@@ -14,7 +14,7 @@ const getPlayedGames = async (req, res) => {
     const { page, pageSize } = req.query;
     const prismaClient = getPrisma();
 
-    // TODO: auth middleware!
+    // TODO: auth middleware! + authorization (uswer owns profile --> deliver despite private)
     try {
         const parsedId = parseInt(id);
         const user = await prismaClient.user.findUnique({
@@ -40,4 +40,34 @@ const getPlayedGames = async (req, res) => {
     }
 };
 
-module.exports = { getPlayedGames };
+/**
+ * Deletes the played games for a user.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A Promise that resolves when the response is sent.
+ * @throws {Error} - If an error occurs during the process. --> sends 500 Internal error
+ */
+const deleteAllPlayedGames = async (req, res) => {
+    const { id } = req.params;
+    const prismaClient = getPrisma();
+
+    // TODO: auth middleware! (user allowed to delete this history)
+    try {
+        const parsedId = parseInt(id);
+        const user = await prismaClient.user.findUnique({ where: { id: parsedId } });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const deletionResult = await gameHistoryService.deletePlayedGamesByUser(id);
+
+        res.status(200).json(deletionResult);
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+module.exports = { getPlayedGames, deleteAllPlayedGames };

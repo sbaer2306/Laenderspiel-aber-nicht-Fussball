@@ -59,4 +59,21 @@ const getPlayedGamesByUser = async (userId, page = 1, pageSize = 20) => {
     return response;
 };
 
-module.exports = { getPlayedGamesByUser };
+/**
+ * Deletes all played games by user.
+ *
+ * @param {number} userId - The ID of the user.
+ * @returns {Promise<Object>} - The number of deleted objects.
+ *     - deletedNum: The total number of deleted items.
+ */
+const deletePlayedGamesByUser = async (userId) => {
+    const parsedId = parseInt(userId);
+
+    const deleteCount = await prismaClient.playedGame.deleteMany({
+        where: { userId: parsedId },
+    });
+
+    return { deletedNum: deleteCount.count };
+};
+
+module.exports = { getPlayedGamesByUser, deletePlayedGamesByUser };
