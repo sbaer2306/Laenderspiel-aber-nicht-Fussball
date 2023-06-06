@@ -16,7 +16,6 @@ const getPlayedGames = async (req, res) => {
 
     // TODO: auth middleware!
     try {
-        console.log("Im try")
         const parsedId = parseInt(id);
         const user = await prismaClient.user.findUnique({
             where: { id: parsedId },
