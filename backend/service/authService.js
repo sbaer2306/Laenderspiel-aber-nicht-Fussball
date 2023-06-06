@@ -1,18 +1,43 @@
+const axios = require('axios');
+const qs = require('qs');
+const { OAuth2Client } = require("google-auth-library");
+const {google} = require("googleapis");
 const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const keys = require('../oauth2.keys.json');
+require('dotenv').config();
 
-// Configure Passport to use the Google OAuth strategy
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL
-    },
-    (accessToken, refreshToken, profile, done) => {
-      // Add logic to handle user authentication and saving to database
-      // You can access the user's profile information through the `profile` object
-      // Call `done(null, user)` to authenticate the user or `done(null, false)` to reject authentication
-    }
-  )
-);
+const getGoogleOauthToken = async ({ code }) => {
+  const oAuth2Client = new OAuth2Client(
+    keys.web.client_id,
+    keys.web.client_secret,
+    keys.web.redirect_uris[0]
+  );
+  const authorizeUrl = oAuth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: 'https://www.googleapis.com/auth/userinfo.profile',
+  });
+  const r = await oAuth2Client.getToken(code);
+  oAuth2Client.setCredentials(r.tokens);
+  return r;
+};
+
+const getGoogleUser = async ({ id_token, access_token }) =>{
+  try {
+    const { data } = await axios.get(
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
+      {
+        headers: {
+          Authorization: `Bearer ${id_token}`,
+        },
+      }
+    );
+
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw Error(err);
+  }
+}
+
+module.exports = { getGoogleOauthToken,  getGoogleUser };
+
