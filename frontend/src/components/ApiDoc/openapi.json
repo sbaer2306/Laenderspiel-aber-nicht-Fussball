@@ -354,14 +354,8 @@
           "400": {
             "description": "Bad Request"
           },
-          "404": {
-            "description": "Not Found"
-          },
           "500": {
             "description": "Internal Server Error"
-          },
-          "503": {
-            "description": "Service Unavailable"
           }
         }
       }
@@ -377,19 +371,19 @@
           {
             "name": "year",
             "in": "path",
-            "description": "Year in the format of 'yyyy'",
+            "description": "Year(number)",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           },
           {
             "name": "month",
             "in": "path",
-            "description": "Month in the format of 'mm'",
+            "description": "Month(number from 1-12, single digits are allowed)",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           }
         ],
@@ -403,7 +397,15 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "Top 10 users for specified timeframe retrieved successfully."
+                      "example": "Top 10 users retrieved successfully for given month and year."
+                    },
+                    "year": {
+                      "type": "integer",
+                      "example": 2023
+                    },
+                    "month": {
+                      "type": "integer",
+                      "example": 3
                     },
                     "data": {
                       "type": "array",
