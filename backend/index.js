@@ -81,6 +81,9 @@ app.use('/auth', authRoutes);
 const gamehistoryRoutes = require('./routes/playedGameRoutes')
 app.use('/user', gamehistoryRoutes)
 
+const userRoutes = require('./routes/userRoutes');
+app.use('/user', userRoutes);
+
 // Start the server
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
