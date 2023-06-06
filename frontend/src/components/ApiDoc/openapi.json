@@ -1295,7 +1295,7 @@
           }
         ],
         "summary": "Delete all played games by user.",
-        "description": "Deletes all the games a user has played. Only the owner of the games can perform this operation. The overall score is NOT affected by the deletion. The user will still show up within rankings if the score is high enough.",
+        "description": "Deletes ALL the games a user has played (clears game history). Only the owner of the history can perform this operation. The overall score is NOT affected by the deletion. The user will still show up within rankings if the score is high enough.",
         "parameters": [
           {
             "name": "id",
@@ -1309,7 +1309,21 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful deletion"
+            "description": "Successful deletion - deletedNum is the total number of deleted played Games.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "deletedNum": {
+                      "type": "integer",
+                      "description": "Number of deleted records",
+                      "example": 16
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid ID supplied"
