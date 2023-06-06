@@ -78,6 +78,9 @@ app.use(passport.initialize());
 const authRoutes = require('./routes/authRoutes');
 app.use('/auth', authRoutes);
 
+const gamehistoryRoutes = require('./routes/playedGameRoutes')
+app.use('/user', gamehistoryRoutes)
+
 // Start the server
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
