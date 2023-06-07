@@ -367,12 +367,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Profile'
-        '204':
-          description: Profile is empty
         '400':
           description: Bad Request
-        '401':
-          description: Unauthenticated
         '403':
           description: Unauthorized - user profile is private
         '404':
@@ -398,9 +394,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Profile'
         '400':
-          description: Bad Request
+          description: Bad Request - Request body validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileViolation'
         '403':
-          description: Unauthorized
+          description: Unauthorized - user is not the profile owner
 
     put:
       tags:
@@ -422,9 +422,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Profile'
         '400':
-          description: Bad Request
+          description: Bad Request - Request body validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileViolation'
         '403':
-          description: Unauthorized
+          description: Unauthorized - user is not the profile owner
         '404':
           description: Profile Not Found
 
@@ -961,51 +965,75 @@ components:
           type: integer
           example: 123132
     Profile:
-        type: object
-        properties:
-          id:
-            type: integer
-          firstName:
-            type: string
-            nullable: true
-          lastName:
-            type: string
-            nullable: true
-          bio:
-            type: string
-            nullable: true
-          location:
-            type: string
-            nullable: true
-          createdAt:
-            type: string
-            format: date-time
-            nullable: true
-          updatedAt:
-            type: string
-            format: date-time
-            nullable: true
-          isPrivate:
-            type: boolean
-            example: false
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+          nullable: false
+          minLength: 2      
+          maxLength: 50
+          example: John
+        lastName:
+          type: string
+          nullable: false
+          minLength: 2    
+          maxLength: 50
+          example: Doe
+        bio:
+          type: string
+          nullable: true
+          maxLength: 500
+          example: Hi, this is John Doe.
+          default: Hi there!
+        location:
+          type: string
+          nullable: true
+          maxLength: 100
+          example: Alabama
+        isPrivate:
+          type: boolean
+          nullable: true
+          default: false
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    
     ProfileUpdate:
-        type: object
-        properties:
-          firstName:
-            type: string
-            nullable: true
-          lastName:
-            type: string
-            nullable: true
-          bio:
-            type: string
-            nullable: true
-          location:
-            type: string
-            nullable: true
-          isPrivate:
-            type: boolean
-            nullable: true
+      type: object
+      properties:
+        firstName:
+          type: string
+          nullable: false
+          minLength: 2      
+          maxLength: 50
+          example: John
+        lastName:
+          type: string
+          nullable: false
+          minLength: 2    
+          maxLength: 50
+          example: Doe
+        bio:
+          type: string
+          nullable: true
+          maxLength: 500
+          example: Hi, this is John Doe.
+          default: Hi there!
+        location:
+          type: string
+          nullable: true
+          maxLength: 100
+          example: Buffalo
+        isPrivate:
+          type: boolean
+          nullable: true
+          default: false
+
     Game:
       type: object
       properties:
@@ -1157,6 +1185,50 @@ components:
           type: array
           items:
             type: string
+
+    ProfileViolation:
+      type: object
+      properties:
+        error:
+          type: string
+          enum: [Length Limit Violation, Empty Request Body]
+          description: Error type indicating a length limit violation or an empty request body
+        message:
+          type: string
+          description: Description of the error (length limit violation or empty request body)
+        violations:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                description: The field that violated the length limit
+              minLength:
+                type: integer
+                description: The minimum allowed length for the field
+              maxLength:
+                type: integer
+                description: The maximum allowed length for the field
+              actualLength:
+                type: integer
+                description: The actual length of the field value that exceeded the limit
+          description: Array of length limit violations
+      required: [error, message]
+      example:
+        error: Length Limit Violation
+        message: One or more fields violated the length limit
+        violations:
+          - field: firstName
+            minLength: 2
+            maxLength: 50
+            actualLength: 1
+          - field: lastName
+            minLength: 2
+            maxLength: 50
+            actualLength: 1
+
+
   securitySchemes:
     google_oauth:
       type: oauth2
