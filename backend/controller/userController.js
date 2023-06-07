@@ -31,4 +31,36 @@ const deleteUser = async (req, res) => {
     }
 };
 
-module.exports = { deleteUser };
+/**
+ * Retrieves a user profile by user ID.
+ *
+ * @param {Request} req - The request object containing parameters.
+ * @param {Object} res - The response object to send the result.
+ * @returns {void}
+ */
+const getProfileByUserId = async (req, res) => {
+    const { id } = req.params;
+
+    // todo: Authorization middleware (user allowed to see profile)
+
+    try {
+        const user = await userService.getUserById(parseInt(id));
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        const profile = await userService.getProfileByUserId(parseInt(id));
+
+        res.status(200).json(profile);
+    } catch (error) {
+        if (error.httpStatusCode) {
+            return res.status(error.httpStatusCode).json({ message: error.message });
+        }
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+}
+
+module.exports = { deleteUser, getProfileByUserId };

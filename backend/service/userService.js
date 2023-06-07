@@ -17,4 +17,53 @@ const purgeUserData = async (userId) => {
     return deleteResult;
 };
 
-module.exports = { purgeUserData };
+/**
+ * Retrieves a user by ID.
+ *
+ * @param {number} id - The ID of the user to retrieve.
+ * @returns {Promise<object>} The retrieved user object.
+ * @throws {Error} If no user is found for the given ID, an error is thrown. With httpStatusCode 404.
+ */
+const getUserById = async (id) => {
+    const user = await prismaClient.user.findUnique({
+        where: { id: id },
+    });
+
+    if (!user) {
+        const error = new Error('User not found');
+        error.httpStatusCode = 404;
+        throw error;
+    }
+
+    return user;
+};
+
+/**
+ * Retrieves a user profile by user ID.
+ *
+ * @param {number} userId - The ID of the user whose profile to retrieve.
+ * @returns {Promise<object>} The retrieved profile object.
+ * @throws {Error} If no profile is found for the given user ID, an error is thrown.
+ *                   If the profile is private, a 403 Forbidden error is thrown. (Response code in error.httpStatusCode)
+ */
+const getProfileByUserId = async (userId) => {
+    const profile = await prismaClient.profile.findUnique({
+        where: { userId: userId },
+    });
+
+    if (!profile) {
+        const error = new Error('Profile not found - the user exists but has no profile.');
+        error.httpStatusCode = 404;
+        throw error;
+    }
+
+    if (profile.isPrivate) {
+        const error = new Error('Forbidden - Profile is private');
+        error.httpStatusCode = 403;
+        throw error;
+    }
+
+    return profile;
+};
+
+module.exports = { purgeUserData, getUserById, getProfileByUserId };
