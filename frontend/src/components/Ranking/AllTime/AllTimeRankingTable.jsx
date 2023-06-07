@@ -16,12 +16,15 @@ import {
 import {HiRefresh as RefreshIcon} from 'react-icons/hi';
 import axios from 'axios';
 import { formatDate } from '../../../helpers/date';
+import { useNavigate } from 'react-router-dom';
 
 function AllTimeRankingTable() {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
@@ -54,7 +57,7 @@ function AllTimeRankingTable() {
   };
 
   const handleRowClick = (userId) => {
-    alert(`User ID: ${userId}`);
+    navigate(`/user/${userId}/public-profile`);
   };
 
   const handleRefresh = () => {

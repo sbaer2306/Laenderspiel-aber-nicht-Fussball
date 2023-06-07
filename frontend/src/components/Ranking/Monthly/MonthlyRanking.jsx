@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { formatDate } from '../../../helpers/date';
+import { useNavigate } from 'react-router-dom';
 
 function MonthlyRanking() {
   const [data, setData] = useState([]);
@@ -22,6 +23,7 @@ function MonthlyRanking() {
   const [selectedMonth, setSelectedMonth] = useState('1');
   const [selectedYear, setSelectedYear] = useState('2023');
   const toast = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
@@ -56,7 +58,7 @@ function MonthlyRanking() {
   };
 
   const handleRowClick = (userId) => {
-    alert(`User ID: ${userId}`);
+    navigate(`/user/${userId}/public-profile`);
   };
 
   const handleMonthChange = (event) => {
