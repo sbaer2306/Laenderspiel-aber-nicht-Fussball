@@ -522,7 +522,7 @@
         }
       }
     },
-    "/users/{id}/stats": {
+    "/user/{id}/stats": {
       "get": {
         "summary": "Gets user statistics.",
         "description": "Retrieves statistics for a specific user. Most played games. Total time played, ...",
