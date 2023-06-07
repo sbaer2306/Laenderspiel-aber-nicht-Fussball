@@ -35,6 +35,10 @@ getProfile = async (id) => {
  * @throws {Error} If the profile is not found, an error with a 404 HTTP status code is thrown.
  */
 updateProfile = async (id, updateData) => {
+
+    // set updatedAt to current timestamp
+    updateData.updatedAt = new Date();
+
     const profile = await prisma.profile.findUnique({
         where: {
             id: parseInt(id),
