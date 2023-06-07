@@ -10,6 +10,11 @@ function Navbar() {
                 </Link>
             </Flex>
             <Flex>
+                <Link to="/ranking">
+                    <Button colorScheme="green" variant={'ghost'} mr={2}>
+                        Top 10 Ranking 🏆
+                    </Button>
+                </Link>
                 <Link to="/api/doc">
                     <Button colorScheme="teal" variant={'ghost'} mr={2}>
                         API Documentation
