@@ -572,6 +572,9 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
@@ -610,14 +613,14 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request"
-          },
           "403": {
             "description": "Unauthorized - user profile is private"
           },
           "404": {
             "description": "Profile Not Found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       },
@@ -667,6 +670,9 @@
           },
           "404": {
             "description": "Profile Not Found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
@@ -1762,13 +1768,14 @@
             "type": "string",
             "enum": [
               "Length Limit Violation",
-              "Empty Request Body"
+              "Empty Request Body",
+              "Invalid Field(s)"
             ],
             "description": "Error type indicating a length limit violation or an empty request body"
           },
           "message": {
             "type": "string",
-            "description": "Description of the error (length limit violation or empty request body)"
+            "description": "Description of the error (length limit violation or empty request body, or the contained invalid field(s))"
           },
           "violations": {
             "type": "array",

@@ -15,9 +15,6 @@ const getProfile = async (req, res) => {
     // TODO: Authorization --> isPrivate
 
     const { id } = req.params;
-    if (isNaN(id)) {
-        return res.status(400).json({ message: 'Invalid request. Profile id must be a valid number.' });
-    }
 
     try {
         const profile = await profileService.getProfile(parseInt(id));

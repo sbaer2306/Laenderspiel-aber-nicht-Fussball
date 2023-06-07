@@ -344,42 +344,14 @@ paths:
           description: Unauthorized - user profile is private.
         '404':
           description: Profile Not Found
-
-  /profile/{id}:
-    parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-          minimum: 1
-        description: The ID of the user profile.
-    get:
-      security:
-        - google_oauth: []
-      tags:
-        - Profile
-      summary: Get the user's profile information
-      responses:
-        '200':
-          description: Successfully retrieved user profile
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Profile'
-        '400':
-          description: Bad Request
-        '403':
-          description: Unauthorized - user profile is private
-        '404':
-          description: Profile Not Found
-
+  
+  /profile:
     post:
       tags:
         - Profile
+      summary: Create a profile for the currently authenticated user
       security:
         - google_oauth: []
-      summary: Create a new user profile
       requestBody:
         required: true
         content:
@@ -407,6 +379,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProfileAlreadyExistsError'
+        '500':
+          description: Internal server error
+
+
+  /profile/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        description: The ID of the user profile.
+    get:
+      security:
+        - google_oauth: []
+      tags:
+        - Profile
+      summary: Get the profile information
+      responses:
+        '200':
+          description: Successfully retrieved user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '403':
+          description: Unauthorized - user profile is private
+        '404':
+          description: Profile Not Found
+        '500':
+          description: Internal server error
 
 
     put:
@@ -414,7 +418,7 @@ paths:
         - Profile
       security:
         - google_oauth: []
-      summary: Update an existing user profile
+      summary: Update an existing profile (only owner of the profile is allowed to do so)
       requestBody:
         required: true
         content:
@@ -438,6 +442,8 @@ paths:
           description: Unauthorized - user is not the profile owner
         '404':
           description: Profile Not Found
+        '500':
+          description: Internal server error
 
   /game:
     post:
@@ -1198,11 +1204,11 @@ components:
       properties:
         error:
           type: string
-          enum: [Length Limit Violation, Empty Request Body]
+          enum: [Length Limit Violation, Empty Request Body, Invalid Field(s)]
           description: Error type indicating a length limit violation or an empty request body
         message:
           type: string
-          description: Description of the error (length limit violation or empty request body)
+          description: Description of the error (length limit violation or empty request body, or the contained invalid field(s))
         violations:
           type: array
           items:
