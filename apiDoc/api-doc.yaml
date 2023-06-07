@@ -401,6 +401,13 @@ paths:
                 $ref: '#/components/schemas/ProfileViolation'
         '403':
           description: Unauthorized - user is not the profile owner
+        '409':
+          description: Conflict - Profile already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileAlreadyExistsError'
+
 
     put:
       tags:
@@ -1227,7 +1234,21 @@ components:
             minLength: 2
             maxLength: 50
             actualLength: 1
-
+            
+    ProfileAlreadyExistsError:
+      type: object
+      properties:
+        error:
+          type: string
+          enum: [Profile Already Exists]
+          description: Error type indicating that the profile already exists
+        message:
+          type: string
+          description: Description of the error
+      required: [error, message]
+      example:
+        error: Profile Already Exists
+        message: A profile already exists for the user. Use put to update the users profile.
 
   securitySchemes:
     google_oauth:

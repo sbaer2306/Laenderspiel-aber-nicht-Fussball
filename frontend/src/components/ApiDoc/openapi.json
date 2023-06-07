@@ -518,61 +518,17 @@
         }
       }
     },
-    "/profile/{id}": {
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "required": true,
-          "schema": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "description": "The ID of the user profile."
-        }
-      ],
-      "get": {
-        "security": [
-          {
-            "google_oauth": []
-          }
-        ],
-        "tags": [
-          "Profile"
-        ],
-        "summary": "Get the user's profile information",
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved user profile",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Profile"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "403": {
-            "description": "Unauthorized - user profile is private"
-          },
-          "404": {
-            "description": "Profile Not Found"
-          }
-        }
-      },
+    "/profile": {
       "post": {
         "tags": [
           "Profile"
         ],
+        "summary": "Create a profile for the currently authenticated user",
         "security": [
           {
             "google_oauth": []
           }
         ],
-        "summary": "Create a new user profile",
         "requestBody": {
           "required": true,
           "content": {
@@ -606,6 +562,62 @@
           },
           "403": {
             "description": "Unauthorized - user is not the profile owner"
+          },
+          "409": {
+            "description": "Conflict - Profile already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileAlreadyExistsError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile/{id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "description": "The ID of the user profile."
+        }
+      ],
+      "get": {
+        "security": [
+          {
+            "google_oauth": []
+          }
+        ],
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Get the profile information",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved user profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Unauthorized - user profile is private"
+          },
+          "404": {
+            "description": "Profile Not Found"
           }
         }
       },
@@ -618,7 +630,7 @@
             "google_oauth": []
           }
         ],
-        "summary": "Update an existing user profile",
+        "summary": "Update an existing profile (only owner of the profile is allowed to do so)",
         "requestBody": {
           "required": true,
           "content": {
@@ -1805,6 +1817,30 @@
               "actualLength": 1
             }
           ]
+        }
+      },
+      "ProfileAlreadyExistsError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "enum": [
+              "Profile Already Exists"
+            ],
+            "description": "Error type indicating that the profile already exists"
+          },
+          "message": {
+            "type": "string",
+            "description": "Description of the error"
+          }
+        },
+        "required": [
+          "error",
+          "message"
+        ],
+        "example": {
+          "error": "Profile Already Exists",
+          "message": "A profile already exists for the user. Use put to update the users profile."
         }
       }
     },
