@@ -42,3 +42,9 @@ Müssen (noch) manuell durchgeführt werden, falls der db-Container noch nicht r
 
 ## API Credentials
 - **TODO**: API Zugangsdaten bzw. Anleitung zum Erstellen und setzen dieser für die 3rd party APIs (RESTcountries, Wikipedia, ...)
+
+## StA-Kriterien
+- [x] **Hypermedia:** Pagination bei /user/{id}/played-games
+- [x] **ETag Caching:** /user/{id}/stats
+- [ ] Time Based Caching
+- [ ] Google-Authentication
