@@ -11,19 +11,11 @@ import {
   Spinner,
   Button,
   useToast,
+  Heading
 } from '@chakra-ui/react';
 import {HiRefresh as RefreshIcon} from 'react-icons/hi';
 import axios from 'axios';
-
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const options = {
-    day: '2-digit',
-    month: '2-digit',
-    year: '2-digit',
-  };
-  return date.toLocaleDateString('en-GB', options);
-}
+import { formatDate } from '../../../helpers/date';
 
 function AllTimeRankingTable() {
   const [data, setData] = useState([]);
@@ -71,10 +63,11 @@ function AllTimeRankingTable() {
 
   return (
     <Box maxW='500px' borderWidth='1px' borderRadius='lg' overflow='hidden'>
+      <Heading my='4'>Alltime Ranking</Heading>
       <Box display='flex' justifyContent='flex-end' p={2}>
       </Box>
       {loading ? (
-        <Spinner size='lg' />
+        <Spinner size='sm'/>
       ) : (
         <TableContainer>
           <Table size='sm'>
