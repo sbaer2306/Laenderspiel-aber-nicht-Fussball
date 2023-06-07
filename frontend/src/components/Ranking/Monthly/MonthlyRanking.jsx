@@ -84,7 +84,7 @@ function MonthlyRanking() {
 
     const years = [
     { value: '2023', label: '2023' },
-    { value: '2022', label: '2023' },
+    { value: '2022', label: '2022' },
     ];
 
   return (
@@ -148,6 +148,13 @@ function MonthlyRanking() {
           </Table>
         </TableContainer>
       )}
+      {
+          !loading && data.length === 0 && (
+            <Box textAlign='center' p={4}>
+              Wow, such empty! 🐕
+            </Box>
+          )
+        }
     </Box>
   );
 }
