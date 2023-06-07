@@ -500,14 +500,24 @@
               }
             }
           },
-          "204": {
-            "description": "Profile does not exist"
-          },
           "403": {
             "description": "Unauthorized - user profile is private."
           },
           "404": {
-            "description": "User Not Found"
+            "description": "User or profile not found (user could exist without a profile)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Profile not found - the user exists but has no profile."
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
