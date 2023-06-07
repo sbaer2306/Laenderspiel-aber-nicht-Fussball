@@ -18,8 +18,9 @@ exports.getUserStats = async (userId, etag) => {
         },
     });
 
+    // if the score hasn't changed, there is no need to send the stats again
     const score = user.AllTimeRanking.score.toString();
-    let newETagValue = score + user.AllTimeRanking.id; // score can be the same among different users, so we need to add the id of the ranking to the etag for uniqueness
+    let newETagValue = score + user.AllTimeRanking.id;
     const newEtag = crypto.createHash('sha1').update(newETagValue).digest('hex');
 
     if (etag === newEtag) return 304;
