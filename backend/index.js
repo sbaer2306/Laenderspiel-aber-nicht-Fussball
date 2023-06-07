@@ -30,6 +30,9 @@ app.use(express.json()); // body parsing middleware (express does not parse the 
 const profileRoutes = require('./routes/profileRoutes');
 app.use('/profile', profileRoutes);
 
+const statsRoutes = require('./routes/statsRoute');
+app.use('/user', statsRoutes);
+
 // Start the server
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
