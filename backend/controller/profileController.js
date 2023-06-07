@@ -77,4 +77,18 @@ const updateProfile = async (req, res) => {
     }
 };
 
-module.exports = { getProfile, updateProfile };
+/**
+ * Creates a new user profile for the currently authenticated user.
+ * Checks if the user already has a profile (conflict).
+ * Validates the request body. (see helpers/profileHelpers.js for validation rules) and updateProfile(). (analogue to updateProfile())
+ * 
+ * @param {Request} req Request object
+ * @param {Response} res Response object
+ */
+const createProfile = (req, res) => {
+    //profileService.createProfile(req.body);
+    // Implementiere hier die Logik zum Erstellen eines Profils
+    res.status(201).json({ message: 'TODO: Profil abhängig von authentifiziertem User erstellen!' });
+};
+
+module.exports = { getProfile, updateProfile, createProfile };

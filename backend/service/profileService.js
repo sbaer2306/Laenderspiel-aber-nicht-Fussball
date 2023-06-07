@@ -61,4 +61,16 @@ updateProfile = async (id, updateData) => {
     return updatedProfile;
 };
 
-module.exports = { getProfile, updateProfile };
+/**
+ * Creates a user profile.
+ * @param {Object} profileData firstName, lastName, bio, location, isPrivate, userId
+ * @returns {Promise<Object>} The created profile object.
+ */
+const createProfile = async (profileData) => {
+    const profile = await prisma.profile.create({
+        data: profileData,
+    });
+    return profile;
+};
+
+module.exports = { getProfile, updateProfile, createProfile };
