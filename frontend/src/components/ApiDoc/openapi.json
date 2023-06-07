@@ -501,19 +501,13 @@
             }
           },
           "204": {
-            "description": "Profile is empty"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthenticated"
+            "description": "Profile does not exist"
           },
           "403": {
             "description": "Unauthorized - user profile is private."
           },
           "404": {
-            "description": "Profile Not Found"
+            "description": "User Not Found"
           }
         }
       }
