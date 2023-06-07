@@ -25,6 +25,11 @@ app.use('/user', userRoutes);
 
 const rankingRoutes = require('./routes/rankingRoutes');
 app.use('/ranking', rankingRoutes);
+
+app.use(express.json()); // body parsing middleware (express does not parse the body by default)
+const profileRoutes = require('./routes/profileRoutes');
+app.use('/profile', profileRoutes);
+
 // Start the server
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
