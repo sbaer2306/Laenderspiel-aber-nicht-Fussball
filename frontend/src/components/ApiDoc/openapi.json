@@ -522,6 +522,91 @@
         }
       }
     },
+    "/users/{id}/stats": {
+      "get": {
+        "summary": "Gets user statistics.",
+        "description": "Retrieves statistics for a specific user. Most played games. Total time played, ...",
+        "security": [
+          {
+            "google_oauth": []
+          }
+        ],
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "If-None-Match",
+            "in": "header",
+            "description": "ETag value for caching",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserStats"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Not Modified",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "No changes since the last request."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Forbidden."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "User not found."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Internal server error."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/profile": {
       "post": {
         "tags": [
@@ -1852,6 +1937,52 @@
         "example": {
           "error": "Profile Already Exists",
           "message": "A profile already exists for the user. Use put to update the users profile."
+        }
+      },
+      "CountrySummary": {
+        "type": "object",
+        "properties": {
+          "CountryId": {
+            "type": "integer"
+          },
+          "CountryName": {
+            "type": "string"
+          },
+          "Amount": {
+            "type": "integer"
+          },
+          "AverageScore": {
+            "type": "integer"
+          },
+          "AverageTime": {
+            "type": "integer"
+          }
+        }
+      },
+      "UserStats": {
+        "type": "object",
+        "properties": {
+          "TotalGamesPlayed": {
+            "type": "integer"
+          },
+          "TotalTimePlayed": {
+            "type": "integer"
+          },
+          "FastestGame": {
+            "$ref": "#/components/schemas/PlayedGame"
+          },
+          "SlowestGame": {
+            "$ref": "#/components/schemas/PlayedGame"
+          },
+          "AllTimeRankingEntry": {
+            "$ref": "#/components/schemas/Ranking"
+          },
+          "CountryGameSummary": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CountrySummary"
+            }
+          }
         }
       }
     },
