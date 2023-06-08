@@ -7,7 +7,7 @@ import {LoggedHomePage} from './pages/LoggedHomePage'
 import SwaggerDocDisplay from './components/ApiDoc/SwaggerDocDisplay'
 import Navbar from './components/UI/Navbar'
 import Ranking from './components/Ranking/Ranking'
-import GameHistory from './components/profile/GameHistory'
+import PublicProfileOverview from './components/profile/PublicProfileOverview'
 
 function App() {
 
@@ -17,7 +17,7 @@ function App() {
         <Routes>
           <Route path='/' element={<HomePage/>} />
           <Route path='/ranking' element={<Ranking/>} />
-          <Route path='/user/:id/public-profile' element={<GameHistory/>} />
+          <Route path='/user/:id/public-profile' element={<PublicProfileOverview/>} />
           <Route path='/logged' element={<LoggedHomePage/>} />
           <Route path='/api/doc' element={<SwaggerDocDisplay/>} />
           <Route path='/game/:game_id/facts' element={<FirstRound/>} />

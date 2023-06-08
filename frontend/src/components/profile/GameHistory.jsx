@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, Button, Text, Divider } from '@chakra-ui/react';
 import { formatDate } from '../../helpers/date';
-import { useParams } from 'react-router-dom';
 
-function GameHistory() {
-    const { id } = useParams();
+function GameHistory({ id }) {
     const user_id = id;
 
   const [gameHistory, setGameHistory] = useState([]);
