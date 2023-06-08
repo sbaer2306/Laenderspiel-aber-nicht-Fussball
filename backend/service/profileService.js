@@ -10,20 +10,16 @@ const prisma = getPrisma();
  */
 
 getProfile = async (id) => {
-    try {
-        const profile = await prisma.profile.findUnique({
-            where: { id },
-        });
-        if (!profile) {
-            const error = new Error('Profile not found');
-            error.httpStatusCode = 404;
-            throw error;
-        }
-        return profile;
-    } catch (error) {
-        console.error(`Failed to get profile: ${error}`);
+    const profile = await prisma.profile.findUnique({
+        where: { id },
+    });
+    if (!profile) {
+        const error = new Error('Profile not found');
+        error.httpStatusCode = 404;
         throw error;
     }
+    return profile;
+
 };
 
 /**
