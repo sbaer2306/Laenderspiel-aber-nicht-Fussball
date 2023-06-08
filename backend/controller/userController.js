@@ -14,7 +14,7 @@ const userService = require('../service/userService')
 const deleteUser = async (req, res) => {
     const { id } = req.params;
 
-    validateId(id, res);
+    if (validateId(id, res)) return;
 
     // TODO: auth middleware! (user allowed to delete themselves)
     try {
@@ -44,7 +44,7 @@ const deleteUser = async (req, res) => {
 const getProfileByUserId = async (req, res) => {
     const { id } = req.params;
 
-    validateId(id, res);
+    if (validateId(id, res)) return;
 
     // todo: Authorization middleware (user allowed to see profile)
 

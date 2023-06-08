@@ -14,7 +14,7 @@ const getProfile = async (req, res) => {
 
     const { id } = req.params;
 
-    validateId(id, res);
+    if (validateId(id, res)) return;
 
     try {
         const profile = await profileService.getProfile(parseInt(id));
@@ -52,7 +52,7 @@ const getProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
     const { id } = req.params;
 
-    validateId(id, res);
+    if (validateId(id, res)) return;
 
     // TODO: Authorization
 

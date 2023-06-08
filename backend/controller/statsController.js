@@ -15,7 +15,7 @@ exports.getUserStats = async (req, res) => {
     try {
         // TODO: Authorization --> only the user itself should be able to access the stats
 
-        validateId(req.params.id, res);
+        if (validateId(id, res)) return;
 
         const id = parseInt(req.params.id);
         const user = await userService.getUserById(id); // throws 404 if user not found
