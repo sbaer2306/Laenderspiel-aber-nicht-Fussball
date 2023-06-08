@@ -1,6 +1,6 @@
 const profileService = require('../service/profileService');
 const { validateProfileUpdate } = require('../helpers/profileHelpers');
-
+const { validateId } = require('../helpers/invalidIDhelper');
 
 /**
  * Retrieves a user profile by id.
@@ -13,6 +13,8 @@ const { validateProfileUpdate } = require('../helpers/profileHelpers');
 const getProfile = async (req, res) => {
 
     const { id } = req.params;
+
+    validateId(id, res);
 
     try {
         const profile = await profileService.getProfile(parseInt(id));
@@ -49,6 +51,8 @@ const getProfile = async (req, res) => {
  */
 const updateProfile = async (req, res) => {
     const { id } = req.params;
+
+    validateId(id, res);
 
     // TODO: Authorization
 
