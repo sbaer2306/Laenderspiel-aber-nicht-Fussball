@@ -52,7 +52,7 @@ const PublicProfilePreviewCard = ({ userId }) => {
   return (
     <Box maxW='500px' mx='auto' borderWidth='1px' p='4' borderRadius='12'>
       <Flex alignItems="center" mb={4}>
-        <Avatar size="xl" name={`${firstName} ${lastName}`} mr={4}>
+        <Avatar size="lg" name={`${firstName} ${lastName}`} mr={4}>
         </Avatar>
         <Text fontWeight="bold" fontSize="xl">{`${firstName || 'Unknown'} ${lastName || 'User'}`}</Text>
       </Flex>
