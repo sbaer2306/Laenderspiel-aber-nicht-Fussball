@@ -1,10 +1,15 @@
 const express = require('express');
+const cors = require('cors');
 const passport = require('passport');
 require('dotenv').config();
 const prisma = require('./prisma/prisma.js')
+const session = require('express-session');
 
 const app = express();
 prisma.initializePrisma();
+
+//Initialize CORS
+app.use(cors());
 
 // Initialize Passport middleware
 app.use(passport.initialize());
@@ -17,6 +22,20 @@ app.get('/example', (req, res) => {
   res.send('Hello, this is the example route!');
 });
 
+app.use(express.json()); // body parsing middleware (express does not parse the body by default)
+//init express sesssion
+app.use(
+  session({
+    secret: "secret-key-for-now-plain-text",
+    resave: false,
+    saveUninitialized: false,
+    store: new session.MemoryStore(),
+  })
+)
+
+const gameRoutes = require('./routes/gameRoutes.js')
+app.use('/game', gameRoutes)
+
 const gamehistoryRoutes = require('./routes/playedGameRoutes')
 app.use('/user', gamehistoryRoutes)
 
@@ -26,7 +45,7 @@ app.use('/user', userRoutes);
 const rankingRoutes = require('./routes/rankingRoutes');
 app.use('/ranking', rankingRoutes);
 
-app.use(express.json()); // body parsing middleware (express does not parse the body by default)
+
 const profileRoutes = require('./routes/profileRoutes');
 app.use('/profile', profileRoutes);
 

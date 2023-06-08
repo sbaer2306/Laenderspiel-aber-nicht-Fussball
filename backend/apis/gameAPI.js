@@ -1,8 +1,8 @@
 //APIs for Game
-import axios from 'axios';
+const axios = require('axios')
 
 
-export const createNewGame = async (difficulty) => {
+const createNewGame = async (difficulty) => {
     try{
         const response = await axios.post('/game', {
         difficulty: difficulty
@@ -19,7 +19,7 @@ export const createNewGame = async (difficulty) => {
         console.log("error createNewGame: ",error);
     }
 }
-export const getGameFacts = async (game_id) => {
+const getGameFacts = async (game_id) => {
     try{
         const response = await axios.get(`/game/${game_id}/facts`);
         return response.data;
@@ -28,7 +28,7 @@ export const getGameFacts = async (game_id) => {
     }
 }
 
-export const getGeoInformation = async (game_id) => {
+const getGeoInformation = async (game_id) => {
     try{
         const response = await axios.get(`/game/${game_id}/geo-information`);
         return response.data;
@@ -37,7 +37,7 @@ export const getGeoInformation = async (game_id) => {
     }
 }
 
-export const getFirstRoundRating = async (id, frontendValues) => {
+const getFirstRoundRating = async (id, frontendValues) => {
     try{
         const response = await axios.post(`/game/${id}/rating/facts`,frontendValues);
         return response.data;
@@ -45,3 +45,5 @@ export const getFirstRoundRating = async (id, frontendValues) => {
         throw new Error("Failed to post rating for facts: ",error);
     }
 }
+
+module.exports = {createNewGame, getGameFacts, getGeoInformation, getFirstRoundRating}

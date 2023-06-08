@@ -9,6 +9,12 @@ COPY . /app
 
 RUN npm i nodemon -g
 
+RUN npm install express --save
+
+RUN npm install node-cache
+
+RUN npm install express-session
+
 RUN npm install
 
 RUN npx prisma generate
