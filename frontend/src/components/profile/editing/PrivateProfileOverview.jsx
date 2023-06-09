@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Button, useToast } from '@chakra-ui/react';
+import { Box, useToast, Text, Divider } from '@chakra-ui/react';
 import axios from 'axios';
 import ProfileEditor from './ProfileEditor';
+import GameHistory from '../GameHistory';
 
 const DUMMY_ID = 1;
 
@@ -88,9 +89,15 @@ const PrivateProfileOverview = () => {
 
   return (
     <>
+    <Text fontSize='xl' fontWeight='semibold'>Personal Profile Overview</Text>
+    <Divider my={5}/>
       {Object.keys(profile).length > 0 && (
       <ProfileEditor passedProfile={profile} updateProfile={updateProfile} />
     )}
+    <Box maxW='600px' margin='auto' mt={5}>
+      <GameHistory id={DUMMY_ID}/>
+    </Box>
+    
     </>
   );
 };
