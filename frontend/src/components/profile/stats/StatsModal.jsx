@@ -32,7 +32,7 @@ const StatsModal = ({ stats, onClose, isOpen }) => {
               <HStack spacing={2}>
                 <VscDashboard size={15} />
                 <Text fontSize="sm">
-                  Slowest Game: {stats.slowestGame ? `${stats.slowestGame.country.name} (score: ${stats.slowestGame.score}, time: ${secondsToHumanReadable(stats.slowestGame.gameDuration)})` : " - "}
+                  Slowest Game: {stats.SlowestGame ? `${stats.SlowestGame.country.name} (score: ${stats.SlowestGame.score}, time: ${secondsToHumanReadable(stats.SlowestGame.gameDuration)})` : " - "}
                 </Text>
               </HStack>
               <HStack spacing={2}>
