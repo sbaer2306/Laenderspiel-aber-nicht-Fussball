@@ -18,8 +18,7 @@ function App() {
         <Routes>
           <Route path='/' element={<HomePage/>} />
           <Route path='/ranking' element={<Ranking/>} />
-          <Route path='/user/:id/public-profile' element={<PublicProfileOverview/>} />
-          <Route path='/user/profile' element={<PrivateProfileOverview/>} />
+          <Route path='/user/:id/public-profile' element={<GameHistory/>} />
           <Route path='/logged' element={<LoggedHomePage/>} />
           <Route path='/api/doc' element={<SwaggerDocDisplay/>} />
           <Route path='/game/:game_id/facts' element={<FirstRound/>} />
