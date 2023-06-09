@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react';
-import { Box, useToast, Text, Divider } from '@chakra-ui/react';
+import { Box, useToast, Text, Divider, useDisclosure } from '@chakra-ui/react';
 import axios from 'axios';
 import ProfileEditor from './ProfileEditor';
 import GameHistory from '../GameHistory';
 import ProfileOperationsButtonBar from './ProfileOperationsButtonBar';
+import StatsModal from '../stats/StatsModal';
 
 const DUMMY_ID = 1;
 
 const PrivateProfileOverview = () => {
   const [profile, setProfile] = useState({}); 
   const [eTag, setETag] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [stats, setStats] = useState({});
 
   const toast = useToast();
   const showToastMessage = (title, description, status) => {
@@ -107,7 +110,7 @@ const PrivateProfileOverview = () => {
    */
   const calculateStats = async () => {
     axios
-    .get('http://localhost:8000/user/1/stats', {
+    .get(`http://localhost:8000/user/${DUMMY_ID}/stats`, {
       headers: {
         'If-None-Match': eTag
       }
@@ -121,7 +124,9 @@ const PrivateProfileOverview = () => {
       } else {
         setETag(newEtag);
         const data = response.data;
+        setStats(data);
       }
+      onOpen();
     })
     .catch((error) => {
       if (error.response) {
@@ -149,7 +154,13 @@ const PrivateProfileOverview = () => {
     <Box maxW='600px' margin='auto' mt={5}>
       <GameHistory id={DUMMY_ID}/>
     </Box>
-    
+    {
+      Object.keys(stats).length > 0 && (
+        <Box maxW='600px' margin='auto' mt={5}>
+          <StatsModal stats={stats} isOpen={isOpen} onClose={onClose} />
+        </Box>
+      )
+    }
     </>
   );
 };
