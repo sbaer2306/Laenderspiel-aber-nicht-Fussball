@@ -3,11 +3,13 @@ import { Box, useToast, Text, Divider } from '@chakra-ui/react';
 import axios from 'axios';
 import ProfileEditor from './ProfileEditor';
 import GameHistory from '../GameHistory';
+import ProfileOperationsButtonBar from './ProfileOperationsButtonBar';
 
 const DUMMY_ID = 1;
 
 const PrivateProfileOverview = () => {
   const [profile, setProfile] = useState({}); 
+  const [eTag, setETag] = useState("");
 
   const toast = useToast();
   const showToastMessage = (title, description, status) => {
@@ -87,10 +89,60 @@ const PrivateProfileOverview = () => {
     }
   };  
 
+  const deleteUserAccount = async () => {
+    alert("TODO: Implement delete user account");
+  };
+
+  const deleteGameHistory = async () => {
+    alert("TODO: Implement delete game history");
+  };
+
+  /**
+   * SIMULATION for ETag caching.
+   * 
+   * "Unfortunately, there isn't a way to handle a 304 Not Modified response in the browser like you can in Postman, due to the browser's built-in HTTP caching behavior.
+   * By the time your JavaScript code receives the response, the browser has already checked the server's caching headers (like ETag), made the decision to use the cached response, and converted the 304 Not Modified status to a 200 OK."
+   * ~ ChatGPT
+   * Source: https://datatracker.ietf.org/doc/html/rfc7234#section-4.3.3 
+   */
+  const calculateStats = async () => {
+    axios
+    .get('http://localhost:8000/user/1/stats', {
+      headers: {
+        'If-None-Match': eTag
+      }
+    })
+    .then((response) => {
+      const newEtag = response.headers['etag'];
+      
+      if (newEtag === eTag) {
+        showToastMessage("Done - Nothing changed!", "", "success");
+        console.log("ETag values are the same.");
+      } else {
+        setETag(newEtag);
+        const data = response.data;
+      }
+    })
+    .catch((error) => {
+      if (error.response) {
+          showToastMessage(error.response.status, error.response.data.message, "error");
+      }else {
+        console.log('Error', error.message);
+      }
+    });
+  };
+
   return (
     <>
     <Text fontSize='xl' fontWeight='semibold'>Personal Profile Overview</Text>
     <Divider my={5}/>
+    <Box maxW='600px' margin='auto' mt={5}>
+    <ProfileOperationsButtonBar 
+      calcStats={calculateStats}
+      deleteHistory={deleteGameHistory}
+      deleteAccount={deleteUserAccount}
+    />
+    </Box>
       {Object.keys(profile).length > 0 && (
       <ProfileEditor passedProfile={profile} updateProfile={updateProfile} />
     )}
