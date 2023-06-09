@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, Button, Text, Divider } from '@chakra-ui/react';
 import { formatDate } from '../../helpers/date';
 import {secondsToHumanReadable} from '../../helpers/time';
+import { VscArrowSmallLeft, VscArrowSmallRight } from 'react-icons/vsc';
 
 // id = userId
 function GameHistory({ id }) {
@@ -85,8 +86,8 @@ function GameHistory({ id }) {
         </Tbody>
       </Table>
       <div>
-        {prevPage && <Button my={2} mx={10} colorScheme='green' onClick={handleLoadPrev}>Load previous</Button>}
-        {nextPage && <Button my={2} mx={10} colorScheme='blue' onClick={handleLoadNext}>Load next</Button>}
+        {prevPage && <Button my={2} mx={10} colorScheme='green' onClick={handleLoadPrev} size='sm' leftIcon={<VscArrowSmallLeft />}>Load previous</Button>}
+        {nextPage && <Button my={2} mx={10} colorScheme='blue' onClick={handleLoadNext} size='sm' rightIcon={<VscArrowSmallRight />}>Load next</Button>}
       </div>
         </>
     )} 
