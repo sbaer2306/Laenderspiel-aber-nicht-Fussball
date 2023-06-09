@@ -5,15 +5,20 @@ import ProfileEditor from './ProfileEditor';
 import GameHistory from '../GameHistory';
 import ProfileOperationsButtonBar from './ProfileOperationsButtonBar';
 import StatsModal from '../stats/StatsModal';
+import ConfirmationModal from '../../UI/ConfirmationModal';
+import { useNavigate } from 'react-router-dom';
 
-const DUMMY_ID = 1;
+const DUMMY_ID = 9;
 
 const PrivateProfileOverview = () => {
   const [profile, setProfile] = useState({}); 
   const [eTag, setETag] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [stats, setStats] = useState({});
-  const [gameHistoryDeleted, setGameHistoryDeleted] = useState(false);
+
+  const { isOpen: deletionModalIsOpen, onOpen: onOpenDeletionModal, onClose: onCloseDeletionModal } = useDisclosure();
+
+  const navigate = useNavigate();
 
   const toast = useToast();
   const showToastMessage = (title, description, status) => {
@@ -31,102 +36,83 @@ const PrivateProfileOverview = () => {
   useEffect(() => {
     fetchProfile();
   }, []);
-
+  
+  const handleApiError = (error) => {
+    if (error.response) {
+      const { status, data } = error.response;
+      showToastMessage(status, data.message, "error");
+  
+      if (status === 403 || status === 404 || status === 500 || status === 400) {
+        return;
+      }
+    } else if (error.request) {
+      console.log(error.request);
+    } else {
+      console.log('Error', error.message);
+    }
+  };
+  
   const fetchProfile = async () => {
-    axios.get(`http://localhost:8000/user/${DUMMY_ID}/profile`)
-      .then((response) => {
-  
-        if (response.status === 200) {
-          setProfile(response.data);
-          showToastMessage("Profile loaded!", "", "info");
-        } else {
-          console.log(`An error occurred: ${response.status}`);
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-          if (error.response.status === 403) {
-            showToastMessage(error.response.status, error.response.data.message, "error");
-          } else if (error.response.status === 404) {
-            showToastMessage(error.response.status, error.response.data.message, "error");
-          } else {
-            console.log(`An error occurred: ${error.response.status}`);
-          }
-        } else if (error.request) {
-          console.log(error.request);
-        } else {
-          console.log('Error', error.message);
-        }
-      });
-  };  
-
-  const updateProfile = async (values) => {
-    const { id, firstName, lastName, bio, isPrivate, location } = values;
     try {
-      const response = await axios.put(`http://localhost:8000/profile/${id}`, {
-        firstName,
-        lastName,
-        bio,
-        isPrivate,
-        location
-      });
+      const response = await axios.get(`http://localhost:8000/user/${DUMMY_ID}/profile`);
+      if (response.status === 200) {
+        setProfile(response.data);
+        showToastMessage("Profile loaded!", "", "info");
+      } else {
+        console.log(`An error occurred: ${response.status}`);
+      }
+    } catch (error) {
+      handleApiError(error);
+    }
+  };
   
+  const updateProfile = async (values) => {
+    const { id, userId, createdAt, updatedAt, ...profileData } = values;
+    try {
+      const response = await axios.put(`http://localhost:8000/profile/${id}`, profileData);
       if (response.status === 200) {
         setProfile(response.data);
         showToastMessage("Profile updated!", "", "success");
       }
     } catch (error) {
-      if (error.response) {
-        if (error.response.status === 403) {
-          showToastMessage(error.response.status, error.response.data.message, "error");
-        } else if (error.response.status === 404) {
-          showToastMessage(error.response.status, error.response.data.message, "error");
-        } else if (error.response.status === 500) {
-          showToastMessage(error.response.status, error.response.data.message, "error");
-        } else if (error.response.status === 400) {
-          showToastMessage(error.response.status, error.response.data.message, "error");
-        }
-      }
+      if (error.response?.status === 404) navigate("/");
+      handleApiError(error);
     }
-  };  
-
-  const deleteUserAccount = async () => {
-    alert("TODO: Implement delete user account");
   };
-
+  
+  const deleteUserAccount = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:8000/user/${DUMMY_ID}`);
+      if (response.status === 200) {
+        showToastMessage("Success!", `Your account data has been deleted!.`, "success");
+        navigate("/");
+      }
+    } catch (error) {
+      handleApiError(error);
+    }
+  };
+  
   const deleteGameHistory = async () => {
-    axios.delete(`http://localhost:8000/user/${DUMMY_ID}/played-games`).then((response) => {
+    try {
+      const response = await axios.delete(`http://localhost:8000/user/${DUMMY_ID}/played-games`);
       if (response.status === 200) {
         showToastMessage("Game history deleted!", `Removed ${response.data.deletedNum} records.`, "success");
       }
-    }).catch((error) => {
-      if (error.response) {
-          showToastMessage(error.response.status, error.response.data.message, "error");
-      }
-    });
+    } catch (error) {
+      handleApiError(error);
+    }
   };
-
-  /**
-   * SIMULATION for ETag caching.
-   * 
-   * "Unfortunately, there isn't a way to handle a 304 Not Modified response in the browser like you can in Postman, due to the browser's built-in HTTP caching behavior.
-   * By the time your JavaScript code receives the response, the browser has already checked the server's caching headers (like ETag), made the decision to use the cached response, and converted the 304 Not Modified status to a 200 OK."
-   * ~ ChatGPT
-   * Source: https://datatracker.ietf.org/doc/html/rfc7234#section-4.3.3 
-   */
+  
   const calculateStats = async () => {
-    axios
-    .get(`http://localhost:8000/user/${DUMMY_ID}/stats`, {
-      headers: {
-        'If-None-Match': eTag
-      }
-    })
-    .then((response) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/user/${DUMMY_ID}/stats`, {
+        headers: {
+          'If-None-Match': eTag
+        }
+      });
+  
       const newEtag = response.headers['etag'];
-      
+  
       if (newEtag === eTag) {
         showToastMessage("Done - Nothing changed!", "", "success");
         console.log("ETag values are the same.");
@@ -136,15 +122,10 @@ const PrivateProfileOverview = () => {
         setStats(data);
       }
       onOpen();
-    })
-    .catch((error) => {
-      if (error.response) {
-          showToastMessage(error.response.status, error.response.data.message, "error");
-      }else {
-        console.log('Error', error.message);
-      }
-    });
-  };
+    } catch (error) {
+      handleApiError(error);
+    }
+  };  
 
   return (
     <>
@@ -154,22 +135,23 @@ const PrivateProfileOverview = () => {
     <ProfileOperationsButtonBar 
       calcStats={calculateStats}
       deleteHistory={deleteGameHistory}
-      deleteAccount={deleteUserAccount}
+      deleteAccount={onOpenDeletionModal}
     />
     </Box>
       {Object.keys(profile).length > 0 && (
       <ProfileEditor passedProfile={profile} updateProfile={updateProfile} />
     )}
-    {!gameHistoryDeleted && <Box maxW='600px' margin='auto' mt={5}>
+    <Box maxW='600px' margin='auto' mt={5}>
       <GameHistory id={DUMMY_ID}/>
-    </Box>}
-    {
-      Object.keys(stats).length > 0 && (
+    </Box>
+
+    { Object.keys(stats).length > 0 && (
         <Box maxW='600px' margin='auto' mt={5}>
           <StatsModal stats={stats} isOpen={isOpen} onClose={onClose} />
         </Box>
       )
     }
+    <ConfirmationModal isOpen={deletionModalIsOpen} onClose={onCloseDeletionModal} onConfirm={deleteUserAccount} title='User Account Deletion'/>
     </>
   );
 };
