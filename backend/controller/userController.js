@@ -2,6 +2,28 @@ const prisma = require('../prisma/prisma');
 const prismaClient = prisma.getPrisma();
 const userService = require('../service/userService')
 
+const createUser = async (req, res) => {
+    const { email, username, OAuthID } = req.body;
+
+    if (!email || !username || !OAuthID) {
+        return res.status(400).json({ error: 'Missing required fields: email, username, and OAuthID.' });
+    }
+
+    //TODO Datenbankstuff
+    const id = 1;
+
+    return id;
+
+}
+
+const checkUserExists = async (OAuthID) => {
+    /* TODO
+    const user = await db.users.findOne({ OAuthID });
+
+    return user !== null;*/
+    return false;
+}
+
 /**
  * Deletes a user by ID.
  *
@@ -63,4 +85,4 @@ const getProfileByUserId = async (req, res) => {
 
 }
 
-module.exports = { deleteUser, getProfileByUserId };
+module.exports = { deleteUser, getProfileByUserId, checkUserExists, createUser };
