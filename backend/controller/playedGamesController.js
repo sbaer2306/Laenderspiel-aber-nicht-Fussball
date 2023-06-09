@@ -1,6 +1,6 @@
 const gameHistoryService = require('../service/playedGamesService');
 const { getPrisma } = require('../prisma/prisma');
-
+const { validateId } = require('../helpers/invalidIDhelper');
 /**
  * Retrieves the played games for a user.
  * 
@@ -13,6 +13,8 @@ const getPlayedGames = async (req, res) => {
     const { id } = req.params;
     const { page, pageSize } = req.query;
     const prismaClient = getPrisma();
+
+    if (validateId(id, res)) return;
 
     // TODO: auth middleware! + authorization (uswer owns profile --> deliver despite private)
     try {
@@ -51,6 +53,8 @@ const getPlayedGames = async (req, res) => {
 const deleteAllPlayedGames = async (req, res) => {
     const { id } = req.params;
     const prismaClient = getPrisma();
+
+    if (validateId(id, res)) return;
 
     // TODO: auth middleware! (user allowed to delete this history)
     try {

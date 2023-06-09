@@ -1,3 +1,4 @@
+const { validateId } = require('../helpers/invalidIDhelper');
 const prisma = require('../prisma/prisma');
 const prismaClient = prisma.getPrisma();
 const userService = require('../service/userService')
@@ -35,6 +36,8 @@ const checkUserExists = async (OAuthID) => {
 const deleteUser = async (req, res) => {
     const { id } = req.params;
 
+    if (validateId(id, res)) return;
+
     // TODO: auth middleware! (user allowed to delete themselves)
     try {
         const parsedId = parseInt(id);
@@ -62,6 +65,8 @@ const deleteUser = async (req, res) => {
  */
 const getProfileByUserId = async (req, res) => {
     const { id } = req.params;
+
+    if (validateId(id, res)) return;
 
     // todo: Authorization middleware (user allowed to see profile)
 

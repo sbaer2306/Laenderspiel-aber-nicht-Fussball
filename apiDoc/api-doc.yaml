@@ -929,7 +929,7 @@ paths:
       summary: Delete all played games by user.
       description: >-
         Deletes ALL the games a user has played (clears game history). Only the owner of the history can
-        perform this operation. The overall score is NOT affected by the deletion. The user will still show up within rankings if the score is high enough.
+        perform this operation. The overall score is reset to 0 and monthly rankings are also deleted.
       parameters:
         - name: id
           in: path

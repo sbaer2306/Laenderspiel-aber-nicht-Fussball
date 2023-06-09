@@ -73,6 +73,20 @@ const deletePlayedGamesByUser = async (userId) => {
         where: { userId: parsedId },
     });
 
+    // Set the users AllTimeRanking Score to 0
+    await prismaClient.allTimeRanking.update({
+        where: { userId: parsedId },
+        data: {
+            score: 0,
+            lastUpdated: new Date()
+        },
+    });
+
+    // delete all the users monthly rankings
+    await prismaClient.monthlyRanking.deleteMany({
+        where: { userId: parsedId },
+    });
+
     return { deletedNum: deleteCount.count };
 };
 

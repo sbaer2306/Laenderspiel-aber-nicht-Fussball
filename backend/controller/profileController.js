@@ -1,6 +1,6 @@
 const profileService = require('../service/profileService');
 const { validateProfileUpdate } = require('../helpers/profileHelpers');
-
+const { validateId } = require('../helpers/invalidIDhelper');
 
 /**
  * Retrieves a user profile by id.
@@ -12,18 +12,30 @@ const { validateProfileUpdate } = require('../helpers/profileHelpers');
  */
 const getProfile = async (req, res) => {
 
-    // TODO: Authorization --> isPrivate
-
     const { id } = req.params;
+
+    if (validateId(id, res)) return;
 
     try {
         const profile = await profileService.getProfile(parseInt(id));
+
+        // TODO: Authorization - check if profile is private and user is not owner
+        if (profile.isPrivate) {
+            let error = new Error('Unauthorized - user profile is private');
+            error.httpStatusCode = 403;
+            throw error;
+        }
+
         res.status(200).json(profile);
     } catch (error) {
-        console.error(error);
+        console.error(error.httpStatusCode, error.message);
         if (error.httpStatusCode === 404) {
-            res.status(404).json({ message: 'Profile Not Found' });
-        } else {
+            res.status(error.httpStatusCode).json({ message: error.message });
+        }
+        else if (error.httpStatusCode === 403) {
+            res.status(error.httpStatusCode).json({ message: error.message });
+        }
+        else {
             res.status(500).json({ message: 'Internal Server Error' });
         }
     }
@@ -39,6 +51,8 @@ const getProfile = async (req, res) => {
  */
 const updateProfile = async (req, res) => {
     const { id } = req.params;
+
+    if (validateId(id, res)) return;
 
     // TODO: Authorization
 

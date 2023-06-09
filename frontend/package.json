@@ -20,7 +20,9 @@
     "@emotion/styled": "^11.11.0",
     "swagger-ui": "^4.19.0",
     "swagger-ui-react": "^4.19.0",
-    "react-icons": "^4.9.0"
+    "react-icons": "^4.9.0",
+    "formik": "^2.4.1",
+    "yup": "^1.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",

@@ -1,6 +1,6 @@
 const statsService = require('../service/statsService');
 const userService = require('../service/userService');
-
+const { validateId } = require('../helpers/invalidIDhelper');
 /**
  * Get user statistics based on the provided user ID.
  * ETag is used for caching. If the ETag value matches the one on the server, the server will return 304.
@@ -15,12 +15,8 @@ exports.getUserStats = async (req, res) => {
     try {
         // TODO: Authorization --> only the user itself should be able to access the stats
 
-        if (isNaN(req.params.id)) {
-            res.status(404).json({ error: 'User not found' });
-            return;
-        }
-
         const id = parseInt(req.params.id);
+        if (validateId(id, res)) return;
         const user = await userService.getUserById(id); // throws 404 if user not found
 
         const etag = req.headers['if-none-match'];
