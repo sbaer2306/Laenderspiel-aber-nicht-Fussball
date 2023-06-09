@@ -24,11 +24,16 @@ const StatsModal = ({ stats, onClose, isOpen }) => {
               </HStack>
               <HStack spacing={2}>
                 <VscFlame size={15} />
-                <Text fontSize="sm">Fastest Game: {stats.FastestGame.country.name} (score: {stats.FastestGame.score}, time: {secondsToHumanReadable(stats.FastestGame.gameDuration)})</Text>
+                <Text fontSize="sm">
+                  Fastest Game: {stats.FastestGame ? `${stats.FastestGame.country.name} (score: ${stats.FastestGame.score}, time: ${secondsToHumanReadable(stats.FastestGame.gameDuration)})` : " - "}
+                </Text>
+
               </HStack>
               <HStack spacing={2}>
                 <VscDashboard size={15} />
-                <Text fontSize="sm">Slowest Game: {stats.SlowestGame.country.name} (score: {stats.SlowestGame.score}, time: {secondsToHumanReadable(stats.SlowestGame.gameDuration)})</Text>
+                <Text fontSize="sm">
+                  Slowest Game: {stats.slowestGame ? `${stats.slowestGame.country.name} (score: ${stats.slowestGame.score}, time: ${secondsToHumanReadable(stats.slowestGame.gameDuration)})` : " - "}
+                </Text>
               </HStack>
               <HStack spacing={2}>
                 <VscStarEmpty size={15} />

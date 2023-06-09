@@ -74,9 +74,18 @@ const assembleStats = async (user) => {
 
     const totalTimePlayed = PlayedGame.reduce((total, game) => total + game.gameDuration, 0);
 
-    const fastestGame = PlayedGame.reduce((min, game) => (game.gameDuration < min.gameDuration ? game : min), PlayedGame[0]);
+    let fastestGame = PlayedGame.reduce((min, game) => (game.gameDuration < min.gameDuration ? game : min), PlayedGame[0]);
 
-    const slowestGame = PlayedGame.reduce((max, game) => (game.gameDuration > max.gameDuration ? game : max), PlayedGame[0]);
+    let slowestGame = PlayedGame.reduce((max, game) => (game.gameDuration > max.gameDuration ? game : max), PlayedGame[0]);
+
+    // check if slowest of fastest game is undefined --> empty object
+    if (fastestGame === undefined) {
+        fastestGame = null;
+    }
+    if (slowestGame === undefined) {
+        slowestGame = null;
+    }
+
 
     const statsResult = {
         TotalGamesPlayed: PlayedGame.length,
