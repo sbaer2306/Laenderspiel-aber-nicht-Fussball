@@ -19,6 +19,11 @@ app.get('/example', (req, res) => {
   res.send('Hello, this is the example route!');
 });
 
+app.use(express.json()); // body parsing middleware (express does not parse the body by default)
+
+const gameRoutes = require('./routes/gameRoutes.js')
+app.use('/game', gameRoutes)
+
 const gamehistoryRoutes = require('./routes/playedGameRoutes')
 app.use('/user', gamehistoryRoutes)
 
@@ -28,7 +33,7 @@ app.use('/user', userRoutes);
 const rankingRoutes = require('./routes/rankingRoutes');
 app.use('/ranking', rankingRoutes);
 
-app.use(express.json()); // body parsing middleware (express does not parse the body by default)
+
 const profileRoutes = require('./routes/profileRoutes');
 app.use('/profile', profileRoutes);
 

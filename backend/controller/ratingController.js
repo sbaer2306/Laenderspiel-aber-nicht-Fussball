@@ -11,5 +11,5 @@ async function calculateRatingFacts(req, res){
   }
 }
 
-moduls.exports = {calculateRatingFacts}
+module.exports = {calculateRatingFacts}
 

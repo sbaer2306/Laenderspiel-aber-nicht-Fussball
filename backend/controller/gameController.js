@@ -1,29 +1,52 @@
-const countryService = require('../service/countryService');
+const createHelper = require('../helpers/createGameHelper')
+const prisma = require('../prisma/prisma');
+const prismaClient = prisma.getPrisma();
 
+const NodeCache = require('node-cache');
+const cache = new NodeCache({stdTTL: 604800}); //cache TTL 1 week
+
+/**
+ * Creates a new game for a player depending on the difficulty chosen. 
+ * Game will be cached for a certain time and either gets destroyed or saved if the player finishes the game.
+ * @param {object} request - the request object
+ * @param {object} response - the response object
+ * @returns {Promise<void>} - A Promise that resolves when the response is sent
+ */
 async function createGame(req, res){
     try{
-      const {difficulty} = req.body;
-      const difficultyNumber = difficulty == 'easy' ? 1.0 : difficulty == 'medium' ? 2.0 : 3.0;
-      const countries =  await countryService.fetchCountry(); //API returns [LIMIT] countries
+      // Check if the user already has a game in the session
+      /*
+      if (req.session.game) {
+        return res.status(400).json({ error: 'You already have a game in progress' });
+      }
+      */
+      const difficulty = req.body.difficulty;
 
-      //logic how difficulty should be implemented
-      const country = countries[0]; //for testing first country
-      const gameID = Math.floor(Math.random() * 100000000);
+      //get countries from cache or cache them if not already for one week
+      let seperatedCountries = await createHelper.getCountries();
+      
+      
+      //select a random country depending on difficulty level and checking if country was already played from user
+      const countriesByDifficulty = seperatedCountries[difficulty];
+      let selectedCountry = await createHelper.getRandomCountryForDifficulty(countriesByDifficulty);
+      
+
+      //get temporary GameID from PlayedGame last entry id + 1
+      const lastGame = await prismaClient.playedGame.findFirst({select: { id: true }, orderBy: { id: 'desc' }});
+      const gameId = lastGame ? lastGame.id + 1 : 1; //not working because id also has to increment for every new session
 
       const game = {
-        id: gameID,
-        user_id: 0, //AuthContextProvider prob
+        id: gameId,
+        user_id: 1, //userId comes from middleware - please give it to me bastiiii :D
         current_round: 1,
         max_rounds: 3,
         ttl: 900,
-        created_at: newDate().toISOString(),
-        difficulty: difficultyNumber,
-        country_id: country.code,
-        current_score: null,
-        total_score: null,
+        created_at: new Date().toISOString(),
+        difficulty: selectedCountry.difficultyMultiplier,
+        country_id: selectedCountry.id,
+        current_score: 0,
+        total_score: 0,
       }
-
-      console.log("game that should be created: ",game);
 
       const links = {
         nextStep: {
@@ -35,14 +58,20 @@ async function createGame(req, res){
         }
       }
 
+      //saving created game in session - each session will automatically be identified by the unique session-id and a player can only play one game at a time.
+      //req.session.game = game;
+
       res.status(201).json({
         game,
         links
       });
 
     }catch(error){
-        console.error('Fehler beim Erstellen eines Games', error);
-        res.status(500).json({error: 'Interner Serverfehler'});
+      if (error.httpStatusCode) {
+        return res.status(error.httpStatusCode).json({ message: error.message });
+      }
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error', requestBody: req.body });
     }
 }
 
@@ -51,14 +80,11 @@ async function getGame(req, res){
   try{
     const {id} = req.params;
     
-    //database request down there
-    /*
     const game = await getGame(id)
 
     res.status(200).json({
       game
     });
-    */
 
   }catch(error){
       console.error('Fehler beim Laden eines Games', error);
@@ -79,5 +105,5 @@ async function deleteGame(req, res){
   }
 }
 
-moduls.exports = {createGame, getGame, deleteGame}
+module.exports = {createGame, getGame, deleteGame}
 
