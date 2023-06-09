@@ -15,9 +15,8 @@ exports.getUserStats = async (req, res) => {
     try {
         // TODO: Authorization --> only the user itself should be able to access the stats
 
-        if (validateId(id, res)) return;
-
         const id = parseInt(req.params.id);
+        if (validateId(id, res)) return;
         const user = await userService.getUserById(id); // throws 404 if user not found
 
         const etag = req.headers['if-none-match'];
