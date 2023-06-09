@@ -11,6 +11,7 @@ const ratingController = require('../controller/ratingController');
 
 gameRoutes.get(':id', gameController.getGame);
 gameRoutes.delete('/:id', gameController.deleteGame);
+
 gameRoutes.post('/', gameController.createGame);
 
 //Facts
@@ -25,3 +26,5 @@ gameRoutes.get('/:game_id/geo-information', geoController.getOsmData);
 
 //Export router
 module.exports = gameRoutes;
+
+

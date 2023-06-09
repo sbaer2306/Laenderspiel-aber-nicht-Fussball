@@ -2,9 +2,6 @@ const createHelper = require('../helpers/createGameHelper')
 const prisma = require('../prisma/prisma');
 const prismaClient = prisma.getPrisma();
 
-const NodeCache = require('node-cache');
-const cache = new NodeCache({stdTTL: 604800}); //cache TTL 1 week
-
 /**
  * Creates a new game for a player depending on the difficulty chosen. 
  * Game will be cached for a certain time and either gets destroyed or saved if the player finishes the game.
@@ -78,15 +75,23 @@ async function createGame(req, res){
 async function getGame(req, res){
   try{
     const {id} = req.params;
-    
-    const game = await getGame(id)
 
-    res.status(200).json({
-      game
-    });
+
+    const game = await prismaClient.playedGame.findUnique({
+      where: {
+        id: Number(id),
+      }
+    })
+
+    if (!game) {
+      res.status(404).json({ error: 'Game not found' });
+    } else if (1/* authorization logic here */) {
+      res.status(403).json({ error: 'Unauthorized - user is not the player of the game' });
+    } else {
+      res.status(200).json({ game });
+    }
 
   }catch(error){
-      console.error('Fehler beim Laden eines Games', error);
       res.status(500).json({error: 'Interner Serverfehler'});
   }
 }

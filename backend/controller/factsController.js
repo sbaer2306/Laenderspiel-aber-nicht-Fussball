@@ -10,6 +10,11 @@ async function getFacts(req, res){
     //Game from session
     const game = req.session.game;
 
+    /*
+    if( game.user_id !== bastiUSERID){
+      return res.status(403).json({error: "Not authorized", game: game, id: id})
+    }
+    */
     if(!game || game.id !== Number(id)){
       return res.status(404).json({error: "Game not found", game: game, id: id})
     }
