@@ -100,7 +100,7 @@ const PrivateProfileOverview = () => {
   const deleteGameHistory = async () => {
     axios.delete(`http://localhost:8000/user/${DUMMY_ID}/played-games`).then((response) => {
       if (response.status === 200) {
-        showToastMessage("Game history deleted!", "Score reset to 0.", "success");
+        showToastMessage("Game history deleted!", `Removed ${response.data.deletedNum} records.`, "success");
       }
     }).catch((error) => {
       if (error.response) {
