@@ -2,12 +2,14 @@ const express = require('express');
 const passport = require('passport');
 require('dotenv').config();
 const prisma = require('./prisma/prisma.js')
+const cors = require('cors');
 
 const app = express();
 prisma.initializePrisma();
 
 // Initialize Passport middleware
 app.use(passport.initialize());
+app.use(cors());
 
 // Include the auth routes
 const authRoutes = require('./routes/authRoutes');
