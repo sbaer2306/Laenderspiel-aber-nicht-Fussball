@@ -35,6 +35,20 @@ updateProfile = async (id, updateData) => {
     // set updatedAt to current timestamp
     updateData.updatedAt = new Date();
 
+    const { firstName, lastName, bio, location } = updateData;
+    if (firstName) {
+        updateData.firstName = firstName.trim();
+    }
+    if (lastName) {
+        updateData.lastName = lastName.trim();
+    }
+    if (bio) {
+        updateData.bio = bio.trim();
+    }
+    if (location) {
+        updateData.location = location.trim();
+    }
+
     const profile = await prisma.profile.findUnique({
         where: {
             id: parseInt(id),
