@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, Button, Text, Divider } from '@chakra-ui/react';
 import { formatDate } from '../../helpers/date';
+import {secondsToHumanReadable} from '../../helpers/time';
 
+// id = userId
 function GameHistory({ id }) {
-    const user_id = id;
+
 
   const [gameHistory, setGameHistory] = useState([]);
   const [nextPage, setNextPage] = useState(null);
@@ -17,7 +19,7 @@ function GameHistory({ id }) {
   const fetchGameHistory = async (page = 1, pageSize = 5) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/user/${user_id}/played-games?page=${page}&pageSize=${pageSize}`
+        `http://localhost:8000/user/${id}/played-games?page=${page}&pageSize=${pageSize}`
       );
 
       if (response.status === 403) {
@@ -76,7 +78,7 @@ function GameHistory({ id }) {
             <Tr key={game.id}>
               <Td fontWeight='semibold'>{game.country.name}</Td>
               <Td>{game.score}</Td>
-              <Td>{game.gameDuration} seconds</Td>
+              <Td>{secondsToHumanReadable(game.gameDuration)}</Td>
               <Td>{formatDate(game.createdAt)}</Td>
             </Tr>
           ))}
