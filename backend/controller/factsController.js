@@ -1,17 +1,9 @@
 const factsService = require('../service/factsService');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
 
 async function getFacts(req, res){
   try {
-    const game = req.session.game;
-    const country_id = game.country_id;
-    const countryCode = prisma.country.findFirst({
-      where: {
-        id: country_id,
-      }
-    })
-    const facts = await factsService.fetchCountryFacts(countryCode); 
+    const {id} = req.params;
+    const facts = await factsService.fetchCountryFacts(id); 
     res.status(200).json(facts);
   } catch (error) {
       console.error(error);
@@ -19,5 +11,5 @@ async function getFacts(req, res){
   }
 }
 
-module.exports = {getFacts}
+moduls.exports = {getFacts}
 

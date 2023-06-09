@@ -1,29 +1,31 @@
 const express = require('express')
-const gameRouter = express.Router()
+const router = express.Router()
 const geoController = require('../controller/geoController')
 const gameController = require('../controller/gameController');
 const factsController = require('../controller/factsController');
 const ratingController = require('../controller/ratingController');
 
-const gameMiddleware = require('../middleware/gameMiddleware');
-
 //ROUTES
 //Game
+router.use('/game', (req, res, next) => {
+    //middleware logic
+    next();
 
-//Game Routes
-gameRouter.get(':id', gameController.getGame);
-gameRouter.delete('/:id', gameController.deleteGame);
-gameRouter.post('/', gameController.createGame);
-
-//Facts
-gameRouter.get('/:id/facts',gameMiddleware.retrieveGameFromSession, factsController.getFacts);
-
-gameRouter.post('/:id/rating/facts', gameMiddleware.saveGameToSession, ratingController.calculateRatingFacts);
-
-//Geo-Information
-gameRouter.get('/:game_id/geo-information', gameMiddleware.retrieveGameFromSession, geoController.getOsmData);
+    //Game Routes
+    router.get(':id', gameController.getGame);
+    router.delete('/:id', gameController.deleteGame);
+    router.post('/', gameController.createGame);
+    
+    //Facts
+    router.get('/:id/facts', factsController.getFacts);
+    
+    router.post('/:id/rating/facts', ratingController.calculateRatingFacts);
+    
+    //Geo-Information
+    router.get('/:game_id/geo-information', geoController.getOsmData);
+})
 
 
 
 //Export router
-module.exports = gameRouter;
+module.exports = router;

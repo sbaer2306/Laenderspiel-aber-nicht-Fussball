@@ -13,4 +13,4 @@ async function getOsmData(req, res){
     }
 }
 
-module.exports = {getOsmData}
+moduls.exports = {getOsmData}
