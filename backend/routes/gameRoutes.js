@@ -20,7 +20,7 @@ gameRoutes.get('/:id/facts', factsController.getFacts);
 gameRoutes.post('/:id/rating/facts', ratingController.calculateRatingFacts);
 
 //Geo-Information
-gameRoutes.get('/:game_id/geo-information', geoController.getOsmData);
+gameRoutes.get('/:id/geo-information', geoController.getOsmData);
 
 
 

@@ -3,18 +3,49 @@ const axios = require('axios');
 
 async function fetchOsmData(countryName){//gameid als parameter?
     try{
-        const url = `https://overpass-api.de/api/interpreter?data=[out:json];relation["boundary"="administrative"]["name"="${countryName}"];out geom;`;
+        const url = `https://overpass-api.de/api/interpreter?data=[out:json];relation["boundary"="administrative"]["name:en"="${countryName}"];out geom;`;
 
         const response = await axios.get(url);
 
-        return response.data;
+        return response.data.elements[0].members;
     }catch(error){
-        console.error('Fehler bei der OSM-Anfrage', error);
+        console.error('Error for the OSM-Response', error);
         throw error;
     }
 }
 
-module.exports = fetchOsmData;
+function getBoundariesOfCountry(osmData){
+    boundaries = [];
+
+    for(let i = 0; i < osmData.length; i++){
+        if(osmData[i].role === "outer"){
+            boundaries.push(osmData[i])
+        }
+    }
+
+    return boundaries;
+}
+
+function getCenterOfCountry(osmData){
+    let latCenter = "";
+    let lonCenter = ""; 
+    
+    for(let i = 0; i < osmData.length; i++){
+        if(osmData[i].role === "label"){
+            latCenter = osmData[i].lat;
+            lonCenter = osmData[i].lon;
+        }
+    }
+
+    const center = {
+        lat: latCenter,
+        lon: lonCenter,
+    }
+
+    return center;
+}
+
+module.exports = {fetchOsmData, getCenterOfCountry, getBoundariesOfCountry};
 
 
 /*       const getData = async () => {
