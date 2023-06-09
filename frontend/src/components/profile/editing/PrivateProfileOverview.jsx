@@ -13,6 +13,7 @@ const PrivateProfileOverview = () => {
   const [eTag, setETag] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [stats, setStats] = useState({});
+  const [gameHistoryDeleted, setGameHistoryDeleted] = useState(false);
 
   const toast = useToast();
   const showToastMessage = (title, description, status) => {
@@ -97,7 +98,15 @@ const PrivateProfileOverview = () => {
   };
 
   const deleteGameHistory = async () => {
-    alert("TODO: Implement delete game history");
+    axios.delete(`http://localhost:8000/user/${DUMMY_ID}/played-games`).then((response) => {
+      if (response.status === 200) {
+        showToastMessage("Game history deleted!", "Score reset to 0.", "success");
+      }
+    }).catch((error) => {
+      if (error.response) {
+          showToastMessage(error.response.status, error.response.data.message, "error");
+      }
+    });
   };
 
   /**
@@ -151,9 +160,9 @@ const PrivateProfileOverview = () => {
       {Object.keys(profile).length > 0 && (
       <ProfileEditor passedProfile={profile} updateProfile={updateProfile} />
     )}
-    <Box maxW='600px' margin='auto' mt={5}>
+    {!gameHistoryDeleted && <Box maxW='600px' margin='auto' mt={5}>
       <GameHistory id={DUMMY_ID}/>
-    </Box>
+    </Box>}
     {
       Object.keys(stats).length > 0 && (
         <Box maxW='600px' margin='auto' mt={5}>
