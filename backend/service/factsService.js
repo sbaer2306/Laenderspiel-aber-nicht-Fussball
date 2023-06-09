@@ -1,31 +1,110 @@
 const axios = require('axios');
+const prisma = require('../prisma/prisma');
+const prismaClient = prisma.getPrisma();
 
 async function fetchCountryFacts(countryCode){  //f.e. VA = Vatican City, US = United States..
     try{
-        const url = `https://restcountries.com/v3.1/alpha/${countryCode}`;
+        const urlFacts = `https://restcountries.com/v3.1/alpha/${countryCode}`;
 
-        const response = await axios.get(url);
-        console.log("Country Response:", response.data)
+        const responseFacts = await axios.get(urlFacts);
+        const factsData = responseFacts.data[0];
+        
+        let countryCodes = [countryCode];
 
-        const facts = {
-          currencies: response.currencies,
-          capital: response.capital,
-          languages: response.languages,
-          area: response.area,
-          population: response.population,
-          continents: response.continents,
+        const twoRandomCountries = await prismaClient.country.findMany({
+          where: {
+            countryCode: {not: countryCode }
+          },
+          take: 2,
+        });
+        Object.values(twoRandomCountries).map((country) => {
+          countryCodes.push(country.countryCode)
+        })
+
+        let flagResponses = [];
+        for (let i = 0; i < countryCodes.length; i++) {
+          const countryCode = countryCodes[i];
+          const urlFlag = `https://flagsapi.com/${countryCode}/shiny/64.png`;
+          
+          const correctOption = i === 0 ? true : false;
+          
+          const flag = {
+            country_code: countryCode,
+            flag_url: urlFlag,
+            correct_option: correctOption
+          };
+          
+          flagResponses.push(flag);
+        }
+        // Shuffle the flagResponses array using Fisher-Yates algorithm
+        for (let i = flagResponses.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [flagResponses[i], flagResponses[j]] = [flagResponses[j], flagResponses[i]];
         }
 
-        return facts;
+        const Facts = {
+          country_name: factsData.name.official,
+          facts: [
+            {unMember: factsData.unMember},
+            {currency: Object.values(factsData.currencies)[0].name},
+            {capital: factsData.capital[0]},
+            {language: Object.values(factsData.languages)[0]},
+            {area: factsData.area},
+            {continent: factsData.continents[0]},
+            {population: factsData.population},
+          ], 
+          flags: flagResponses,
+        }
+        return Facts;
     }catch(error){
-        console.error('Fehler bei der RestCountries Anfrage', error);
-        throw error;
+        return {error: error.message, data:"No facts retrieved", countryCode: countryCode};
     }
 }
 
-module.exports = fetchCountryFacts;
+module.exports = {fetchCountryFacts};
 
 /*
+
+
+
+Facts:
+      type: object
+      properties:
+        country_name:
+          type: string
+        facts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryFacts'
+          minItems: 7
+          maxItems: 7
+        flags:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlagOption'
+          minItems: 3
+          maxItems: 3
+  
+    CountryFacts:
+      type: object
+      properties:
+        question_keyword:
+          type: string
+        answer:
+          type: string
+
+    FlagOption:
+      type: object
+      properties:
+        country_code:
+          type: string
+        flag_url:
+          type: string
+        correct_option:
+          type: boolean
+
+
+
 
 /* DATA
 

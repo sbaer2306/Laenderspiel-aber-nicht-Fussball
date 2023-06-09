@@ -1,4 +1,5 @@
 const express = require('express');
+const session = require('express-session');
 const passport = require('passport');
 require('dotenv').config();
 const prisma = require('./prisma/prisma.js')
@@ -18,6 +19,15 @@ app.use('/api/auth', authRoutes);
 app.get('/example', (req, res) => {
   res.send('Hello, this is the example route!');
 });
+
+//init session
+app.use(
+  session({
+    secret: "my-secret-key",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 app.use(express.json()); // body parsing middleware (express does not parse the body by default)
 

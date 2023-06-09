@@ -15,11 +15,10 @@ const cache = new NodeCache({stdTTL: 604800}); //cache TTL 1 week
 async function createGame(req, res){
     try{
       // Check if the user already has a game in the session
-      /*
       if (req.session.game) {
         return res.status(400).json({ error: 'You already have a game in progress' });
+        //further logic to implement: delete old session or continue same game
       }
-      */
       const difficulty = req.body.difficulty;
 
       //get countries from cache or cache them if not already for one week
@@ -36,14 +35,14 @@ async function createGame(req, res){
       const gameId = lastGame ? lastGame.id + 1 : 1; //not working because id also has to increment for every new session
 
       const game = {
-        id: gameId,
-        user_id: 1, //userId comes from middleware - please give it to me bastiiii :D
+        id: 400, //to test
+        user_id: 3, //userId comes from middleware - please give it to me bastiiii :D
         current_round: 1,
         max_rounds: 3,
         ttl: 900,
         created_at: new Date().toISOString(),
         difficulty: selectedCountry.difficultyMultiplier,
-        country_id: selectedCountry.id,
+        country_id: Number(selectedCountry.id),
         current_score: 0,
         total_score: 0,
       }
@@ -59,7 +58,7 @@ async function createGame(req, res){
       }
 
       //saving created game in session - each session will automatically be identified by the unique session-id and a player can only play one game at a time.
-      //req.session.game = game;
+      req.session.game = game;
 
       res.status(201).json({
         game,
@@ -71,7 +70,7 @@ async function createGame(req, res){
         return res.status(error.httpStatusCode).json({ message: error.message });
       }
       console.error(error);
-      res.status(500).json({ message: 'Internal Server Error', requestBody: req.body });
+      res.status(500).json({ message: 'Internal Server Error', requestBody: req.session });
     }
 }
 
