@@ -1,12 +1,12 @@
 const factsService = require('../service/factsService');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../prisma/prisma');
+const prismaClient = prisma.getPrisma();
 
 async function getFacts(req, res){
   try {
     const game = req.session.game;
     const country_id = game.country_id;
-    const countryCode = prisma.country.findFirst({
+    const countryCode = prismaClient.country.findFirst({
       where: {
         id: country_id,
       }
