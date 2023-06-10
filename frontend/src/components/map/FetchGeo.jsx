@@ -1,31 +1,37 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-//import axios from 'axios';
+import axios from 'axios';
 import converter from 'osmtogeojson'
 import { GeoJSON } from 'react-leaflet'
+
+axios.defaults.withCredentials = true;
 
 function MyData({childToParent}) {
     // create state variable to hold data when it is fetched
     const [data, setData] = useState('');
     const [center, setCenter] = useState('');
   
-    const url = 'https://overpass-api.de/api/interpreter?data=';
-    const fetch = '[out:json];relation["boundary"="administrative"]["name"="Deutschland"];out geom;';
+    const url = 'http://localhost:8000/game/400/geo-information';
+    
+      // useEffect to fetch data on mount
+
+      const getData = async () => {
+        try{
+          const gameResponse = await axios.post('http://localhost:8000/game', { "difficulty": "easy" });
   
-    // useEffect to fetch data on mount
+          // Verwende die Session-ID, um das Game-Objekt abzurufen
+          const response = await axios.get(url);
+          setData(converter(response.data.geometry));
+          let centerCountry = {lat: response.data.center.lat, lon: response.data.center.lon};
+          setCenter(centerCountry);
+        }catch(error){
+          console.error(error);
+        }
+        
+      }
+
     useEffect(() => {
-      // async function!
-/*       const getData = async () => {
-        // 'await' the data
-        const response = await axios.get(url+fetch);
-        // save data to state
-        console.log(response.data);
-        setData(converter(response.data));
-        let lat = response.data.elements[0].members[0].lat;
-        let lng = response.data.elements[0].members[0].lon;
-        setCenter({lat: lat, lng : lng});
-      };
-      getData(); */
+      getData();
     }, []);
   
     // render react-leaflet GeoJSON when the data is ready

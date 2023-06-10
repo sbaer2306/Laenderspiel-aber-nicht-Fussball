@@ -1,11 +1,11 @@
 import React from 'react'
 import { Polyline } from 'react-leaflet'
 
-function MyPolyline({marker, cityCenter}) {
+function MyPolyline({marker, center}) {
   
     const polyline = [
         [marker.lat, marker.lng],
-        [cityCenter.lat, cityCenter.lng],
+        [center.lat, center.lon],
     ]
 
     const line = {color: 'red'};

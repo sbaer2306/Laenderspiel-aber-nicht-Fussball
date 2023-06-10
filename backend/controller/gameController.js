@@ -12,10 +12,10 @@ const prismaClient = prisma.getPrisma();
 async function createGame(req, res){
     try{
       // Check if the user already has a game in the session
-      if (req.session.game) {
+/*       if (req.session.game) {
         return res.status(400).json({ error: 'You already have a game in progress' });
         //further logic to implement: delete old session or continue same game
-      }
+      } */
       const difficulty = req.body.difficulty;
 
       //get countries from cache or cache them if not already for one week
@@ -56,8 +56,10 @@ async function createGame(req, res){
 
       //saving created game in session - each session will automatically be identified by the unique session-id and a player can only play one game at a time.
       req.session.game = game;
+      session = req.session;
 
       res.status(201).json({
+        session,
         game,
         links
       });

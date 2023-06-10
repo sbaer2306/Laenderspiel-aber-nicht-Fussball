@@ -15,22 +15,22 @@ function SecondRound() {
       setPosition(childdata);
   }
 
-  const CenterCity = (childdata) =>{
+  const CenterCountry = (childdata) =>{
     setCenter(childdata);
   }
 
   return (
     <div className="container_second_round">
         <h1>Runde 2</h1>
-        <MapContainer center={[51.5, 10]} zoom={6} scrollWheelZoom={true}>
+        <MapContainer center={[51.5, 10]} zoom={4} scrollWheelZoom={true}>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png"
                 //url="https://{s}.basemaps.cartocdn.com/rastertiles/light_nolabels/{z}/{x}/{y}.png"
             />
             <LocationMarker childToParent={MarkerPosition}/>
-            <GeoFetch childToParent={CenterCity}/>
-            {position ? (<Polyline marker={position} cityCenter={center}/>) : (null)}
+            <GeoFetch childToParent={CenterCountry}/>
+            {position ? (<Polyline marker={position} center={center}/>) : (null)}
         </MapContainer>
     </div>
   );

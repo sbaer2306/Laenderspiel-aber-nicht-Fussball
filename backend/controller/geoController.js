@@ -21,11 +21,9 @@ async function getOsmData(req, res){
       })
 
       const osmData = await geoService.fetchOsmData(country.name);
+      const center = geoService.getCenterOfCountry(osmData.elements[0].members);
 
-      const boundaries = geoService.getBoundariesOfCountry(osmData);
-      const center = geoService.getCenterOfCountry(osmData);
-
-      res.json({geometry: boundaries, center: center});
+      res.json({geometry: osmData, center: center});
     }catch(error){
         console.error('Fehler beim Abrufen der OSM-Daten', error);
         res.status(500).json({error: 'Interner Serverfehler'});

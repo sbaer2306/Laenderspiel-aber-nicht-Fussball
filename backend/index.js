@@ -10,7 +10,10 @@ prisma.initializePrisma();
 
 // Initialize Passport middleware
 app.use(passport.initialize());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 
 // Include the auth routes
 const authRoutes = require('./routes/authRoutes');
