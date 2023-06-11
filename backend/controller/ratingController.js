@@ -1,4 +1,4 @@
-
+const geoService = require('../service/geoService');
 
 async function calculateRatingFacts(req, res){
   try {
@@ -11,5 +11,16 @@ async function calculateRatingFacts(req, res){
   }
 }
 
-module.exports = {calculateRatingFacts}
+async function calculateDistance(req, res){
+  try{
+    const data = req.body;
+    console.log(data);
+    res.status(200).json( {})
+  }catch (error){
+    console.log(error);
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+}
+
+module.exports = {calculateRatingFacts, calculateDistance}
 

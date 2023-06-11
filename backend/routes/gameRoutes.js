@@ -21,6 +21,7 @@ gameRoutes.post('/:id/rating/facts', ratingController.calculateRatingFacts);
 
 //Geo-Information
 gameRoutes.get('/:id/geo-information', geoController.getOsmData);
+gameRoutes.post('/:id/rating/geo-information', ratingController.calculateDistance);
 
 
 
