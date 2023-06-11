@@ -34,9 +34,6 @@ app.use(
     },
   })
 );
-//init session middleware
-const {checkSessionTTL} = require('./service/sessionService.js');
-app.use(checkSessionTTL);
 
 app.use(express.json()); // body parsing middleware (express does not parse the body by default)
 

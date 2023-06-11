@@ -5,6 +5,16 @@ const gameController = require('../controller/gameController');
 const factsController = require('../controller/factsController');
 const ratingController = require('../controller/ratingController');
 
+const {checkSessionTTL} = require('../service/sessionService')
+
+
+//middleware
+
+gameRoutes.use((req,res,next) => {
+    if(req.path !== '/' && req.path !== '/:id') checkSessionTTL(req,res,next);
+    else next();
+})
+
 //ROUTES
 //Game
 
