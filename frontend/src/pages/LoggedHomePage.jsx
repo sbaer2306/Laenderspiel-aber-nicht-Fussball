@@ -42,12 +42,11 @@ export const LoggedHomePage = () => {
         };
   
         const response = await axios.post('http://localhost:8000/game', requestBody, config);
-        const { game, links, session } = response.data;
+        const { game, links } = response.data;
 
         //link logic
         if(links && links.nextStep){
-            const nextStepLink = links.nextStep;
-            navigate(`game/${nextStepLink.parameters.id}/facts`);
+            navigate(links.nextStep.operationRef);
         }
         console.log("Game from response.data: ", game);
       }catch(error){

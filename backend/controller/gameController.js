@@ -51,7 +51,7 @@ async function createGame(req, res){
       const links = {
         nextStep: {
           description: 'Retrieve facts for the newly created game. ',
-          operationRef: '#/paths/~1game~1{id}~1facts/get',
+          operationRef: `game/${game.id}/facts/`,
           parameters: {
             id: game.id,
           }
