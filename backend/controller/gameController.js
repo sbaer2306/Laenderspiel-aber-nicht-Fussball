@@ -60,7 +60,6 @@ async function createGame(req, res){
 
       //saving created game in session - each session will automatically be identified by the unique session-id and a player can only play one game at a time.
       req.session.game = game;
-      session = req.session;
 
       res.status(201).json({
         game,
