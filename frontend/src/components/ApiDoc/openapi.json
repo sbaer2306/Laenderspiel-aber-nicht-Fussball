@@ -351,11 +351,18 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request"
-          },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Internal server error."
+                }
+              }
+            }
           }
         }
       }
@@ -371,7 +378,7 @@
           {
             "name": "year",
             "in": "path",
-            "description": "Year(number)",
+            "description": "Year(number). The year being > than the current year  will lead to a 400 Error.",
             "required": true,
             "schema": {
               "type": "integer"
@@ -380,7 +387,7 @@
           {
             "name": "month",
             "in": "path",
-            "description": "Month(number from 1-12, single digits are allowed)",
+            "description": "Month(number from 1-12, single digits). Month < 12 will lead to a 400 error.",
             "required": true,
             "schema": {
               "type": "integer"
@@ -421,10 +428,30 @@
             }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Invalid request. Month and year must be valid numbers."
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Not Found"
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Internal server error."
+                }
+              }
+            }
           }
         }
       }
@@ -454,13 +481,69 @@
         "summary": "Delete all user data. (game history, profile, scores)",
         "responses": {
           "200": {
-            "description": "User and related data successfully deleted"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "User sucessfully deleted."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Id is not in valid format.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Invalid ID. Must be a number."
+                }
+              }
+            }
           },
           "403": {
-            "description": "Unauthorized - user is not authorized to delete the data"
+            "description": "Forbidden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Unauthorized."
+                }
+              }
+            }
           },
           "404": {
-            "description": "User Not Found"
+            "description": "User not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "User not found."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Internal server error."
+                }
+              }
+            }
           }
         }
       }
@@ -500,21 +583,54 @@
               }
             }
           },
-          "403": {
-            "description": "Unauthorized - user profile is private."
-          },
-          "404": {
-            "description": "User or profile not found (user could exist without a profile)",
+          "400": {
+            "description": "Bad request",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Profile not found - the user exists but has no profile."
-                    }
-                  }
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Invalid ID. Must be a number."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized - profile is private. (If the authenticated user is the owner he won't receive this error.)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Unauthorized - profile is private."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Profile not found."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Internal server error."
                 }
               }
             }
@@ -565,7 +681,7 @@
             }
           },
           "304": {
-            "description": "Not Modified",
+            "description": "Not Modified - ETag matches.",
             "content": {
               "application/json": {
                 "example": {
@@ -612,7 +728,7 @@
         "tags": [
           "Profile"
         ],
-        "summary": "Create a profile for the currently authenticated user",
+        "summary": "Create a profile for the currently authenticated user.",
         "security": [
           {
             "google_oauth": []
@@ -630,7 +746,7 @@
         },
         "responses": {
           "201": {
-            "description": "Successfully created user profile",
+            "description": "Successfully created user profile for the authenticated user.",
             "content": {
               "application/json": {
                 "schema": {
@@ -649,21 +765,31 @@
               }
             }
           },
-          "403": {
-            "description": "Unauthorized - user is not the profile owner"
-          },
           "409": {
             "description": "Conflict - Profile already exists",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProfileAlreadyExistsError"
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "A profile already exists for this user."
                 }
               }
             }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Internal server error."
+                }
+              }
+            }
           }
         }
       }
@@ -703,13 +829,34 @@
             }
           },
           "403": {
-            "description": "Unauthorized - user profile is private"
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Forbidden."
+                }
+              }
+            }
           },
           "404": {
-            "description": "Profile Not Found"
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Profile not found."
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Internal server error."
+                }
+              }
+            }
           }
         }
       },
@@ -745,23 +892,51 @@
             }
           },
           "400": {
-            "description": "Bad Request - Request body validation failed",
+            "description": "Bad Request - Request body validation failed or body is empty.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProfileViolation"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ProfileViolation"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MessageResponse"
+                    }
+                  ]
                 }
               }
             }
           },
           "403": {
-            "description": "Unauthorized - user is not the profile owner"
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Forbidden."
+                }
+              }
+            }
           },
           "404": {
-            "description": "Profile Not Found"
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "User not found."
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Internal server error."
+                }
+              }
+            }
           }
         }
       }
@@ -1391,14 +1566,57 @@
               }
             }
           },
-          "401": {
-            "description": "Only authenticated users are allowed to look at the game history."
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Invalid ID. Must be a number."
+                }
+              }
+            }
           },
           "403": {
-            "description": "Unauthorized - the profile is set to private, therefore the game history is private too."
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Unauthorized - profile is private - this applies to game history too."
+                }
+              }
+            }
           },
           "404": {
-            "description": "User not found"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "User not found."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Internal server error."
+                }
+              }
+            }
           }
         }
       },
@@ -1412,7 +1630,7 @@
           }
         ],
         "summary": "Delete all played games by user.",
-        "description": "Deletes ALL the games a user has played (clears game history). The overall score is reset to 0 and monthly rankings are also deleted.",
+        "description": "Deletes ALL the games a user has played (clears game history). Only the owner of the history can perform this operation. The overall score is reset to 0 and monthly rankings are also deleted.",
         "parameters": [
           {
             "name": "id",
@@ -1443,13 +1661,56 @@
             }
           },
           "400": {
-            "description": "Invalid ID supplied"
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Invalid ID. Must be a number."
+                }
+              }
+            }
           },
           "403": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Unauthorized - user is not the owner."
+                }
+              }
+            }
           },
           "404": {
-            "description": "User not found"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "User not found."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Internal server error."
+                }
+              }
+            }
           }
         }
       }
@@ -1982,6 +2243,15 @@
             "items": {
               "$ref": "#/components/schemas/CountrySummary"
             }
+          }
+        }
+      },
+      "MessageResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "A message indicating the outcome"
           }
         }
       }
