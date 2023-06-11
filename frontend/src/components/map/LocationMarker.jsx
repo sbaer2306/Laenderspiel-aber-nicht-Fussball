@@ -12,7 +12,6 @@ function LocationMarker({childToParent, clicked}) {
           setPosition(e.latlng);
           childToParent(e.latlng);  
         }
-        console.log(e.latlng);
       },
     })
 

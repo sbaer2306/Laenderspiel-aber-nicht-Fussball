@@ -13,7 +13,7 @@ const {checkSessionTTL} = require('../service/sessionService')
 gameRoutes.use((req,res,next) => {
     if(req.path !== '/' && req.path !== '/:id') checkSessionTTL(req,res,next);
     else next();
-})
+}) 
 
 //ROUTES
 //Game

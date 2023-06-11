@@ -22,7 +22,8 @@ async function getOsmData(req, res){
 
       const osmData = await geoService.fetchOsmData(country.name);
       const center = geoService.getCenterOfCountry(osmData.elements[0].members);
-
+      
+      req.session.game = game;
       res.json({geometry: osmData, center: center});
     }catch(error){
         console.error('Fehler beim Abrufen der OSM-Daten', error);

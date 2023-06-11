@@ -34,7 +34,26 @@ function getCenterOfCountry(osmData){
 }
 
 function calculateDistance(markerPosition, center){
-    
+    let latRadPosition = markerPosition.lat * Math.PI / 180;
+    let lonRadPosition = markerPosition.lon * Math.PI / 180;
+    let latRadCenter = center.lat * Math.PI / 180;
+    let lonRadCenter = center.lon * Math.PI / 180; 
+
+    //Earth radius
+    let radius = 6378.388;
+
+    let dLat = latRadPosition - latRadCenter;
+    let dLon = lonRadPosition - lonRadCenter;
+
+    let a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(latRadPosition) * Math.cos(latRadCenter) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    let distance = radius * c;
+
+    return Math.round(distance);
 }
 
 module.exports = {fetchOsmData, getCenterOfCountry, calculateDistance};
