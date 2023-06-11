@@ -51,7 +51,7 @@ async function createGame(req, res){
       const links = {
         nextStep: {
           description: 'Retrieve facts for the newly created game. ',
-          operationRef: '#/paths/~1game~1{id}~1facts/get',
+          operationRef: `game/${game.id}/facts/`,
           parameters: {
             id: game.id,
           }
@@ -60,7 +60,6 @@ async function createGame(req, res){
 
       //saving created game in session - each session will automatically be identified by the unique session-id and a player can only play one game at a time.
       req.session.game = game;
-      session = req.session;
 
       res.status(201).json({
         game,

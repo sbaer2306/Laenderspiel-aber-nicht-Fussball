@@ -27,6 +27,11 @@ async function getFacts(req, res){
     })
     const countryCode = country.countryCode;
     const facts = await factsService.fetchCountryFacts(countryCode); 
+
+    //store facts in session
+    req.session.facts = facts;
+
+    
     res.status(200).json({facts: facts, country: country, countryCode: countryCode, countryId: country_id});
   } catch (error) {
       res.status(500).json({ error: error.message});
