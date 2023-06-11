@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import { useNavigate } from 'react-router-dom';
 import { Box, Button, Center, Text, Select } from '@chakra-ui/react';
 import { FaPlus } from 'react-icons/fa';
 import axios from 'axios'
@@ -19,6 +20,8 @@ const exampleGame = {
 
 export const LoggedHomePage = () => {
 
+  const navigate = useNavigate();
+
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
 
   const handleDifficultyChange = (event) => {
@@ -28,25 +31,30 @@ export const LoggedHomePage = () => {
   const startNewGame = async () => {
     if(selectedDifficulty){
       try{
-        const response = await axios.post('https://localhost:8000/game', {
-          body: {
-            difficulty: selectedDifficulty,
-          }
-        });
-        const {game, links} = response.data;
+        const requestBody = {
+          difficulty: selectedDifficulty,
+        };
+  
+        const config = {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        };
+  
+        const response = await axios.post('http://localhost:8000/game', requestBody, config);
+        const { game, links, session } = response.data;
 
         //link logic
         if(links && links.nextStep){
             const nextStepLink = links.nextStep;
-            //navigate
+            navigate(`game/${nextStepLink.parameters.id}/facts`);
         }
         console.log("Game from response.data: ", game);
-    }catch(error){
-        console.log("error createNewGame: ",error);
+      }catch(error){
+          console.log("error createNewGame: ",error);
+      }
     }
-      //const response = createNewGame(selectedDifficulty);
-      //backend still not 'working' for imports
-    }
+    else alert("Wähle Schwierigkeit")
   };
 
 

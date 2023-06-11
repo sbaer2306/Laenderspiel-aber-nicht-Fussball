@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react'
-//import {useParams} from 'react-router-dom'
-//import {getGameFacts} from '../../../backend/apis/gameAPI'
+import {useParams} from 'react-router-dom'
 import '../css/FirstRound.css'
 import { Facts } from '../components/Facts';
 import {Text, CircularProgress} from '@chakra-ui/react';
+import axios from 'axios';
 
 const titles = ["Gründungsjahr", "Kontinent", "Hauptstadt", "Fläche", "Währung", "Sprache", "Bevölkerung"];
 const solutions = [1949, "Europa", "Berlin", 357000, "EURO", "Deutsch", 82000000];
@@ -11,13 +11,24 @@ const country = ["Deutschland"]
 
 
 export const FirstRound = () => {
-   // const {game_id} = useParams();
-    const [facts, setFacts] = useState([])
+    const {game_id} = useParams();
+    const [facts, setFacts] = useState()
+    const [flags, setFlags] = useState()
 
     useEffect(() =>{
         const fetchGameFacts = async () => {
             try{
-                //const response = await getGameFacts(game_id);
+                const config = {
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                  };
+                const response = await axios.get(`http://localhost:8000/game/${game_id}/facts`, config);
+                
+                console.log(response);
+                const factObject = response.data.facts;
+                setFacts(factObject.facts);
+                setFlags(factObject.flags);
             }catch(error){
                 console.log("error fetching: "+error);
             }
@@ -26,7 +37,7 @@ export const FirstRound = () => {
         return () => {
             fetchGameFacts();
         }
-    }, [/*game_id*/])
+    }, [game_id])
   return (
     <div className='container_first_round'>
         <div className='headline'>
@@ -41,8 +52,8 @@ export const FirstRound = () => {
         <div className='content_container_first_round'>
             <div className='left_content_first_round rounded_shadow'>
                 {
-                    Array.from({ length: 7 }, (_, i) => (
-                        <Facts key={i} title={titles[i]} solution={solutions[i]} />
+                    facts && facts.map((fact) => (
+                        <Facts key={Object.keys(fact)[0]} title={Object.keys(fact)[0]} solution={Object.values(fact)[0]}  />
                     ))
                 }
             </div>

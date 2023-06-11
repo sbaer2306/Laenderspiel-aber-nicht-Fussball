@@ -10,15 +10,17 @@ const prismaClient = prisma.getPrisma();
  * @returns {Promise<void>} - A Promise that resolves when the response is sent
  */
 async function createGame(req, res){
-    try{
+    
+  const difficulty = req.body.difficulty;
+  try{
       // Check if the user already has a game in the session
 /*       if (req.session.game) {
         return res.status(400).json({ error: 'You already have a game in progress' });
         //further logic to implement: delete old session or continue same game
       } */
-      const difficulty = req.body.difficulty;
+      
 
-      //get countries from cache or cache them if not already for one week
+      //get countries from cache or cache them if not already for one week 
       let seperatedCountries = await createHelper.getCountries();
       
       
@@ -69,7 +71,7 @@ async function createGame(req, res){
         return res.status(error.httpStatusCode).json({ message: error.message });
       }
       console.error(error);
-      res.status(500).json({ message: 'Internal Server Error', requestBody: req.session });
+      res.status(500).json({ message: 'Internal Server Error', difficulty: difficulty });
     }
 }
 

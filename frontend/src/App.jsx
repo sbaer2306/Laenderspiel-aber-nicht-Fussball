@@ -22,7 +22,7 @@ function App() {
           <Route path='/user/profile' element={<PrivateProfileOverview/>} />
           <Route path='/logged' element={<LoggedHomePage/>} />
           <Route path='/api/doc' element={<SwaggerDocDisplay/>} />
-          <Route path='/game/:game_id/facts' element={<FirstRound/>} />
+          <Route path='logged/game/:game_id/facts' element={<FirstRound/>} />  {/*logged only for testing purposes for now */}
           <Route path='/game/:game_id/geo-information' element={<SecondRound/>} />
         </Routes> 
     </div>
