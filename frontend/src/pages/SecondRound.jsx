@@ -7,6 +7,7 @@ import axios from 'axios';
 import converter from 'osmtogeojson'
 import LocationMarker from '../components/map/LocationMarker';
 import Polyline from '../components/map/Polyline'
+import Distance from '../components/scoring/calculateDistance'
 
 axios.defaults.withCredentials = true;
 
@@ -35,11 +36,14 @@ function SecondRound() {
     try{
       setButtonClicked(true);
       setIsLoading(true);
+
       // Verwende die Session-ID, um das Game-Objekt abzurufen
       const response = await axios.get(url);
       setData(converter(response.data.geometry));
+      
       let centerCountry = {lat: response.data.center.lat, lon: response.data.center.lon};
       setCenter(centerCountry);
+     
       setIsLoading(false);
     }catch(error){
       console.error(error);
@@ -56,7 +60,7 @@ function SecondRound() {
   }, []);
 
   return (
-    <Box>
+    <Box align="center">
       <Text mb={1} fontSize='2xl' textAlign="center">Runde 2</Text>
       <Text m={2} fontSize='xl'>Versuche das Zentrum des Landes zu erraten</Text>
       <Text m={2} fontSize='xl' fontWeight='700'>{countryName}</Text>
@@ -72,7 +76,9 @@ function SecondRound() {
           </MapContainer>
       </Center>
       {!data && position ? <Button isLoading={isLoading} mt={5} spacing={5} colorScheme='blue' size='md' align='center' onClick={getOsmData}>Versuch auswerten</Button> : null}
-      
+      <Box align="left" mt={5} fontSize="xl" fontWeight="700">
+        {data ? <Distance markerPosition={position} center={center}/> : null}
+      </Box>
     </Box>
   );
 }

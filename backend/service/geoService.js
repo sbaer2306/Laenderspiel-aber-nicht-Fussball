@@ -14,19 +14,6 @@ async function fetchOsmData(countryName){//gameid als parameter?
     }
 }
 
-//Don't needed
-/* function getBoundariesOfCountry(osmData){
-    boundaries = [];
-
-    for(let i = 0; i < osmData.elements[0].members.length; i++){
-        if(osmData[i].role === "outer"){
-            boundaries.push(osmData[i])
-        }
-    }
-
-    return boundaries;
-} */
-
 function getCenterOfCountry(osmData){
     let latCenter = "";
     let lonCenter = ""; 
@@ -46,15 +33,8 @@ function getCenterOfCountry(osmData){
     return center;
 }
 
-module.exports = {fetchOsmData, getCenterOfCountry};
+function calculateDistance(markerPosition, center){
+    
+}
 
-
-/*       const getData = async () => {
-        // 'await' the data
-        const response = await axios.get(url+fetch);
-        // save data to state
-        console.log(response.data);
-        setData(converter(response.data));
-        let lat = response.data.elements[0].members[0].lat;
-        let lng = response.data.elements[0].members[0].lon;
-        setCenter({lat: lat, lng : lng});*/
+module.exports = {fetchOsmData, getCenterOfCountry, calculateDistance};
