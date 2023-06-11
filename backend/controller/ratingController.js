@@ -1,4 +1,5 @@
 const geoService = require('../service/geoService');
+const factsService = require('../service/factsService')
 
 async function calculateRatingFacts(req, res){
   try {
@@ -13,6 +14,41 @@ async function calculateRatingFacts(req, res){
     const {data} = req.body;
 
 
+
+    const exampleData = {
+      time: "60000", //100 sec to test
+      currency: {
+        answer: "EUR", 
+        tries: 2,
+      },
+      capital: {
+        answer: "Berlin", 
+        tries: 2,
+      },
+      language: {
+        answer: "english", 
+        tries: 3,
+      },
+      area: {
+        answer: 3092390, 
+        tries: 2,
+      },
+      continent: {
+        answer: "europe", 
+        tries: 1,
+      },
+      population: {
+        answer: 79000000, 
+        tries: 2,
+      },
+      country: {
+        answer: "Germany", 
+        tries: 1,
+      },
+      flag: true,
+    }
+
+    const points = factsService.calculateRatingFacts(facts, exampleData);
 
     res.status(200).json({ score });
   } catch (error) {

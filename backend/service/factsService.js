@@ -61,7 +61,15 @@ async function fetchCountryFacts(countryCode){  //f.e. VA = Vatican City, US = U
     }
 }
 
-module.exports = {fetchCountryFacts};
+async function calculateRatingFacts(facts, guessedData){
+  try{
+
+  }catch(error){
+    return {error: error.message, facts: facts, guessedData: guessedData};
+  }
+}
+
+module.exports = {fetchCountryFacts, calculateRatingFacts};
 
 /*
 
