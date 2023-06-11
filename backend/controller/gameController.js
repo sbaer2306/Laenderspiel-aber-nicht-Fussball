@@ -25,7 +25,6 @@ async function createGame(req, res){
       //select a random country depending on difficulty level and checking if country was already played from user
       const countriesByDifficulty = seperatedCountries[difficulty];
       let selectedCountry = await createHelper.getRandomCountryForDifficulty(countriesByDifficulty);
-      
 
       //get temporary GameID from PlayedGame last entry id + 1
       const lastGame = await prismaClient.playedGame.findFirst({select: { id: true }, orderBy: { id: 'desc' }});
@@ -40,6 +39,7 @@ async function createGame(req, res){
         created_at: new Date().toISOString(),
         difficulty: selectedCountry.difficultyMultiplier,
         country_id: Number(selectedCountry.id),
+        country_name: selectedCountry.name,
         current_score: 0,
         total_score: 0,
       }
@@ -59,7 +59,6 @@ async function createGame(req, res){
       session = req.session;
 
       res.status(201).json({
-        session,
         game,
         links
       });
