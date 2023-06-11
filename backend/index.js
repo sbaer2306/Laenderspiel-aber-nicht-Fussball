@@ -29,8 +29,14 @@ app.use(
     secret: "my-secret-key",
     resave: false,
     saveUninitialized: true,
+    cookie: {
+      maxAge: 6000, //10 sek to test 
+    },
   })
 );
+//init session middleware
+const {checkSessionTTL} = require('./service/sessionService.js');
+app.use(checkSessionTTL);
 
 app.use(express.json()); // body parsing middleware (express does not parse the body by default)
 

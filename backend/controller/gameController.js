@@ -14,10 +14,12 @@ async function createGame(req, res){
   const difficulty = req.body.difficulty;
   try{
       // Check if the user already has a game in the session
-/*       if (req.session.game) {
+      /*
+       if (req.session.game) {
         return res.status(400).json({ error: 'You already have a game in progress' });
         //further logic to implement: delete old session or continue same game
-      } */
+      } 
+      */
       
 
       //get countries from cache or cache them if not already for one week 
