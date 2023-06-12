@@ -5,10 +5,56 @@ import { Facts } from '../components/Facts';
 import {Text, CircularProgress} from '@chakra-ui/react';
 import axios from 'axios';
 
-const titles = ["Gründungsjahr", "Kontinent", "Hauptstadt", "Fläche", "Währung", "Sprache", "Bevölkerung"];
-const solutions = [1949, "Europa", "Berlin", 357000, "EURO", "Deutsch", 82000000];
-const country = ["Deutschland"]
 
+const exampleAnswer = {
+    "time": "530",
+        "answers":[
+            {
+            "currency": {
+                "answer": "euro",
+                "tries": 2
+                }
+            },
+            {
+                "capital": {
+                    "answer": "Thimphu",
+                    "tries": 2
+                    }
+            },
+            {
+                "language": {
+                    "answer": "Dzongkha",
+                    "tries": 1
+                    }
+            },
+            {
+                "area": {
+                    "answer": 34,
+                    "tries": 2
+                    }
+            },
+            {
+                "continent": {
+                    "answer": "europe",
+                    "tries": 1
+                    }
+            },
+            {
+                "population": {
+                    "answer": 79000000,
+                    "tries": 2
+                    }
+            },{
+                "country": {
+                    "answer": "Germany",
+                    "tries": 1
+                    }
+            }
+
+
+        ],
+        "flag": true
+  }
 
 export const FirstRound = () => {
     const {game_id} = useParams();

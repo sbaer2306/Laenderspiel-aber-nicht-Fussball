@@ -25,7 +25,7 @@ function SecondRound() {
   const createGame = async () => {
     try{
       const gameResponse = await axios.post('http://localhost:8000/game', { "difficulty": "easy" });
-      setCountryName(gameResponse.data.game.country_name)
+      setCountryName(gameResponse.data.game.country_name);
     }catch(error){
       console.log(error);
     }
@@ -61,8 +61,8 @@ function SecondRound() {
 
   return (
     <Box align="center">
-      <Text mb={1} fontSize='2xl' textAlign="center">Runde 2</Text>
-      <Text m={2} fontSize='xl'>Versuche das Zentrum des Landes zu erraten</Text>
+      <Text mb={1} fontSize='2xl' textAlign="center">Round 2</Text>
+      <Text m={2} fontSize='xl'>Try to guess the center of the country</Text>
       <Text m={2} fontSize='xl' fontWeight='700'>{countryName}</Text>
       <Center>
           <MapContainer center={[50, 10]} zoom={3} scrollWheelZoom={true}>
@@ -75,7 +75,7 @@ function SecondRound() {
               {position && center ? (<Polyline marker={position} center={center}/>) : (null)}
           </MapContainer>
       </Center>
-      {!data && position ? <Button isLoading={isLoading} mt={5} spacing={5} colorScheme='blue' size='md' align='center' onClick={getOsmData}>Versuch auswerten</Button> : null}
+      {!data && position ? <Button isLoading={isLoading} mt={5} spacing={5} colorScheme='blue' size='md' align='center' onClick={getOsmData}>evaluate try</Button> : null}
       <Box align="left" mt={5} fontSize="xl" fontWeight="700">
         {data ? <Distance markerPosition={position} center={center}/> : null}
       </Box>

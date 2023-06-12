@@ -34,6 +34,7 @@ function getCenterOfCountry(osmData){
 }
 
 function calculateDistance(markerPosition, center){
+    //Calculate the distance between 2 Points based on the Haversine formula 
     let latRadPosition = markerPosition.lat * Math.PI / 180;
     let lonRadPosition = markerPosition.lon * Math.PI / 180;
     let latRadCenter = center.lat * Math.PI / 180;

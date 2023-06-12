@@ -1,54 +1,26 @@
 const geoService = require('../service/geoService');
-const factsService = require('../service/factsService')
+const factsService = require('../service/factsService');
+const scoringService = require('../service/scoringService')
 
 async function calculateRatingFacts(req, res){
   try {
     //auth or return here
-
+    //return res.status(403).json({message: "Forbidden"})
     //get game from session
     const game = req.session.game;  
+    //if(!game) return res.status(404).json({message: "Game not found"})
     //get facts from session
     const facts = req.session.facts;
     //get user-input from body
     //NEED TO BE: per Fact try's and overall time
     const {data} = req.body;
+    //return res.status(406).json({message: "Not acceptable"})
 
+    const score = await scoringService.calculateRatingFacts(facts, data);
 
-
-    const exampleData = {
-      time: "60000", //100 sec to test
-      currency: {
-        answer: "euro", 
-        tries: 2,
-      },
-      capital: {
-        answer: "Berlin", 
-        tries: 2,
-      },
-      language: {
-        answer: "english", 
-        tries: 3,
-      },
-      area: {
-        answer: 3092390, 
-        tries: 2,
-      },
-      continent: {
-        answer: "europe", 
-        tries: 1,
-      },
-      population: {
-        answer: 79000000, 
-        tries: 2,
-      },
-      country: {
-        answer: "Germany", 
-        tries: 1,
-      },
-      flag: true,
-    }
-
-    const score = factsService.calculateRatingFacts(facts, exampleData);
+    game.current_score = score;
+    req.session.game = game;
+    req.session.facts = facts;
 
     res.status(200).json({ score });
   } catch (error) {
@@ -71,10 +43,15 @@ async function calculateDistance(req, res){
 
     const positions = req.body;
     
-    let distance = geoService.calculateDistance(positions.markerPosition, positions.center);
+    let distance = geoService.calculateDistance(positions.guessed_position, positions.center);
+
+    let score = scoringService.calculateGeoInformation(distance);
+    score = score + game.current_score;
+    game.current_score = score; 
 
     req.session.game = game;
-    res.status(200).json( {distance: distance})
+
+    res.status(200).json( {distance: distance, score: score})
   }catch (error){
     console.log(error);
     res.status(500).json({error: 'Internal Server Error'});

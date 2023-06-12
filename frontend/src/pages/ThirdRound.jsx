@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import SightCard from '../components/Sights/SightCard';
 
 axios.defaults.withCredentials = true;
 
@@ -46,33 +47,32 @@ const ThirdRound = () => {
 
   return (
     <div>
-    <h1>Country: {countryName}</h1>
-    <h2>Sights:</h2>
-    {isLoading ? (
-      <p>Loading...</p>
-    ) : (
-      <ul>
-        {Object.keys(sights).map((city) => {
-          const sight = sights[city];
-          return (
-            <li key={city}>
-              <strong>{city}</strong>
-              <ul>
-                {sight.sights.map((sightItem, index) => (
-                  <li key={index}>
-                    <div>
-                      <h3>{sightItem.name}</h3>
-                      <img src={sightItem.image} alt={sightItem.name} />
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          );
-        })}
-      </ul>
-    )}
-  </div>
+      <h1>Country: {countryName}</h1>
+      <h2>Sights:</h2>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <ul>
+          {Object.keys(sights).map((city) => {
+            const sight = sights[city];
+            return (
+              <li key={city}>
+                <strong>{city}</strong>
+                <div style={{ display: 'flex' }}>
+                  {sight.sights.map((sightItem, index) => (
+                    <SightCard
+                      key={index}
+                      title={sightItem.name}
+                      imageURL={sightItem.image}
+                    />
+                  ))}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
   );
 };
 

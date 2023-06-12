@@ -749,7 +749,7 @@ paths:
               type: object
               properties:
                 data:
-                    $ref: '#/components/schemas/Facts'
+                    $ref: '#/components/schemas/Answers'
       description: Returns scoring for first round
       responses:
         '200':
@@ -799,17 +799,17 @@ paths:
                 type: object
                 properties:
                   geometry:
-                    type: array
-                    items: {
-                      type: string
-                    }
-                    description: boundaries of the country
+                    $ref: '#/components/schemas/Geo-Information'
+                    description: Complete OSM Request incl. boundaries of the country
                   center:
-                    type: array
-                    items: {
-                      type: string
-                    }
-                    description: lat and lng of the center of the countryt
+                    type: object
+                    properties:
+                      lat:
+                        type: number
+                      lon:
+                        type: number
+                    description: lat and lon of the center of the country
+
           links:
             nextStep:
               description: rate geo-information
@@ -837,12 +837,18 @@ paths:
                 id:
                   type: string
                   description: unauthorized user id
-                coordinate:
-                  type: array
-                  items: {
-                    type: string
-                  }
-                  description: lat and lng of guessed coordinate        
+                guessed_position:
+                  type: object
+                    properties:
+                      lat: number,
+                      lon: number
+                    description: lat and lon of guessed coordinate 
+                center:
+                  type: object:
+                    properties:
+                      lat: number,
+                      lon: number
+                  description: lat and lon of the center of the country   
       parameters:
         - in: path
           name: id
@@ -860,6 +866,9 @@ paths:
               schema:
                 type: object
                 properties:
+                  distance:
+                      type: integer
+                      description: "distance in km between guessed Position and the Center of a Country with the Haversine-Formela"
                   score:
                     type: integer
                     description: scoring from the second round
@@ -1111,6 +1120,28 @@ paths:
                 message: "Internal server error."
 components:
   schemas:
+    Answers:
+      type: object
+      properties:
+        time: 
+          type: integer
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/FactAnswers'
+          minItems: 7
+          maxItems: 7
+        flag:
+          type: boolean
+
+    FactAnswers:
+      type: object
+      properties:
+        answer:
+          type: string
+        tries:
+          type: integer
+
     Facts:
       type: object
       properties:
@@ -1509,3 +1540,57 @@ components:
           authorizationUrl: /oauth/authorize
           tokenUrl: /oauth/token             
           scopes: {}
+  Geo-Information:
+    type: object
+    properties:
+      version:
+        type: number
+      generator:
+        type: string
+      osm3s:
+        type: object
+        properties:
+          timestamp_osm_base:
+            type: string
+          copyright:
+            type: string
+      elements:
+        type: array
+        items:
+          type: object
+          properties:
+            type:
+              type: string
+            id:
+              type: number
+            bounds:
+              type: object
+              properties:
+                minlat:
+                  type: number
+                minlon:
+                  type: number
+                maxlat:
+                  type: number
+                maxlon:
+                  type: number
+            members:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  ref:
+                    type: number
+                  role:
+                    type: string
+                  geometry:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        lat:
+                          type: number
+                        lon:
+                          type: number
