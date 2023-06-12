@@ -749,7 +749,7 @@ paths:
               type: object
               properties:
                 data:
-                    $ref: '#/components/schemas/Facts'
+                    $ref: '#/components/schemas/Answers'
       description: Returns scoring for first round
       responses:
         '200':
@@ -1111,6 +1111,28 @@ paths:
                 message: "Internal server error."
 components:
   schemas:
+    Answers:
+      type: object
+      properties:
+        time: 
+          type: integer
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/FactAnswers'
+          minItems: 7
+          maxItems: 7
+        flag:
+          type: boolean
+
+    FactAnswers:
+      type: object
+      properties:
+        answer:
+          type: string
+        tries:
+          type: integer
+
     Facts:
       type: object
       properties:
