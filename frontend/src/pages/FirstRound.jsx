@@ -7,36 +7,53 @@ import axios from 'axios';
 
 
 const exampleAnswer = {
-    time: "530", //100 sec to test
-    currency: {
-      answer: "euro", 
-      tries: 2,
-    },
-    capital: {
-      answer: "Berlin", 
-      tries: 2,
-    },
-    language: {
-      answer: "german", 
-      tries: 3,
-    },
-    area: {
-      answer: 3092390, 
-      tries: 2,
-    },
-    continent: {
-      answer: "europe", 
-      tries: 1,
-    },
-    population: {
-      answer: 79000000, 
-      tries: 2,
-    },
-    country: {
-      answer: "Germany", 
-      tries: 1,
-    },
-    flag: true,
+    "time": "530",
+        "answers":[
+            {
+            "currency": {
+                "answer": "euro",
+                "tries": 2
+                }
+            },
+            {
+                "capital": {
+                    "answer": "Thimphu",
+                    "tries": 2
+                    }
+            },
+            {
+                "language": {
+                    "answer": "Dzongkha",
+                    "tries": 1
+                    }
+            },
+            {
+                "area": {
+                    "answer": 34,
+                    "tries": 2
+                    }
+            },
+            {
+                "continent": {
+                    "answer": "europe",
+                    "tries": 1
+                    }
+            },
+            {
+                "population": {
+                    "answer": 79000000,
+                    "tries": 2
+                    }
+            },{
+                "country": {
+                    "answer": "Germany",
+                    "tries": 1
+                    }
+            }
+
+
+        ],
+        "flag": true
   }
 
 export const FirstRound = () => {
