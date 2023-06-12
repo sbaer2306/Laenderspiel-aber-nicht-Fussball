@@ -4,6 +4,7 @@ import { FirstRound } from './pages/FirstRound'
 import SecondRound from './pages/SecondRound'
 import ThirdRound from './pages/ThirdRound'
 import { HomePage } from './pages/HomePage'
+import { Login } from './pages/Login'
 import {LoggedHomePage} from './pages/LoggedHomePage'
 import SwaggerDocDisplay from './components/ApiDoc/SwaggerDocDisplay'
 import Navbar from './components/UI/Navbar'
@@ -18,6 +19,7 @@ function App() {
       <Navbar/>
         <Routes>
           <Route path='/' element={<HomePage/>} />
+          <Route path='/login' element={<Login/>} />
           <Route path='/ranking' element={<Ranking/>} />
           <Route path='/user/:id/public-profile' element={<PublicProfileOverview/>} />
           <Route path='/user/profile' element={<PrivateProfileOverview/>} />

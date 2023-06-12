@@ -1,41 +1,23 @@
 import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
-export default function Signup() {
-    const handleCredentialResponse = (response) => {
-        console.log('credential response', response);
+export const Login = () => {
+  const location = useLocation();
 
-        // Hier können Sie den ID-Token an Ihr Backend senden.
-        // Sie können entweder fetch oder axios oder eine andere Bibliothek verwenden, um eine HTTP-Anfrage zu machen.
-        fetch('http://localhost:3001/auth/google', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ token: response.credential }), // Senden Sie den Token in der Anforderung
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Erfolg:', data);
-        })
-        .catch((error) => {
-            console.error('Fehler:', error);
-        });
-    };
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token');
 
-    useEffect(() => {
-        window.google.accounts.id.initialize({
-            client_id: 'YOUR_CLIENT_ID',
-            callback: handleCredentialResponse
-        });
-        window.google.accounts.id.renderButton(
-            document.getElementById('buttonDiv'), 
-            {}  // customization attributes
-        );
-    }, []);
+    if (token) {
+      localStorage.setItem('token', token);
+      window.location.href = '/';
+    }
+  }, [location.search]);
 
-    return (
-        <div>
-            <div id="buttonDiv"></div>
-        </div>
-    );
-}
+  return (
+    <div>
+      <h1>Login</h1>
+      {/* ... */}
+    </div>
+  );
+};

@@ -7,6 +7,8 @@ import ProfileOperationsButtonBar from './ProfileOperationsButtonBar';
 import StatsModal from '../stats/StatsModal';
 import ConfirmationModal from '../../UI/ConfirmationModal';
 import { useNavigate } from 'react-router-dom';
+import { fetchUserId, getHeaders } from '../../../helpers/auth.js';
+
 
 const DUMMY_ID = 9;
 
@@ -51,10 +53,11 @@ const PrivateProfileOverview = () => {
       console.log('Error', error.message);
     }
   };
-  
   const fetchProfile = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/user/${DUMMY_ID}/profile`);
+      const userId = await fetchUserId();
+      const headers = getHeaders();
+    await axios.get(`http://localhost:8000/user/${id}/profile`, { headers })
       if (response.status === 200) {
         setProfile(response.data);
         showToastMessage("Profile loaded!", "", "info");
