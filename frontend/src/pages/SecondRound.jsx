@@ -75,7 +75,7 @@ function SecondRound() {
               {position && center ? (<Polyline marker={position} center={center}/>) : (null)}
           </MapContainer>
       </Center>
-      {!data && position ? <Button isLoading={isLoading} mt={5} spacing={5} colorScheme='blue' size='md' align='center' onClick={getOsmData}>Versuch auswerten</Button> : null}
+      {!data && position ? <Button isLoading={isLoading} mt={5} spacing={5} colorScheme='blue' size='md' align='center' onClick={getOsmData}>evaluate try</Button> : null}
       <Box align="left" mt={5} fontSize="xl" fontWeight="700">
         {data ? <Distance markerPosition={position} center={center}/> : null}
       </Box>
