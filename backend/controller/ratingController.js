@@ -71,7 +71,7 @@ async function calculateDistance(req, res){
 
     const positions = req.body;
     
-    let distance = geoService.calculateDistance(positions.markerPosition, positions.center);
+    let distance = geoService.calculateDistance(positions.guessed_position, positions.center);
 
     req.session.game = game;
     res.status(200).json( {distance: distance})

@@ -7,7 +7,7 @@ function calculateDistance ({markerPosition, center}) {
   
   const calculateRequest = async () => {
     try{
-      const response = await axios.post(url, {"markerPosition": {lat: markerPosition.lat, lon: markerPosition.lng}, "center": {lat: center.lat, lon: center.lon}})
+      const response = await axios.post(url, {"guessed_position": {lat: markerPosition.lat, lon: markerPosition.lng}, "center": {lat: center.lat, lon: center.lon}})
       setDistance(response.data.distance);
     }catch(error){
       console.error(error);
