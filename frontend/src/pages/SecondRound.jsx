@@ -61,8 +61,8 @@ function SecondRound() {
 
   return (
     <Box align="center">
-      <Text mb={1} fontSize='2xl' textAlign="center">Runde 2</Text>
-      <Text m={2} fontSize='xl'>Versuche das Zentrum des Landes zu erraten</Text>
+      <Text mb={1} fontSize='2xl' textAlign="center">Round 2</Text>
+      <Text m={2} fontSize='xl'>Try to guess the center of the country</Text>
       <Text m={2} fontSize='xl' fontWeight='700'>{countryName}</Text>
       <Center>
           <MapContainer center={[50, 10]} zoom={3} scrollWheelZoom={true}>

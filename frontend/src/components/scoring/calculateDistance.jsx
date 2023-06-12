@@ -20,7 +20,7 @@ function calculateDistance ({markerPosition, center}) {
   }, []);
 
   return (
-    <div>Die Entfernung zum Zentrum beträgt: {distance}km!</div>
+    <div>The distance to the center is: {distance}km!</div>
   )
 }
 
