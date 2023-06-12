@@ -25,7 +25,7 @@ function SecondRound() {
   const createGame = async () => {
     try{
       const gameResponse = await axios.post('http://localhost:8000/game', { "difficulty": "easy" });
-      setCountryName(gameResponse.data.game.country_name)
+      setCountryName(gameResponse.data.game.country_name);
     }catch(error){
       console.log(error);
     }

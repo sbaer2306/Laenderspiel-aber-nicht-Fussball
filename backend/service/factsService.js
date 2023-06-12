@@ -68,7 +68,7 @@ async function fetchCountryFacts(countryCode){  //f.e. VA = Vatican City, US = U
     }
 }
 
-async function calculateRatingFacts(facts, guessedData){
+/* async function calculateRatingFacts(facts, guessedData){
   try{
     let score = 0;
     const time = guessedData.time;
@@ -112,9 +112,9 @@ const evaluatePointsForFacts = (answers, facts) => {
     }
   }
   return score;
-}
+} */
 
-module.exports = {fetchCountryFacts, calculateRatingFacts};
+module.exports = {fetchCountryFacts};
 
 /*
 

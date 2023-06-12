@@ -1,5 +1,6 @@
 const geoService = require('../service/geoService');
-const factsService = require('../service/factsService')
+const factsService = require('../service/factsService');
+const scoringService = require('../service/scoringService')
 
 async function calculateRatingFacts(req, res){
   try {
@@ -15,7 +16,7 @@ async function calculateRatingFacts(req, res){
     const {data} = req.body;
     //return res.status(406).json({message: "Not acceptable"})
 
-    const score = await factsService.calculateRatingFacts(facts, data);
+    const score = await scoringService.calculateRatingFacts(facts, data);
 
     game.current_score = score;
     req.session.game = game;
@@ -44,8 +45,13 @@ async function calculateDistance(req, res){
     
     let distance = geoService.calculateDistance(positions.guessed_position, positions.center);
 
+    let score = scoringService.calculateGeoInformation(distance);
+    score = score + game.current_score;
+    game.current_score = score; 
+
     req.session.game = game;
-    res.status(200).json( {distance: distance})
+
+    res.status(200).json( {distance: distance, score: score})
   }catch (error){
     console.log(error);
     res.status(500).json({error: 'Internal Server Error'});
