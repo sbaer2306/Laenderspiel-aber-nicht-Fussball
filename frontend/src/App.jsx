@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import './App.css'
 import { FirstRound } from './pages/FirstRound'
 import SecondRound from './pages/SecondRound'
+import ThirdRound from './pages/ThirdRound'
 import { HomePage } from './pages/HomePage'
 import {LoggedHomePage} from './pages/LoggedHomePage'
 import SwaggerDocDisplay from './components/ApiDoc/SwaggerDocDisplay'
@@ -24,6 +25,7 @@ function App() {
           <Route path='/api/doc' element={<SwaggerDocDisplay/>} />
           <Route path='logged/game/:game_id/facts' element={<FirstRound/>} />  {/*logged only for testing purposes for now */}
           <Route path='/game/:game_id/geo-information' element={<SecondRound/>} />
+          <Route path='/game/:game_id/sights' element={<ThirdRound />} />
         </Routes> 
     </div>
   )
