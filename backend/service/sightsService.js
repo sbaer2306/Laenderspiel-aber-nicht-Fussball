@@ -25,6 +25,7 @@ async function fetchCities(countryCode) {
     }
   }
 
+  /*
   async function fetchSights(countryCode) {
     try {
       const cities = await fetchCities(countryCode);
@@ -77,9 +78,8 @@ async function fetchCities(countryCode) {
       return { error: error.message };
     }
   }
-  
+  */
 
-/*  
 async function fetchSights(countryCode) {
     try {
       const cities = await fetchCities(countryCode);
@@ -120,6 +120,5 @@ async function fetchSights(countryCode) {
       return { error: error.message };
     }
   }
-*/
   
 module.exports = { fetchSights, fetchCities };
