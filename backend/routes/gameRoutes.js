@@ -4,7 +4,7 @@ const geoController = require('../controller/geoController')
 const gameController = require('../controller/gameController');
 const factsController = require('../controller/factsController');
 const ratingController = require('../controller/ratingController');
-//const sightsController = require('../controller/sightsController');
+const sightsController = require('../controller/sightsController');
 
 const {checkSessionTTL} = require('../service/sessionService')
 
@@ -35,7 +35,7 @@ gameRoutes.get('/:id/geo-information', geoController.getOsmData);
 gameRoutes.post('/:id/rating/geo-information', ratingController.calculateDistance);
 
 //Sights
-//gameRoutes.get('/:id/sights', sightsController.getSights);
+gameRoutes.get('/:id/sights', sightsController.getSights);
 
 //Export router
 module.exports = gameRoutes;
