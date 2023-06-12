@@ -18,7 +18,7 @@ async function calculateRatingFacts(req, res){
     const exampleData = {
       time: "60000", //100 sec to test
       currency: {
-        answer: "EUR", 
+        answer: "euro", 
         tries: 2,
       },
       capital: {
@@ -48,7 +48,7 @@ async function calculateRatingFacts(req, res){
       flag: true,
     }
 
-    const points = factsService.calculateRatingFacts(facts, exampleData);
+    const score = factsService.calculateRatingFacts(facts, exampleData);
 
     res.status(200).json({ score });
   } catch (error) {

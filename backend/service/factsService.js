@@ -1,9 +1,15 @@
 const axios = require('axios');
 const prisma = require('../prisma/prisma');
 const prismaClient = prisma.getPrisma();
+const NodeCache = require('node-cache');
+const cache = new NodeCache({stdTTL: 604800}); //cache TTL 1 week
 
 async function fetchCountryFacts(countryCode){  //f.e. VA = Vatican City, US = United States..
     try{
+
+        let facts = cache.get(`${countryCode}-facts`);
+        if(facts) return facts;
+
         const urlFacts = `https://restcountries.com/v3.1/alpha/${countryCode}`;
 
         const responseFacts = await axios.get(urlFacts);
@@ -42,7 +48,7 @@ async function fetchCountryFacts(countryCode){  //f.e. VA = Vatican City, US = U
           [flagResponses[i], flagResponses[j]] = [flagResponses[j], flagResponses[i]];
         }
 
-        const Facts = {
+        facts = {
           country_name: factsData.name.official,
           facts: [
             {unMember: factsData.unMember},
@@ -55,7 +61,8 @@ async function fetchCountryFacts(countryCode){  //f.e. VA = Vatican City, US = U
           ], 
           flags: flagResponses,
         }
-        return Facts;
+        cache.set(`${countryCode}-facts`, facts);
+        return facts;
     }catch(error){
         return {error: error.message, data:"No facts retrieved", countryCode: countryCode};
     }
@@ -63,10 +70,28 @@ async function fetchCountryFacts(countryCode){  //f.e. VA = Vatican City, US = U
 
 async function calculateRatingFacts(facts, guessedData){
   try{
+    let score = 0;
+    const time = guessedData.time;
+    score += time/100 + 1;  //each 100 sek minus one point
+
+    // answer, tries
+
+    //Scoring wrong = 0, right = 4 - tries
+
+    // Merge currencyObj to countryObj into a single answerObj
+    const answerObj = { ...guessedData.currency, ...guessedData.capital, ...guessedData.language, ...guessedData.area, ...guessedData.continent, ...guessedData.population, ...guessedData.country };
+
+    const factsObj = facts.facts;
+
+    score += evaluatePointsForFacts(answerObj, factsObj);
 
   }catch(error){
     return {error: error.message, facts: facts, guessedData: guessedData};
   }
+}
+
+const evaluatePointsForFacts = (answerObj, factsObj) => {
+  //todo
 }
 
 module.exports = {fetchCountryFacts, calculateRatingFacts};

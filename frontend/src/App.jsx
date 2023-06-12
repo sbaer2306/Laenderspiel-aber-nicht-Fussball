@@ -24,8 +24,8 @@ function App() {
           <Route path='/logged' element={<LoggedHomePage/>} />
           <Route path='/api/doc' element={<SwaggerDocDisplay/>} />
           <Route path='logged/game/:game_id/facts' element={<FirstRound/>} />  {/*logged only for testing purposes for now */}
-          <Route path='/game/:game_id/geo-information' element={<SecondRound/>} />
-          <Route path='/game/:game_id/sights' element={<ThirdRound />} />
+          <Route path='logged/game/:game_id/geo-information' element={<SecondRound/>} />
+          <Route path='logged/game/:game_id/sights' element={<ThirdRound />} />
         </Routes> 
     </div>
   )

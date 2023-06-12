@@ -13,6 +13,10 @@ async function createGame(req, res){
     
   const difficulty = req.body.difficulty;
   try{
+      //auth
+      //user_id = something
+
+
       // Check if the user already has a game in the session
       /*
        if (req.session.game) {
@@ -30,13 +34,9 @@ async function createGame(req, res){
       const countriesByDifficulty = seperatedCountries[difficulty];
       let selectedCountry = await createHelper.getRandomCountryForDifficulty(countriesByDifficulty);
 
-      //get temporary GameID from PlayedGame last entry id + 1
-      const lastGame = await prismaClient.playedGame.findFirst({select: { id: true }, orderBy: { id: 'desc' }});
-      const gameId = lastGame ? lastGame.id + 1 : 1; //not working because id also has to increment for every new session
-
       const game = {
-        id: 400, //to test
-        user_id: 3, //userId comes from middleware - please give it to me bastiiii :D
+        id: 400, //some number to test: -> user_id
+        user_id: 3, //user_id comes from middleware - please give it to me bastiiii :D
         current_round: 1,
         max_rounds: 3,
         ttl: 900,
