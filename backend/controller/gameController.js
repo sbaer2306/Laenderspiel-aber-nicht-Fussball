@@ -93,9 +93,9 @@ async function getGame(req, res){
     const user_id = 3;
       //bastis user_id
       if(game.user_id !== user_id) return res.status(403).json({message: "Unauthorized - user is not the player of the game"})
-      if(game.id !== id) return res.status(404).json({message: "Game not found"})
+      if(game.id !== Number(id)) return res.status(404).json({message: "Game not found"})
       req.session.game = game;
-      res.status(200).json({ game });
+      res.status(200).json({ game: game });
 
   }catch(error){
     res.status(500).json({ error: 'Internal Server Error', message: error.message });
@@ -118,7 +118,7 @@ async function deleteGame(req, res){
     const user_id = 3;
     //bastis user_id
     if(game.user_id !== user_id) return res.status(403).json({message: "Unauthorized - user is not the player of the game"})
-    if(game.id !== id) return res.status(404).json({message: "Game not found"})
+    if(game.id !== Number(id)) return res.status(404).json({message: "Game not found", gameid: game.id, id: id})
     
     req.session.game = null;
     res.status(200).json({ message: "Game successfully cancelled. No content." });
