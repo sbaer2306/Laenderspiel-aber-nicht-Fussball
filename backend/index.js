@@ -8,12 +8,17 @@ const cors = require('cors');
 const app = express();
 prisma.initializePrisma();
 
-// Initialize Passport middleware
-app.use(passport.initialize());
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-}));
+require('./config/passport')(passport)
+app.use(passport.initialize())
+
+// CORS-Header setzen
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 
 // Include the auth routes
 const authRoutes = require('./routes/authRoutes');
@@ -23,17 +28,12 @@ app.get('/example', (req, res) => {
   res.send('Hello, this is the example route!');
 });
 
-//init session
-app.use(
-  session({
-    secret: "my-secret-key",
-    resave: false,
-    saveUninitialized: true,
-     cookie: {
-      maxAge: 60000, //100 sek to test 
-    }, 
-  })
-);
+app.use(session({
+  secret: 'geheimnis', // Passen Sie dies an ein sicheres Geheimnis an
+  resave: false,
+  saveUninitialized: false
+}));
+
 
 app.use(express.json()); // body parsing middleware (express does not parse the body by default)
 

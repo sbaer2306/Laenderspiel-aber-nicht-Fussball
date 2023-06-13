@@ -7,7 +7,7 @@ class GoogleLoginButton extends React.Component {
     const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
 
     const options = {
-      redirect_uri: 'http://localhost:8000/api/auth/google',
+      redirect_uri: 'http://localhost:8000/api/auth/google/callback',
       client_id: '309647332008-sh1um2m2usfephkeo3hcccn17okpra2q.apps.googleusercontent.com',
       access_type: 'offline',
       response_type: 'code',

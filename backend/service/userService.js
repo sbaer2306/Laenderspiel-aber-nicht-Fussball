@@ -65,5 +65,16 @@ const getProfileByUserId = async (userId) => {
 
     return profile;
 };
+const getUserByOAuthID = async (OAuthID) => {
+    const user = await prismaClient.user.findUnique({
+        where: { OAuthID: OAuthID },
+    });
+    return user;
+};
+const createUser = async (newUser) => {
+    const user = await prismaClient.user.create({ data: newUser });
+    return user;
+};
 
-module.exports = { purgeUserData, getUserById, getProfileByUserId };
+
+module.exports = { purgeUserData, getUserById, getProfileByUserId, getUserByOAuthID, createUser };

@@ -24,11 +24,13 @@
     "express-session": "^1.17.1",
     "google-auth-library": "^8.8.0",
     "googleapis": "^118.0.0",
+    "jsonwebtoken": "^9.0.0",
     "mysql": "^2.18.1",
     "node-cache": "^5.1.2",
     "passport": "^0.4.1",
     "passport-google-oauth": "^2.0.0",
-    "passport-google-oauth2": "^0.2.0"
+    "passport-google-oauth2": "^0.2.0",
+    "passport-jwt": "^4.0.1"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
