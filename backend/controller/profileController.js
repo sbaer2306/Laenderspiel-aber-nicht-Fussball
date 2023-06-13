@@ -99,10 +99,37 @@ const updateProfile = async (req, res) => {
  * @param {Request} req Request object
  * @param {Response} res Response object
  */
-const createProfile = (req, res) => {
-    //profileService.createProfile(req.body);
-    // Implementiere hier die Logik zum Erstellen eines Profils
-    res.status(201).json({ message: 'TODO: Profil abhängig von authentifiziertem User erstellen!' });
-};
+const createProfile = async (req, res) => {
+    try {
+        const user_id = 9; // TODO: get user id from auth token
+        // Authorization - check if user already has a profile
+        const profile_data = req.body;
+
+        const allowedFields = ["firstName", "lastName", "bio", "location", "isPrivate"];
+        const bodyFields = Object.keys(profile_data);
+        const invalidFields = bodyFields.filter(field => !allowedFields.includes(field));
+        if (invalidFields.length > 0) {
+            return res.status(400).json({
+                error: "Invalid Field(s)",
+                message: `Invalid request. Request body contains invalid field(s): ${invalidFields.join(', ')}.`
+            });
+        };
+
+        const validationResult = validateProfileUpdate(profile_data);
+        if (validationResult) {
+            return res.status(400).json(validationResult);
+        }
+        const createdProfile = await profileService.createNewProfile(user_id, profile_data);
+        res.status(201).json(createdProfile);
+    }
+    catch (error) {
+        if (error.httpStatusCode) {
+            return res.status(error.httpStatusCode).json({ message: error.message });
+        }
+        console.error(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
 
 module.exports = { getProfile, updateProfile, createProfile };

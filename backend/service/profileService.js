@@ -23,6 +23,46 @@ getProfile = async (id) => {
 };
 
 /**
+ * Creates a profile for the specified user_id.
+ *
+ * @param {number} user_id - The ID of the user that creates the profile.
+ * @returns {Promise<object>} The retrieved profile object.
+ * @throws {Error} If insertion fails, an error is thrown.
+ */
+
+createNewProfile = async (user_id, profile_data) => {
+
+    // check if the user already has a profile
+    const existingProfile = await prisma.profile.findUnique({
+        where: {
+            userId: user_id,
+        },
+    });
+    if (existingProfile) {
+        const error = new Error('User already has a profile.');
+        error.httpStatusCode = 409;
+        throw error;
+    }
+
+    const profile = await prisma.profile.create({
+        data: {
+            userId: user_id,
+            firstName: profile_data.firstName,
+            lastName: profile_data.lastName,
+            bio: profile_data.bio,
+            location: profile_data.location,
+            isPrivate: profile_data.isPrivate,
+        },
+    });
+    if (!profile) {
+        const error = new Error('Profile creation failed.');
+        throw error;
+    }
+
+    return profile;
+};
+
+/**
  * Updates a user profile.
  *
  * @param {number} id - The ID of the profile to update.
@@ -71,16 +111,4 @@ updateProfile = async (id, updateData) => {
     return updatedProfile;
 };
 
-/**
- * Creates a user profile.
- * @param {Object} profileData firstName, lastName, bio, location, isPrivate, userId
- * @returns {Promise<Object>} The created profile object.
- */
-const createProfile = async (profileData) => {
-    const profile = await prisma.profile.create({
-        data: profileData,
-    });
-    return profile;
-};
-
-module.exports = { getProfile, updateProfile, createProfile };
+module.exports = { getProfile, updateProfile, createNewProfile };
