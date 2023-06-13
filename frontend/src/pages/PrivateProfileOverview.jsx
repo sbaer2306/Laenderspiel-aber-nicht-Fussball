@@ -8,6 +8,7 @@ import ConfirmationModal from '../components/UI/ConfirmationModal';
 import { useNavigate } from 'react-router-dom';
 import api from "../helpers/axios.js";
 import { useUserAuth } from '../hooks/userAuthContext';
+import EditUsernameModal from '../components/profile/editing/EditUsernameModal';
 
 const PrivateProfileOverview = () => {
   const [profile, setProfile] = useState({}); 
@@ -16,8 +17,9 @@ const PrivateProfileOverview = () => {
   const [stats, setStats] = useState({});
 
   const { isOpen: deletionModalIsOpen, onOpen: onOpenDeletionModal, onClose: onCloseDeletionModal } = useDisclosure();
+  const { isOpen: usernameEditingIsOpen, onOpen: onOpenUsernameEditing, onClose: onCloseUsernameEditing } = useDisclosure();
 
-  const { currentUser } = useUserAuth();
+  const { currentUser, setCurrentUser, setUserToken } = useUserAuth();
 
   const navigate = useNavigate();
 
@@ -85,7 +87,9 @@ const PrivateProfileOverview = () => {
     try {
       const response = await api.delete(`/user/${currentUser.id}`);
       if (response.status === 200) {
-        showToastMessage("Success!", `Your account data has been deleted!.`, "success");
+        showToastMessage("Success!", `Your account data has been deleted!`, "success");
+        setCurrentUser(null);
+        setUserToken(null);
         navigate("/");
       }
     } catch (error) {
@@ -102,6 +106,13 @@ const PrivateProfileOverview = () => {
     } catch (error) {
       handleApiError(error);
     }
+  };
+
+  const editUsername = async (values) => {
+    // TODO: Implement username editing endpoint call @basti
+    // Dran denken: Username muss auch im kontext lokal danach aktualisiert werden!
+    alert('TODO: Implement username editing');
+    onCloseUsernameEditing();
   };
   
   const calculateStats = async () => {
@@ -129,13 +140,13 @@ const PrivateProfileOverview = () => {
 
   return (
     <>
-    <Text fontSize='xl' fontWeight='semibold'>Personal Profile Overview</Text>
-    <Divider my={5}/>
+    <Text fontSize='lg' fontWeight='semibold' mt={3}>Hi, {currentUser.username}! - Take a look at your profile: </Text>
     <Box maxW='600px' margin='auto' mt={5}>
     <ProfileOperationsButtonBar 
       calcStats={calculateStats}
       deleteHistory={deleteGameHistory}
       deleteAccount={onOpenDeletionModal}
+      editUsername={onOpenUsernameEditing}
     />
     </Box>
       {Object.keys(profile).length > 0 && (
@@ -152,6 +163,7 @@ const PrivateProfileOverview = () => {
       )
     }
     <ConfirmationModal isOpen={deletionModalIsOpen} onClose={onCloseDeletionModal} onConfirm={deleteUserAccount} title='User Account Deletion'/>
+    <EditUsernameModal isOpen={usernameEditingIsOpen} onClose={onCloseUsernameEditing} onSubmit={editUsername} initialUsername={currentUser.username}/>
     </>
   );
 };

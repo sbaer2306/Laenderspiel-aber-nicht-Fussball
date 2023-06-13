@@ -10,7 +10,6 @@ export const UserAuthContextProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const headers = { 'authorization': `jwt ${currentToken}` };
       const response = await api.get('/user/userinfo');
       const user = response.data.user;
       return user;
@@ -21,7 +20,7 @@ export const UserAuthContextProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (!currentToken) {
+      if (currentToken) {
         const user = await fetchUser();
         console.log("user fetched: ", user);
         setCurrentUser(user);
@@ -72,10 +71,11 @@ export const UserAuthContextProvider = ({ children }) => {
   const logout = () => {
     setCurrentToken(null);
     setCurrentUser(null);
+    api.defaults.headers.common["authorization"] = null;
   };
 
   return (
-    <userAuthContext.Provider value={{ currentUser, currentToken, handleGoogleLogin, setUserToken, logout, userIsLoggedIn, getCurrentUser }}>
+    <userAuthContext.Provider value={{ currentUser, setCurrentUser, currentToken, handleGoogleLogin, setUserToken, logout, userIsLoggedIn, getCurrentUser }}>
       {children}
     </userAuthContext.Provider>
   );
