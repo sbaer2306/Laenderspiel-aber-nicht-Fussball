@@ -11,11 +11,13 @@ import Navbar from './components/UI/Navbar'
 import Ranking from './components/Ranking/Ranking'
 import PublicProfileOverview from './components/profile/PublicProfileOverview'
 import PrivateProfileOverview from './components/profile/editing/PrivateProfileOverview'
+import { UserAuthContextProvider } from './hooks/userAuthContext'
 
 function App() {
 
   return (
     <div className='container_app'>
+      <UserAuthContextProvider>
       <Navbar/>
         <Routes>
           <Route path='/' element={<HomePage/>} />
@@ -30,6 +32,7 @@ function App() {
           <Route path='logged/game/:game_id/sights' element={<ThirdRound />} />
           <Route path='/game/:game_id/sights' element={<ThirdRound />} />
         </Routes> 
+        </UserAuthContextProvider>
     </div>
   )
 }
