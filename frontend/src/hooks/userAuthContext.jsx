@@ -75,7 +75,7 @@ export const UserAuthContextProvider = ({ children }) => {
   };
 
   return (
-    <userAuthContext.Provider value={{ currentUser, currentToken, handleGoogleLogin, setUserToken, logout, userIsLoggedIn, getCurrentUser }}>
+    <userAuthContext.Provider value={{ currentUser, setCurrentUser, currentToken, handleGoogleLogin, setUserToken, logout, userIsLoggedIn, getCurrentUser }}>
       {children}
     </userAuthContext.Provider>
   );

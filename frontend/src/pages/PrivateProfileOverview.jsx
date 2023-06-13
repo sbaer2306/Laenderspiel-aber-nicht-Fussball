@@ -19,7 +19,7 @@ const PrivateProfileOverview = () => {
   const { isOpen: deletionModalIsOpen, onOpen: onOpenDeletionModal, onClose: onCloseDeletionModal } = useDisclosure();
   const { isOpen: usernameEditingIsOpen, onOpen: onOpenUsernameEditing, onClose: onCloseUsernameEditing } = useDisclosure();
 
-  const { currentUser } = useUserAuth();
+  const { currentUser, setCurrentUser, setUserToken } = useUserAuth();
 
   const navigate = useNavigate();
 
@@ -87,7 +87,9 @@ const PrivateProfileOverview = () => {
     try {
       const response = await api.delete(`/user/${currentUser.id}`);
       if (response.status === 200) {
-        showToastMessage("Success!", `Your account data has been deleted!.`, "success");
+        showToastMessage("Success!", `Your account data has been deleted!`, "success");
+        setCurrentUser(null);
+        setUserToken(null);
         navigate("/");
       }
     } catch (error) {
