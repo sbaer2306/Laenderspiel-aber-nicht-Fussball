@@ -105,6 +105,12 @@ const createProfile = async (req, res) => {
         // Authorization - check if user already has a profile
         const profile_data = req.body;
 
+        if (Object.keys(profile_data).length === 0) {
+            return res.status(400).json({
+                message: "Invalid request. Request body is empty."
+            });
+        }
+
         const allowedFields = ["firstName", "lastName", "bio", "location", "isPrivate"];
         const bodyFields = Object.keys(profile_data);
         const invalidFields = bodyFields.filter(field => !allowedFields.includes(field));
