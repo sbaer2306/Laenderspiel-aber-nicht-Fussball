@@ -13,6 +13,7 @@ import PublicProfileOverview from './components/profile/PublicProfileOverview'
 import PrivateProfileOverview from './components/profile/editing/PrivateProfileOverview'
 import { UserAuthContextProvider } from './hooks/userAuthContext'
 import LoggedInHomepage from './pages/LoggedInHomepage'
+import ProtectedRoute from './components/Auth/ProtectedRoute'
 
 function App() {
 
@@ -23,16 +24,18 @@ function App() {
         <Routes>
           <Route path='/' element={<HomePage/>} />
           <Route path='/login' element={<Login/>} />
-          <Route path='/welcome' element={<LoggedInHomepage/>} />
           <Route path='/ranking' element={<Ranking/>} />
-          <Route path='/user/:id/public-profile' element={<PublicProfileOverview/>} />
-          <Route path='/user/profile' element={<PrivateProfileOverview/>} />
           <Route path='/logged' element={<LoggedHomePage/>} />
           <Route path='/api/doc' element={<SwaggerDocDisplay/>} />
           <Route path='logged/game/facts' element={<FirstRound/>} />  {/*logged only for testing purposes for now */}
           <Route path='logged/game/geo-information' element={<SecondRound/>} />
           <Route path='logged/game/sights' element={<ThirdRound />} />
           <Route path='/game/:game_id/sights' element={<ThirdRound />} />
+
+          {/*PROTECTED ROUTES*/}
+          <Route path='/welcome' element={<ProtectedRoute><LoggedInHomepage/></ProtectedRoute>} />
+          <Route path='/user/:id/public-profile' element={<ProtectedRoute><PublicProfileOverview/></ProtectedRoute>} />
+          <Route path='/user/profile' element={<ProtectedRoute><PrivateProfileOverview/></ProtectedRoute>} />
         </Routes> 
         </UserAuthContextProvider>
     </div>
