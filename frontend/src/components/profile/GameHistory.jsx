@@ -3,8 +3,8 @@ import { Table, Thead, Tbody, Tr, Th, Td, Button, Text, Divider } from '@chakra-
 import { formatDate } from '../../helpers/date';
 import {secondsToHumanReadable} from '../../helpers/time';
 import { VscArrowSmallLeft, VscArrowSmallRight } from 'react-icons/vsc';
+import api from "../../helpers/axios.js";
 
-// id = userId
 function GameHistory({ id }) {
 
 
@@ -19,24 +19,27 @@ function GameHistory({ id }) {
 
   const fetchGameHistory = async (page = 1, pageSize = 5) => {
     try {
-      const response = await fetch(
-        `http://localhost:8000/user/${id}/played-games?page=${page}&pageSize=${pageSize}`
-      );
-
+      const response = await api.get(`/user/${id}/played-games`, {
+        params: {
+          page: page,
+          pageSize: pageSize
+        }
+      });
+  
       if (response.status === 403) {
         console.error('Game history is private.');
         setIsPrivate(true);
         return;
       }
-
-      const data = await response.json();
+  
+      const data = response.data;
       setGameHistory(data.playedGames);
       setNextPage(data._links.next?.href);
       setPrevPage(data._links.prev?.href);
     } catch (error) {
       console.error('Error fetching game history:', error);
     }
-  };
+  };  
 
   const handleLoadNext = () => {
     if (nextPage) {

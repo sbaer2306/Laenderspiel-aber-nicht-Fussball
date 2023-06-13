@@ -6,7 +6,6 @@ import ProfileOperationsButtonBar from './ProfileOperationsButtonBar';
 import StatsModal from '../stats/StatsModal';
 import ConfirmationModal from '../../UI/ConfirmationModal';
 import { useNavigate } from 'react-router-dom';
-import { fetchUserId, getHeaders } from '../../../helpers/auth.js';
 import api from "../../../helpers/axios.js";
 import { useUserAuth } from '../../../hooks/userAuthContext';
 
@@ -18,7 +17,7 @@ const PrivateProfileOverview = () => {
 
   const { isOpen: deletionModalIsOpen, onOpen: onOpenDeletionModal, onClose: onCloseDeletionModal } = useDisclosure();
 
-  const { currentUser, getCurrentUser } = useUserAuth();
+  const { currentUser } = useUserAuth();
 
   const navigate = useNavigate();
 
@@ -144,7 +143,7 @@ const PrivateProfileOverview = () => {
       <ProfileEditor passedProfile={profile} updateProfile={updateProfile} />
     )}
     <Box maxW='600px' margin='auto' mt={5}>
-      
+      <GameHistory id={currentUser.id}/>
     </Box>
 
     { Object.keys(stats).length > 0 && (
