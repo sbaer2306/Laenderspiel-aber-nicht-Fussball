@@ -51,7 +51,7 @@ async function createGame(req, res){
       const links = {
         nextStep: {
           description: 'Retrieve facts for the newly created game. ',
-          operationRef: `game/${game.id}/facts/`,
+          operationRef: `game/facts/`,
           parameters: {
             id: game.id,
           }
@@ -70,8 +70,7 @@ async function createGame(req, res){
       if (error.httpStatusCode) {
         return res.status(error.httpStatusCode).json({ message: error.message });
       }
-      console.error(error);
-      res.status(500).json({ message: 'Internal Server Error', difficulty: difficulty });
+      res.status(500).json({ message: 'Internal Server Error' });
     }
 }
 

@@ -1,6 +1,6 @@
 
 const checkSessionTTL = (req, res, next) => {
-    if(!req.session.game) return res.status(401).json({ message: 'Session expired. Please start a new game.' });
+    if(!req.session.game) return res.status(403).json({ message: 'Session expired. Please start a new game.' });
     
     const ttl = req.session.cookie.maxAge;
     if(ttl <= 0){

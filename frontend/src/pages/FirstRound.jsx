@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react'
-import {useParams} from 'react-router-dom'
+import {useLocation, useNavigate} from 'react-router-dom'
 import '../css/FirstRound.css'
 import { Facts } from '../components/Facts';
-import {Text, CircularProgress} from '@chakra-ui/react';
+import {Text, CircularProgress, Button} from '@chakra-ui/react';
 import axios from 'axios';
 
 
@@ -57,9 +57,20 @@ const exampleAnswer = {
   }
 
 export const FirstRound = () => {
-    const {game_id} = useParams();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const game_id = location.state?.game_id;
+    const [time, setTime] = useState(0)
     const [facts, setFacts] = useState()
     const [flags, setFlags] = useState()
+    const [allFactsAnswered, setAllFactsAnswered] = useState(false)
+    const [countryAnswered, setCountryAnswered] = useState(false)
+
+    const MAX_TIME = 600; //10min for now
+
+    const test = () => {
+        setCountryAnswered(!countryAnswered);
+    }
 
     useEffect(() =>{
         const fetchGameFacts = async () => {
@@ -69,19 +80,32 @@ export const FirstRound = () => {
                       'Content-Type': 'application/json',
                     },
                   };
-                const response = await axios.get(`http://localhost:8000/game/${game_id}/facts`, config);
+                const response = await axios.get(`http://localhost:8000/game/${game_id}/facts`, config);   //needs to be game/game_id/facts 
                 
                 console.log(response);
                 const factObject = response.data.facts;
                 setFacts(factObject.facts);
                 setFlags(factObject.flags);
             }catch(error){
-                console.log("error fetching: "+error);
+                if(error.response) {
+                    if(error.response.status === 403){
+                        alert("error-response: ", error.response.data.message); //toast
+                        navigate('/logged') // logged for now
+                    }
+                    //other status controlls
+                }
+                else console.log("error fetching: "+error.message);
             }
         }
+        //time
+        const timer = setInterval(() => {
+            setTime((prevTime) => prevTime + 1);
+        }, 1000);
+
+        fetchGameFacts();
 
         return () => {
-            fetchGameFacts();
+            clearInterval(timer);
         }
     }, [game_id])
   return (
@@ -91,7 +115,7 @@ export const FirstRound = () => {
                 <Text mb={1} fontSize='2xl' textAlign="center">
                 Runde 1
                 </Text>
-                <CircularProgress value={20} size='70px' />
+                <CircularProgress value={time * (100/MAX_TIME)} size='70px' />
             </div>
             
         </div>
@@ -109,14 +133,25 @@ export const FirstRound = () => {
                         <Facts key={1} title={"Land"} solution={"Deutschland"} />
                     </div>
                 </div>
-                <div className='flag_container rounded_shadow'>
-                    <h3>Flagge</h3>
-                    <div>Deutschland</div>
-                    <div>Nigeria</div>
-                    <div>Belgienn</div>
-                </div>
+                {
+                    countryAnswered && (
+                        <div className='flag_container rounded_shadow'>
+                            <h3>Flagge</h3>
+                            {
+                                flags && flags.map((flag) => (
+                                    <img key={flag.country_code} src={flag.flag_url} alt="Flagge"/>
+                                ))
+                            }
+                        </div>
+                    )
+                }
+                
             </div>
         </div>
+        <div className='button_container'>
+         <Button onClick={test} colorScheme='blue' size="md">TEST</Button>
+        </div>
+        
     </div>
   )
 }

@@ -15,7 +15,7 @@ export const Facts = ({title, solution}) => {
     const [message, setMessage] = useState("")
 
     useEffect(() => {
-      if(title.toLowerCase() == 'bevölkerung'){
+      if(title.toLowerCase() == 'population'){
         setIsPopulation(true);
         setSliderValue(38*solution/100);
       }else{
