@@ -12,6 +12,7 @@ import Ranking from './components/Ranking/Ranking'
 import PublicProfileOverview from './components/profile/PublicProfileOverview'
 import PrivateProfileOverview from './components/profile/editing/PrivateProfileOverview'
 import { UserAuthContextProvider } from './hooks/userAuthContext'
+import LoggedInHomepage from './pages/LoggedInHomepage'
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path='/' element={<HomePage/>} />
           <Route path='/login' element={<Login/>} />
+          <Route path='/welcome' element={<LoggedInHomepage/>} />
           <Route path='/ranking' element={<Ranking/>} />
           <Route path='/user/:id/public-profile' element={<PublicProfileOverview/>} />
           <Route path='/user/profile' element={<PrivateProfileOverview/>} />
