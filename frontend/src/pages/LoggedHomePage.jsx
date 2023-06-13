@@ -46,11 +46,15 @@ export const LoggedHomePage = () => {
 
         //link logic
         if(links && links.nextStep){
-            navigate(links.nextStep.operationRef);
+            navigate(links.nextStep.operationRef, {state: {game_id: game.id}}); //should be /game/facts
         }
         console.log("Game from response.data: ", game);
       }catch(error){
-          console.log("error createNewGame: ",error);
+          if(error.response && error.response.status === 400){
+            alert("You already have a game in progress");
+            navigate('game/facts')
+          } 
+          else console.log("error: ", error.message)
       }
     }
     else alert("Wähle Schwierigkeit")

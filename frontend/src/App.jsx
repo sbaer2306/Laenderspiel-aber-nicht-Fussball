@@ -27,9 +27,9 @@ function App() {
           <Route path='/user/profile' element={<PrivateProfileOverview/>} />
           <Route path='/logged' element={<LoggedHomePage/>} />
           <Route path='/api/doc' element={<SwaggerDocDisplay/>} />
-          <Route path='logged/game/:game_id/facts' element={<FirstRound/>} />  {/*logged only for testing purposes for now */}
-          <Route path='logged/game/:game_id/geo-information' element={<SecondRound/>} />
-          <Route path='logged/game/:game_id/sights' element={<ThirdRound />} />
+          <Route path='logged/game/facts' element={<FirstRound/>} />  {/*logged only for testing purposes for now */}
+          <Route path='logged/game/geo-information' element={<SecondRound/>} />
+          <Route path='logged/game/sights' element={<ThirdRound />} />
           <Route path='/game/:game_id/sights' element={<ThirdRound />} />
         </Routes> 
         </UserAuthContextProvider>
