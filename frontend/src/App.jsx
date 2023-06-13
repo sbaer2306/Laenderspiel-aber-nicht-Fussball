@@ -10,8 +10,10 @@ import SwaggerDocDisplay from './components/ApiDoc/SwaggerDocDisplay'
 import Navbar from './components/UI/Navbar'
 import Ranking from './components/Ranking/Ranking'
 import PublicProfileOverview from './components/profile/PublicProfileOverview'
-import PrivateProfileOverview from './components/profile/editing/PrivateProfileOverview'
+import PrivateProfileOverview from './pages/PrivateProfileOverview'
 import { UserAuthContextProvider } from './hooks/userAuthContext'
+import LoggedInHomepage from './pages/LoggedInHomepage'
+import ProtectedRoute from './components/Auth/ProtectedRoute'
 
 function App() {
 
@@ -23,14 +25,19 @@ function App() {
           <Route path='/' element={<HomePage/>} />
           <Route path='/login' element={<Login/>} />
           <Route path='/ranking' element={<Ranking/>} />
-          <Route path='/user/:id/public-profile' element={<PublicProfileOverview/>} />
-          <Route path='/user/profile' element={<PrivateProfileOverview/>} />
-          <Route path='/logged' element={<LoggedHomePage/>} />
+          <Route path='/logged' element={<LoggedHomePage/>} /> {/*welcome Page benutzen*/}
           <Route path='/api/doc' element={<SwaggerDocDisplay/>} />
+
+          {/*GAME ROUTES -- should be protected too!*/}
           <Route path='logged/game/facts' element={<FirstRound/>} />  {/*logged only for testing purposes for now */}
           <Route path='logged/game/geo-information' element={<SecondRound/>} />
           <Route path='logged/game/sights' element={<ThirdRound />} />
           <Route path='/game/:game_id/sights' element={<ThirdRound />} />
+
+          {/*PROTECTED ROUTES*/}
+          <Route path='/welcome' element={<ProtectedRoute><LoggedInHomepage/></ProtectedRoute>} />
+          <Route path='/user/:id/public-profile' element={<ProtectedRoute><PublicProfileOverview/></ProtectedRoute>} />
+          <Route path='/user/profile' element={<ProtectedRoute><PrivateProfileOverview/></ProtectedRoute>} />
         </Routes> 
         </UserAuthContextProvider>
     </div>

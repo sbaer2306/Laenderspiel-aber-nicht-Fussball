@@ -16,7 +16,7 @@ export const Login = () => {
 
     if (token) {
       setUserToken(token);
-      navigate('/user/profile');
+      navigate('/welcome');
     }
   }, [location.search]);
 

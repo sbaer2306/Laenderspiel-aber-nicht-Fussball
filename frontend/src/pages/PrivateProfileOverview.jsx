@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Box, useToast, Text, Divider, useDisclosure } from '@chakra-ui/react';
-import ProfileEditor from './ProfileEditor';
-import GameHistory from '../GameHistory';
-import ProfileOperationsButtonBar from './ProfileOperationsButtonBar';
-import StatsModal from '../stats/StatsModal';
-import ConfirmationModal from '../../UI/ConfirmationModal';
+import ProfileEditor from '../components/profile/editing/ProfileEditor';
+import GameHistory from '../components/profile/GameHistory';
+import ProfileOperationsButtonBar from '../components/profile/editing/ProfileOperationsButtonBar';
+import StatsModal from '../components/profile/stats/StatsModal';
+import ConfirmationModal from '../components/UI/ConfirmationModal';
 import { useNavigate } from 'react-router-dom';
-import { fetchUserId, getHeaders } from '../../../helpers/auth.js';
-import api from "../../../helpers/axios.js";
-import { useUserAuth } from '../../../hooks/userAuthContext';
+import api from "../helpers/axios.js";
+import { useUserAuth } from '../hooks/userAuthContext';
 
 const PrivateProfileOverview = () => {
   const [profile, setProfile] = useState({}); 
@@ -18,7 +17,7 @@ const PrivateProfileOverview = () => {
 
   const { isOpen: deletionModalIsOpen, onOpen: onOpenDeletionModal, onClose: onCloseDeletionModal } = useDisclosure();
 
-  const { currentUser, getCurrentUser } = useUserAuth();
+  const { currentUser } = useUserAuth();
 
   const navigate = useNavigate();
 
@@ -112,19 +111,18 @@ const PrivateProfileOverview = () => {
           'If-None-Match': eTag
         }
       });
-  
       const newEtag = response.headers['etag'];
-  
-      if (newEtag === eTag) {
-        showToastMessage("Done - Nothing changed!", "", "success");
-        console.log("ETag values are the same.");
-      } else {
-        setETag(newEtag);
-        const data = response.data;
-        setStats(data);
-      }
+      setETag(newEtag);
+      const data = response.data;
+      setStats(data);
+      
       onOpen();
     } catch (error) {
+      if (error.response?.status === 304) {
+        showToastMessage("Done - Nothing changed!", "", "success");
+        onOpen();
+        return;
+      }
       handleApiError(error);
     }
   };  
@@ -144,7 +142,7 @@ const PrivateProfileOverview = () => {
       <ProfileEditor passedProfile={profile} updateProfile={updateProfile} />
     )}
     <Box maxW='600px' margin='auto' mt={5}>
-      
+      <GameHistory id={currentUser.id}/>
     </Box>
 
     { Object.keys(stats).length > 0 && (
