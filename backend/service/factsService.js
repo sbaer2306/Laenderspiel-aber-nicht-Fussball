@@ -4,7 +4,12 @@ const prismaClient = prisma.getPrisma();
 const NodeCache = require('node-cache');
 const cache = new NodeCache({stdTTL: 604800}); //cache TTL 1 week
 
-async function fetchCountryFacts(countryCode){  //f.e. VA = Vatican City, US = United States..
+/**
+ * Checks cache if data is already available and retrieves data, otherwise make API Call, cache and retrieves data
+ * @param {String} countryCode f.e. VA = Vatican City, US = United States
+ * @returns {Object} facts for Country and flag options
+ */
+async function fetchCountryFacts(countryCode){
     try{
 
         let facts = cache.get(`${countryCode}-facts`);
@@ -68,107 +73,5 @@ async function fetchCountryFacts(countryCode){  //f.e. VA = Vatican City, US = U
     }
 }
 
-/* async function calculateRatingFacts(facts, guessedData){
-  try{
-    let score = 0;
-    const time = guessedData.time;
-    score += time/100 + 1;  //each 100 sek minus one point
-
-    // Create answerObj as an array
-    const answers = [
-      guessedData.country,
-      guessedData.currency,
-      guessedData.capital,
-      guessedData.language,
-      guessedData.area,
-      guessedData.continent,
-      guessedData.population,
-    ];
-
-    // Modify factsObj to include country_name and exclude unMember
-    const modifiedFacts = [
-      facts.country_name,
-      ...facts.facts.slice(1).filter((fact) => !fact.hasOwnProperty('unMember')).map((fact) => String(Object.values(fact)[0]).toLowerCase()),
-    ];
-
-    //Scoring wrong = 0, right = 4 - tries
-    score += evaluatePointsForFacts(answers, modifiedFacts);
-
-    score += guessedData.flag ? 4 : 0;
-
-    return score;
-
-  }catch(error){
-    return {error: error.message, facts: modifiedFacts, guessedData: guessedData};
-  }
-}
-
-const evaluatePointsForFacts = (answers, facts) => {
-  let score = 0;
-  for(let i = 0 ; i < answers.length; i++){
-    const answerObj = answers[i];
-    if(answerObj.answer.toLowerCase() === facts[i]){
-      score += 4 - answerObj.tries;
-    }
-  }
-  return score;
-} */
 
 module.exports = {fetchCountryFacts};
-
-/*
-
-
-
-Facts:
-      type: object
-      properties:
-        country_name:
-          type: string
-        facts:
-          type: array
-          items:
-            $ref: '#/components/schemas/CountryFacts'
-          minItems: 7
-          maxItems: 7
-        flags:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlagOption'
-          minItems: 3
-          maxItems: 3
-  
-    CountryFacts:
-      type: object
-      properties:
-        question_keyword:
-          type: string
-        answer:
-          type: string
-
-    FlagOption:
-      type: object
-      properties:
-        country_code:
-          type: string
-        flag_url:
-          type: string
-        correct_option:
-          type: boolean
-
-
-
-
-/* DATA
-
-Facts
-  Gründungsjahr  //KEINE DATEN 
-  Kontinent
-  Hauptstadt 
-  Fläche
-  Währung 
-  Sprache
-  Einwohner
-
-
-*/
