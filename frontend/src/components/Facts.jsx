@@ -8,11 +8,16 @@ import { Box, Button, Center, Text, Input, Slider,
 import { FaQuestionCircle, FaSpinner, FaCheck } from 'react-icons/fa';
 
 export const Facts = ({title, solution}) => {
-    const [input, setInput] = useState("")
+    
     const [isPopulation, setIsPopulation] = useState(false)
     const [sliderValue, setSliderValue] = useState(50000000)
     const [showTooltip, setShowTooltip] = useState(false)
+    
+    //userNote (maybe toast)
     const [message, setMessage] = useState("")
+    //data
+    const [input, setInput] = useState("")
+    const [tries, setTries] = useState(0)
 
     useEffect(() => {
       if(title.toLowerCase() == 'population'){
@@ -27,6 +32,7 @@ export const Facts = ({title, solution}) => {
       if(isPopulation){
         return comparePopulation()
       }
+
     }
 
     const comparePopulation = () => {

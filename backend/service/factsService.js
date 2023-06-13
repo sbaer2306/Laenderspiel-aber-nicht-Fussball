@@ -53,10 +53,22 @@ async function fetchCountryFacts(countryCode){
           [flagResponses[i], flagResponses[j]] = [flagResponses[j], flagResponses[i]];
         }
 
+        //get one 'waterbordering' country
+        let borderCountryName = "";
+        if(factsData.borders){
+          const code = factsData.borders[0];
+          const url = `https://restcountries.com/v3.1/alpha/${code}`;
+
+          const res = await axios.get(url);
+          borderCountryName = res.data[0].name.common;
+        }else{
+          borderCountryName = "none"
+        }
+
         facts = {
           country_name: factsData.name.official,
           facts: [
-            {unMember: factsData.unMember},
+            {border: borderCountryName}, 
             {currency: Object.values(factsData.currencies)[0].name},
             {capital: factsData.capital[0]},
             {language: Object.values(factsData.languages)[0]},
