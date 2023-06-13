@@ -1,6 +1,7 @@
 const createHelper = require('../helpers/createGameHelper')
 const prisma = require('../prisma/prisma');
 const prismaClient = prisma.getPrisma();
+const { validateId } = require('../helpers/invalidIDhelper');
 
 /**
  * Creates a new game for a player depending on the difficulty chosen. 
@@ -8,6 +9,8 @@ const prismaClient = prisma.getPrisma();
  * @param {object} request - the request object
  * @param {object} response - the response object
  * @returns {Promise<void>} - A Promise that resolves when the response is sent
+ * @returns {Object} The game object in JSON format when the creation is successful (HTTP 201).
+ * @returns {Object} The links object for hypermedia in JSON format when the creation is successful (HTTP 200).
  */
 async function createGame(req, res){
     
@@ -18,13 +21,10 @@ async function createGame(req, res){
 
 
       // Check if the user already has a game in the session
-      /*
        if (req.session.game) {
         return res.status(400).json({ error: 'You already have a game in progress' });
         //further logic to implement: delete old session or continue same game
       } 
-      */
-      
 
       //get countries from cache or cache them if not already for one week 
       let seperatedCountries = await createHelper.getCountries();
@@ -75,41 +75,56 @@ async function createGame(req, res){
     }
 }
 
-
+/**
+ * 
+ * @param {Object} req - the request object with the id in the parameters
+ * @param {Object} res - the response object 
+ * @returns {Promise<void>} - A promise that resolves when the game retrieval is completed
+ * @returns {Object} The game object in JSON format when the retrieval is successful (HTTP 200).
+ */
 async function getGame(req, res){
+  
+  const {id} = req.params;
+  if(validateId(id, res)) return; //400
+  
   try{
-    const {id} = req.params;
-
-
-    const game = await prismaClient.playedGame.findUnique({
-      where: {
-        id: Number(id),
-      }
-    })
-
-    if (!game) {
-      res.status(404).json({ error: 'Game not found' });
-    } else if (1/* authorization logic here */) {
-      res.status(403).json({ error: 'Unauthorized - user is not the player of the game' });
-    } else {
-      res.status(200).json({ game });
-    }
+    const game = req.session.game;
+    //to test
+    const user_id = 3;
+      //bastis user_id
+      if(game.user_id !== user_id) return res.status(403).json({message: "Unauthorized - user is not the player of the game"})
+      if(game.id !== Number(id)) return res.status(404).json({message: "Game not found"})
+      req.session.game = game;
+      res.status(200).json({ game: game });
 
   }catch(error){
-      res.status(500).json({error: 'Interner Serverfehler'});
+    res.status(500).json({ error: 'Internal Server Error', message: error.message });
   }
 }
 
+/**
+ * Searching for a game on id in the parameter and deletes it. 
+ * @param {Object} req - the request object with the id in the parameters
+ * @param {Object} res - the response object
+ * @returns {Promise<void>}
+ */
 async function deleteGame(req, res){
-  try {
-    const {id} = req.params;
+  const {id} = req.params;
+  if(validateId(id, res)) return; //400
+  
+  try{
+    const game = req.session.game;
+    //to test
+    const user_id = 3;
+    //bastis user_id
+    if(game.user_id !== user_id) return res.status(403).json({message: "Unauthorized - user is not the player of the game"})
+    if(game.id !== Number(id)) return res.status(404).json({message: "Game not found", gameid: game.id, id: id})
+    
+    req.session.game = null;
+    res.status(200).json({ message: "Game successfully cancelled. No content." });
 
-    //database request down there
-    //await deleteGame(id);
-    res.status(200).send('Game deleted successfully');
-  } catch (error) {
-      console.error("Fehler beim Löschen eines Games", error);
-      res.status(500).json({ error: 'Internal Server Error' });
+  }catch(error){
+    res.status(500).json({ error: 'Internal Server Error', message: error.message });
   }
 }
 

@@ -12,7 +12,7 @@ const {checkSessionTTL} = require('../service/sessionService')
 //middleware
 
 gameRoutes.use((req,res,next) => {
-    if(req.path !== '/' && req.path !== '/:id') checkSessionTTL(req,res,next);
+    if(req.path !== '/' ) checkSessionTTL(req,res,next);
     else next();
 }) 
 
@@ -20,7 +20,7 @@ gameRoutes.use((req,res,next) => {
 //Game
 
 
-gameRoutes.get(':id', gameController.getGame);
+gameRoutes.get('/:id', gameController.getGame);
 gameRoutes.delete('/:id', gameController.deleteGame);
 
 gameRoutes.post('/', gameController.createGame);

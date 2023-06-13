@@ -31,7 +31,10 @@ app.get('/example', (req, res) => {
 app.use(session({
   secret: 'geheimnis', // Passen Sie dies an ein sicheres Geheimnis an
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 60000 //100 sekunden
+  }
 }));
 
 

@@ -9,15 +9,12 @@ async function getFacts(req, res){
 
     //Game from session
     const game = req.session.game;
-
+    if(!game) return res.status(404).json({error: "Game not found"})
     /*
     if( game.user_id !== bastiUSERID){
       return res.status(403).json({error: "Not authorized", game: game, id: id})
     }
     */
-    if(!game || game.id !== Number(id)){
-      return res.status(404).json({error: "Game not found", game: game, id: id})
-    }
 
     const country_id = Number(game.country_id);
     const country = await prismaClient.country.findUnique({
@@ -34,7 +31,7 @@ async function getFacts(req, res){
     
     res.status(200).json({facts: facts, country: country, countryCode: countryCode, countryId: country_id});
   } catch (error) {
-      res.status(500).json({ error: error.message});
+      res.status(500).json({ error: error.message+" / getfacts"});
   }
 }
 
