@@ -111,19 +111,18 @@ const PrivateProfileOverview = () => {
           'If-None-Match': eTag
         }
       });
-  
       const newEtag = response.headers['etag'];
-  
-      if (newEtag === eTag) {
-        showToastMessage("Done - Nothing changed!", "", "success");
-        console.log("ETag values are the same.");
-      } else {
-        setETag(newEtag);
-        const data = response.data;
-        setStats(data);
-      }
+      setETag(newEtag);
+      const data = response.data;
+      setStats(data);
+      
       onOpen();
     } catch (error) {
+      if (error.response?.status === 304) {
+        showToastMessage("Done - Nothing changed!", "", "success");
+        onOpen();
+        return;
+      }
       handleApiError(error);
     }
   };  
