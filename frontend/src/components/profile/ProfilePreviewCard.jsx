@@ -3,6 +3,7 @@ import { useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import { Flex, Box, Heading, Text, Avatar, Divider } from '@chakra-ui/react';
 import { BsPerson, BsGeoAlt } from 'react-icons/bs';
+import api from '../../helpers/axios';
 
 const PublicProfilePreviewCard = ({ userId }) => {
   const [profile, setProfile] = useState(null);
@@ -11,7 +12,7 @@ const PublicProfilePreviewCard = ({ userId }) => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/user/${userId}/profile`);
+        const response = await api.get(`/user/${userId}/profile`);
         setProfile(response.data);
       } catch (error) {
         const { status } = error.response;
@@ -21,7 +22,17 @@ const PublicProfilePreviewCard = ({ userId }) => {
         if (status === 404) {
           errorMessage = 'Profile not found.';
         } else if (status === 403) {
-          errorMessage = 'Access denied.';
+          toast(
+            {
+              title: 'Oh no!',
+              description: 'Profile is set to private! You are not allowed to see this profile.',
+              status: 'info',
+              duration: 3000,
+              isClosable: true,
+              variant: 'left-accent',
+            }
+          );
+          return; 
         } else if (status === 500) {
           errorMessage = 'Internal server error.';
         }
@@ -32,6 +43,7 @@ const PublicProfilePreviewCard = ({ userId }) => {
           status: 'error',
           duration: 3000,
           isClosable: true,
+          variant: 'left-accent',
         });
       }
     };
