@@ -6,86 +6,53 @@ import {Text, CircularProgress, Button} from '@chakra-ui/react';
 import axios from 'axios';
 
 
-const exampleAnswer = {
-    "time": "530",
-        "answers":[
-            {
-            "currency": {
-                "answer": "euro",
-                "tries": 2
-                }
-            },
-            {
-                "capital": {
-                    "answer": "Thimphu",
-                    "tries": 2
-                    }
-            },
-            {
-                "language": {
-                    "answer": "Dzongkha",
-                    "tries": 1
-                    }
-            },
-            {
-                "area": {
-                    "answer": 34,
-                    "tries": 2
-                    }
-            },
-            {
-                "continent": {
-                    "answer": "europe",
-                    "tries": 1
-                    }
-            },
-            {
-                "population": {
-                    "answer": 79000000,
-                    "tries": 2
-                    }
-            },{
-                "country": {
-                    "answer": "Germany",
-                    "tries": 1
-                    }
-            }
-
-
-        ],
-        "flag": true
-  }
+const initialAnswerObj = {
+    time: 0,
+    answers: [
+      { border: { answer: "", tries: 0 } },
+      { currency: { answer: "", tries: 0 } },
+      { capital: { answer: "", tries: 0 } },
+      { language: { answer: "", tries: 0 } },
+      { area: { answer: "", tries: 0 } },
+      { continent: { answer: "", tries: 0 } },
+      { population: { answer: "", tries: 0 } },
+      { country: { answer: "", tries: 0 } }
+    ],
+    flag: ""
+};
 
 export const FirstRound = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const game_id = location.state?.game_id;
+    const id = location.state?.id;
     const [time, setTime] = useState(0)
     const [facts, setFacts] = useState()
     const [flags, setFlags] = useState()
+    const [countryAnswer, setCountryAnswer] = useState()
     const [allFactsAnswered, setAllFactsAnswered] = useState(false)
     const [countryAnswered, setCountryAnswered] = useState(false)
+    const [flagClicked, setFlagClicked] = useState(false)
+    const [randomBoolean, setRandomBoolean] = useState(Array(7).fill(false))
+
+    const [answer, setAnswer] = useState(initialAnswerObj)
 
     const MAX_TIME = 600; //10min for now
+    const LENGTH = 7
+    const COUNT = 3
 
-    const test = () => {
-        setCountryAnswered(!countryAnswered);
-    }
+    useEffect(() => {
+        randomGenerator()
+    },[])
 
     useEffect(() =>{
         const fetchGameFacts = async () => {
             try{
-                const config = {
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                  };
-                const response = await axios.get(`http://localhost:8000/game/${game_id}/facts`, config);   //needs to be game/game_id/facts 
+                const response = await axios.get(`http://localhost:8000/game/${id}/facts`); 
                 
-                console.log(response);
                 const factObject = response.data.facts;
                 setFacts(factObject.facts);
                 setFlags(factObject.flags);
+                setCountryAnswer(factObject.country_name)
             }catch(error){
                 if(error.response) {
                     if(error.response.status === 403){
@@ -107,7 +74,84 @@ export const FirstRound = () => {
         return () => {
             clearInterval(timer);
         }
-    }, [game_id])
+    }, [id])
+
+    const randomGenerator = () => {
+        let updatedArray = [...randomBoolean]; 
+
+        for (let i = 0; i < COUNT; i++) {
+            let randomIndex;
+            do {
+            randomIndex = Math.floor(Math.random() * LENGTH);
+            } while (updatedArray[randomIndex]);
+
+            updatedArray[randomIndex] = true;
+        }
+        setRandomBoolean(updatedArray);
+    }
+    const handleFlagClick = (flag) => {
+        setFlagClicked(true)
+        setAnswer(prevState => ({
+            ...prevState,
+            flag: flag.correct_option
+        }));
+    }
+
+    const updateAnswer = (title, answer) => {
+        setAnswer(prevState => {
+          const updatedAnswers = prevState.answers.map(ans => {
+            const key = Object.keys(ans)[0];
+            if (key === title) {
+              return { [key]: answer };
+            }
+            return ans;
+          });
+          return {
+            ...prevState,
+            answers: updatedAnswers
+          };
+        });
+        console.log("title : ", title, "  and answer  ", answer)
+        if(title === "country" && answer.tries === 3) setCountryAnswered(true)
+    }
+    useEffect(()=>{
+        setAnswer(prevState => {
+            return {
+                ...prevState,
+                time: Number(time),
+            }
+        })
+    },[time])
+
+    const submitAnswer = async () => {
+        
+        const requestBody = {
+            data: answer
+        }
+        console.log("requestBody: ", requestBody.data)
+        try{
+            const response = await axios.post(`http://localhost:8000/game/${id}/rating/facts`, requestBody, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }); 
+            
+            const {score, links } = response.data;
+            console.log("score: ", score)
+            if(links.nextStep){
+                console.log("should be this url: ", links.nextStep.operationRef)
+                navigate(links.nextStep.operationRef, {state: {id: links.nextStep.parameters.id}});  //LOGGED FOR NOW
+            }
+        }catch(error){
+            if(error.response) {
+                if(error.response.status === 403){
+                    alert("error-response: ", error.response.data.message); //toast
+                }
+                //other status controlls
+            }
+            else console.log("error fetching: "+error.message);
+        }
+    }
   return (
     <div className='container_first_round'>
         <div className='headline'>
@@ -120,28 +164,43 @@ export const FirstRound = () => {
             
         </div>
         <div className='content_container_first_round'>
-            <div className='left_content_first_round rounded_shadow'>
+            <div className='left_content_first_round '>
                 {
-                    facts && facts.map((fact) => (
-                        <Facts key={Object.keys(fact)[0]} title={Object.keys(fact)[0]} solution={Object.values(fact)[0]}  />
+                    facts && randomBoolean.map((isTrue, index) => (
+                    <Facts
+                        key={Object.keys(facts[index])[0]}
+                        title={Object.keys(facts[index])[0]}
+                        solution={Object.values(facts[index])[0]}
+                        tip={isTrue}
+                        updateAnswer={updateAnswer}
+                    />
                     ))
                 }
             </div>
             <div className='right_content_first_round'>
                 <div className='country_solution_container '>
                     <div className='country_solution rounded_shadow'>
-                        <Facts key={1} title={"Land"} solution={"Deutschland"} />
+                        <Facts
+                        key={1}
+                        title={"country"}
+                        solution={countryAnswer}
+                        tip={false}
+                        updateAnswer={updateAnswer}
+                    />
                     </div>
                 </div>
                 {
                     countryAnswered && (
                         <div className='flag_container rounded_shadow'>
                             <h3>Flagge</h3>
-                            {
-                                flags && flags.map((flag) => (
-                                    <img key={flag.country_code} src={flag.flag_url} alt="Flagge"/>
+                            {flags &&
+                                flags.map((flag) => (
+                                <button key={flag.country_code} onClick={() => handleFlagClick(flag)}>
+                                    <img src={flag.flag_url} alt='Flagge' />
+                                </button>
                                 ))
                             }
+
                         </div>
                     )
                 }
@@ -149,7 +208,11 @@ export const FirstRound = () => {
             </div>
         </div>
         <div className='button_container'>
-         <Button onClick={test} colorScheme='blue' size="md">TEST</Button>
+         {
+            flagClicked && (
+                <Button onClick={submitAnswer} colorScheme='blue' size="md">OK</Button>
+            )
+         }
         </div>
         
     </div>

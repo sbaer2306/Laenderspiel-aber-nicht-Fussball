@@ -1,20 +1,21 @@
 async function calculateRatingFacts(facts, guessedData){
+  const MAX_TIME = 600 //10min
     try{
       let score = 0;
-      const time = guessedData.time;
-      score += time/100 + 1;  //each 100 sek minus one point
   
       // Modify factsObj to include country_name and exclude unMember
       const modifiedFacts = [
-        facts.country_name,
-        ...facts.facts.slice(1).filter((fact) => !fact.hasOwnProperty('unMember')).map((fact) => String(Object.values(fact)[0]).toLowerCase()),
+        ...facts.facts.map((fact) => String(Object.values(fact)[0]).toLowerCase()),
+        facts.country_name.toLowerCase(),
       ];
   
-      //Scoring wrong = 0, right = 4 - tries
+      //Scoring wrong = 0, right = 400 - 100/try
       score += evaluatePointsForFacts(guessedData.answers, modifiedFacts);
   
-      score += guessedData.flag ? 4 : 0;
+      score += guessedData.flag ? 300 : 0;
   
+      const time = guessedData.time;
+      score += score == 0 ? 0 : MAX_TIME - time  //only time score if some values are right
       return score;
   
     }catch(error){
@@ -28,7 +29,7 @@ async function calculateRatingFacts(facts, guessedData){
       const answerObj = answers[i];
       const answer = String(answerObj.answer);
       if(answer.toLowerCase() === facts[i]){
-        score += 4 - answerObj.tries;
+        score += 400 - 100*answerObj.tries;
       }
     }
     return score;

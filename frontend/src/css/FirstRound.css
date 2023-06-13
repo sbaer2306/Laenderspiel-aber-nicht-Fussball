@@ -21,17 +21,24 @@
 .content_container_first_round{
     display: flex;
     justify-content: space-around;
-    align-items: center;
     width: 100%;
+    background-color: transparent;
+    background: transparent;
 }
 .left_content_first_round{
     flex-grow: 1;
     width: 55%;
     margin-right: 0.5rem;
+    background-color: transparent;
+    background: transparent;
 }
 .right_content_first_round{
     flex-shrink: 0;
     width: 45%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
 }
 .country_solution_container{
     padding: 1rem;
@@ -39,17 +46,25 @@
 }
 .flag_container{
     padding: 1rem;
+    width: 100px;
 }
 
 
 /* component */
 .container_fact_component{
     padding: 0.5rem;
+    margin-bottom: 1em;
 }
 .textfield_container_fact{
     height: 70px;
     display: flex;
     align-items: center;
+}
+.right{
+    border: 1px solid green;
+}
+.wrong{
+    border: 1px solid red;
 }
 .textfield_container_fact input{
     width: 90%;

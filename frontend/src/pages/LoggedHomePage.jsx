@@ -46,7 +46,7 @@ export const LoggedHomePage = () => {
 
         //link logic
         if(links && links.nextStep){
-            navigate(links.nextStep.operationRef, {state: {game_id: game.id}}); //should be /game/facts
+            navigate(links.nextStep.operationRef, {state: {id: links.nextStep.parameters.id}}); //should be /game/facts
         }
         console.log("Game from response.data: ", game);
       }catch(error){

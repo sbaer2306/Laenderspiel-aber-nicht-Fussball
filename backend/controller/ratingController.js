@@ -3,6 +3,7 @@ const factsService = require('../service/factsService');
 const scoringService = require('../service/scoringService')
 
 async function calculateRatingFacts(req, res){
+  const {id} = req.params;
   try {
     //auth or return here
     //return res.status(403).json({message: "Forbidden"})
@@ -18,11 +19,22 @@ async function calculateRatingFacts(req, res){
 
     const score = await scoringService.calculateRatingFacts(facts, data);
 
-    game.current_score = score;
+    game.current_score = score; //total_score needed?
+    game.current_round = 2;
     req.session.game = game;
     req.session.facts = facts;
 
-    res.status(200).json({ score });
+    const links = {
+      nextStep: {
+        description: 'Link for next round with id of game ',
+        operationRef: `/logged/game/geo-information`,   //LOGGED ONLY UNTIL PROTECTED ROUTES 
+        parameters: {
+          id: id,
+        }
+      }
+    }
+
+    res.status(200).json({ score, links });
   } catch (error) {
       console.error(error);
       res.status(500).json({ error: error.message });
