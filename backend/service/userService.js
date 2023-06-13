@@ -1,3 +1,4 @@
+const { fi } = require('@faker-js/faker');
 const prisma = require('../prisma/prisma');
 const prismaClient = prisma.getPrisma();
 
@@ -73,6 +74,31 @@ const getUserByOAuthID = async (OAuthID) => {
 };
 const createUser = async (newUser) => {
     const user = await prismaClient.user.create({ data: newUser });
+    // create profile for user
+    // split username into first and last name
+    // half of the username is the first name, the other half is the last name
+    const username = user.username;
+    const firstName = username.substring(0, username.length / 2);
+    const lastName = username.substring(username.length / 2, username.length);
+
+    await prismaClient.profile.create({
+        data: {
+            userId: user.id,
+            isPrivate: false,
+            firstName: firstName,
+            lastName: lastName,
+            location: "Earth"
+        }
+    });
+
+    // create all time scoring
+    await prismaClient.allTimeRanking.create({
+        data: {
+            userId: user.id,
+            score: 0
+        }
+    });
+
     return user;
 };
 
