@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Box, useToast, Text, Divider, useDisclosure } from '@chakra-ui/react';
-import ProfileEditor from './ProfileEditor';
-import GameHistory from '../GameHistory';
-import ProfileOperationsButtonBar from './ProfileOperationsButtonBar';
-import StatsModal from '../stats/StatsModal';
-import ConfirmationModal from '../../UI/ConfirmationModal';
+import ProfileEditor from '../components/profile/editing/ProfileEditor';
+import GameHistory from '../components/profile/GameHistory';
+import ProfileOperationsButtonBar from '../components/profile/editing/ProfileOperationsButtonBar';
+import StatsModal from '../components/profile/stats/StatsModal';
+import ConfirmationModal from '../components/UI/ConfirmationModal';
 import { useNavigate } from 'react-router-dom';
-import api from "../../../helpers/axios.js";
-import { useUserAuth } from '../../../hooks/userAuthContext';
+import api from "../helpers/axios.js";
+import { useUserAuth } from '../hooks/userAuthContext';
 
 const PrivateProfileOverview = () => {
   const [profile, setProfile] = useState({}); 
