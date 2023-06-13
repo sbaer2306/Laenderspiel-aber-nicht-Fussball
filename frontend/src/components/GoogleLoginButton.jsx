@@ -8,7 +8,6 @@ function GoogleLoginButton() {
   const { handleGoogleLogin } = useUserAuth();
 
   const handleLoginClick = () => {
-    console.log('S');
     handleGoogleLogin();
   }
 

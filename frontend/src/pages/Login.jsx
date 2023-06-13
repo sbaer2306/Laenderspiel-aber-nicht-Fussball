@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useUserAuth } from '../hooks/userAuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
 
   const { setUserToken } = useUserAuth();
+  const navigate = useNavigate();
 
   const location = useLocation();
 
@@ -13,9 +15,8 @@ export const Login = () => {
     const token = params.get('token');
 
     if (token) {
-      setUserToken(token); // <--
-      //localStorage.setItem('token', token);
-      //window.location.href = '/';
+      setUserToken(token);
+      navigate('/user/profile');
     }
   }, [location.search]);
 

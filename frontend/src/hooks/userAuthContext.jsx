@@ -1,5 +1,6 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
-import axios from 'axios';
+import api from "../helpers/axios.js";
+
 
 const userAuthContext = createContext(undefined);
 
@@ -10,7 +11,7 @@ export const UserAuthContextProvider = ({ children }) => {
   const fetchUser = async () => {
     try {
       const headers = { 'authorization': `jwt ${currentToken}` };
-      const response = await axios.get('http://localhost:8000/user/userinfo', { headers });
+      const response = await api.get('/user/userinfo');
       const user = response.data.user;
       return user;
     } catch (error) {
@@ -20,7 +21,7 @@ export const UserAuthContextProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (currentToken) {
+      if (!currentToken) {
         const user = await fetchUser();
         console.log("user fetched: ", user);
         setCurrentUser(user);
@@ -30,7 +31,6 @@ export const UserAuthContextProvider = ({ children }) => {
   }, [currentToken]);
 
   const handleGoogleLogin = () => {
-    console.log("context handles login");
     const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
 
     const options = {
@@ -52,7 +52,9 @@ export const UserAuthContextProvider = ({ children }) => {
   };
 
   const setUserToken = (jwt_token) => {
+      console.log("setting token: ", jwt_token);
       setCurrentToken(jwt_token);
+      api.defaults.headers.common["authorization"] = `jwt ${jwt_token}`;
   }
 
   const getCurrentUser = () => {

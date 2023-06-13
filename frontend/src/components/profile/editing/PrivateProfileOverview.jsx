@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Box, useToast, Text, Divider, useDisclosure } from '@chakra-ui/react';
-import axios from 'axios';
 import ProfileEditor from './ProfileEditor';
 import GameHistory from '../GameHistory';
 import ProfileOperationsButtonBar from './ProfileOperationsButtonBar';
@@ -8,9 +7,8 @@ import StatsModal from '../stats/StatsModal';
 import ConfirmationModal from '../../UI/ConfirmationModal';
 import { useNavigate } from 'react-router-dom';
 import { fetchUserId, getHeaders } from '../../../helpers/auth.js';
-
-
-const DUMMY_ID = 9;
+import api from "../../../helpers/axios.js";
+import { useUserAuth } from '../../../hooks/userAuthContext';
 
 const PrivateProfileOverview = () => {
   const [profile, setProfile] = useState({}); 
@@ -19,6 +17,8 @@ const PrivateProfileOverview = () => {
   const [stats, setStats] = useState({});
 
   const { isOpen: deletionModalIsOpen, onOpen: onOpenDeletionModal, onClose: onCloseDeletionModal } = useDisclosure();
+
+  const { currentUser, getCurrentUser } = useUserAuth();
 
   const navigate = useNavigate();
 
@@ -55,9 +55,8 @@ const PrivateProfileOverview = () => {
   };
   const fetchProfile = async () => {
     try {
-      const userId = await fetchUserId();
-      const headers = getHeaders();
-    await axios.get(`http://localhost:8000/user/${id}/profile`, { headers })
+
+    const response = await api.get(`/user/${currentUser.id}/profile`)
       if (response.status === 200) {
         setProfile(response.data);
         showToastMessage("Profile loaded!", "", "info");
@@ -72,7 +71,7 @@ const PrivateProfileOverview = () => {
   const updateProfile = async (values) => {
     const { id, userId, createdAt, updatedAt, ...profileData } = values;
     try {
-      const response = await axios.put(`http://localhost:8000/profile/${id}`, profileData);
+      const response = await api.put(`/profile/${id}`, profileData);
       if (response.status === 200) {
         setProfile(response.data);
         showToastMessage("Profile updated!", "", "success");
@@ -85,7 +84,7 @@ const PrivateProfileOverview = () => {
   
   const deleteUserAccount = async () => {
     try {
-      const response = await axios.delete(`http://localhost:8000/user/${DUMMY_ID}`);
+      const response = await api.delete(`/user/${currentUser.id}`);
       if (response.status === 200) {
         showToastMessage("Success!", `Your account data has been deleted!.`, "success");
         navigate("/");
@@ -97,7 +96,7 @@ const PrivateProfileOverview = () => {
   
   const deleteGameHistory = async () => {
     try {
-      const response = await axios.delete(`http://localhost:8000/user/${DUMMY_ID}/played-games`);
+      const response = await api.delete(`/user/${currentUser.id}/played-games`);
       if (response.status === 200) {
         showToastMessage("Game history deleted!", `Removed ${response.data.deletedNum} records.`, "success");
       }
@@ -108,7 +107,7 @@ const PrivateProfileOverview = () => {
   
   const calculateStats = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/user/${DUMMY_ID}/stats`, {
+      const response = await api.get(`/user/${currentUser.id}/stats`, {
         headers: {
           'If-None-Match': eTag
         }
@@ -145,7 +144,7 @@ const PrivateProfileOverview = () => {
       <ProfileEditor passedProfile={profile} updateProfile={updateProfile} />
     )}
     <Box maxW='600px' margin='auto' mt={5}>
-      <GameHistory id={DUMMY_ID}/>
+      
     </Box>
 
     { Object.keys(stats).length > 0 && (
