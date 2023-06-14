@@ -32,7 +32,6 @@ function App() {
           <Route path='logged/game/facts' element={<FirstRound/>} />  {/*logged only for testing purposes for now */}
           <Route path='logged/game/geo-information' element={<SecondRound/>} />
           <Route path='logged/game/sights' element={<ThirdRound />} />
-          <Route path='/game/:game_id/sights' element={<ThirdRound />} />
 
           {/*PROTECTED ROUTES*/}
           <Route path='/welcome' element={<ProtectedRoute><LoggedInHomepage/></ProtectedRoute>} />

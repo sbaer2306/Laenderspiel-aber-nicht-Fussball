@@ -1,0 +1,14 @@
+.SightCard-Container {
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.Submit-Container {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+  
+.Submit-Container input[type="text"] {
+    width: 200px; 
+}

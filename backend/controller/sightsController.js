@@ -28,7 +28,7 @@ async function getSights(req, res) {
         })
         const countryCode = country.countryCode;
         
-        const sights = await sightsService.fetchSights(countryCode); 
+        const sights = await sightsService.fetchRandomCities(countryCode); 
         res.status(200).json(sights);
       } catch (error) {
           res.status(500).json({ error: error.message});
