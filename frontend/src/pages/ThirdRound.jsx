@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import SightCard from '../components/Sights/SightCard';
 import '../css/ThirdRound.css'
-import { Button, Input } from '@chakra-ui/react';
+import { Text, Button, Input } from '@chakra-ui/react';
 
 axios.defaults.withCredentials = true;
 
@@ -82,9 +82,9 @@ const ThirdRound = () => {
 
   return (
     <div>
-      <h1>Round 3</h1>
-      <p>Try to guess the cities based on some sights of</p>
-      <h2>{countryName}</h2>
+      <Text mb={1} fontSize='2xl' textAlign="center">Round 3</Text>
+      <Text m={2} fontSize='xl'>Try to guess the cities based on some sights of</Text>
+      <Text m={2} fontSize='xl' fontWeight='700'>{countryName}</Text>
 
       {isLoading ? (
         <p>Loading...</p>
