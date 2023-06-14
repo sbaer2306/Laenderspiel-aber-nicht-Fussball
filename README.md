@@ -2,7 +2,7 @@
 
 **Studienarbeit RESTful Webservices<br>**
 Sommersemester 2023<br>
-Hochschule für angewandte Wisswnschaften Hof<br>
+Hochschule für angewandte Wissenschaften Hof<br>
 
 #### Gruppenmitglieder:
 - Sebastian Bär
@@ -34,10 +34,11 @@ Hochschule für angewandte Wisswnschaften Hof<br>
     - Test2
 3. ```DATABASE_URL= "mysql://root:<rootpasswort>@mysql-db:3306/laenderspiel"``` in .env backend hinzufügen (migrate braucht privilegien um shadow db anzulegen)
 4. Starten Container: ```docker-compose up -d```
+5. Eventuell manuell npm install im backend container ausführen
 ### Datenbankoperationen:
 Müssen (noch) manuell durchgeführt werden, falls der db-Container noch nicht rechtzeitig aktiv ist.
 
-6. ```docker exec node_backend_container npx prisma db push --accept-data-loss``` (Letzte Migration anwenden)
+6. ```docker exec node_backend_container npx prisma db push --accept-data-loss``` (Letzte Migration anwenden, Hinweis: DB Container muss dafür schon oben sein sonst Fehler)
 7. ```docker exec node_backend_container npx prisma db seed``` (Füllt Datenbank mit sample Daten)
 
 ## API Credentials
@@ -46,5 +47,5 @@ Müssen (noch) manuell durchgeführt werden, falls der db-Container noch nicht r
 ## StA-Kriterien
 - [x] **Hypermedia:** Pagination bei /user/{id}/played-games
 - [x] **ETag Caching:** /user/{id}/stats
-- [ ] Time Based Caching
-- [ ] Google-Authentication
+- [x] Time Based Caching: zum Beispiel factsService.js (Fakten über Länder)
+- [x] Google-Authentication
