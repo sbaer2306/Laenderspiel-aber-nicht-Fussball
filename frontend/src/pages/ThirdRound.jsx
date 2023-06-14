@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import SightCard from '../components/Sights/SightCard';
 import '../css/ThirdRound.css'
-import { Text, Button, Input } from '@chakra-ui/react';
+import { Text, Button, Input, Spinner, Box } from '@chakra-ui/react';
 
 axios.defaults.withCredentials = true;
 
@@ -87,7 +87,9 @@ const ThirdRound = () => {
       <Text m={2} fontSize='xl' fontWeight='700'>{countryName}</Text>
 
       {isLoading ? (
-        <p>Loading...</p>
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <Spinner size="lg" />
+        </Box>
       ) : (
         <div className='SightCards-Container'>
           {/* <h2>Sights Response:</h2>

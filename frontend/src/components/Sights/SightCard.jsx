@@ -1,5 +1,6 @@
 import React from 'react'
 import './SightCard.css'
+import { Text, Button, Input, Spinner, Box } from '@chakra-ui/react';
 
 const SightCard = ( {title, imageURL} ) => {
   return (
@@ -8,7 +9,7 @@ const SightCard = ( {title, imageURL} ) => {
         <img src={imageURL} alt=''/>
       </div>
       <div className='SightCard-Title'>
-        <h3>{title}</h3>
+        <Text m={2} fontSize='m'>{title}</Text>
       </div>
     </div>
   )
