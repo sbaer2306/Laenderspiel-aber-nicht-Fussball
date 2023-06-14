@@ -26,18 +26,22 @@ function GameHistory({ id }) {
         }
       });
   
-      if (response.status === 403) {
-        console.error('Game history is private.');
-        setIsPrivate(true);
-        return;
-      }
-  
+      
+      console.log("next", response.data._links.next?.href)
       const data = response.data;
       setGameHistory(data.playedGames);
       setNextPage(data._links.next?.href);
       setPrevPage(data._links.prev?.href);
     } catch (error) {
-      console.error('Error fetching game history:', error);
+      if (error.response) {
+        const { status } = error.response;
+        if(status === 403){
+          console.log('Private profile.')
+          setIsPrivate(true);
+          return;
+        }
+      }
+      console.error('Error fetching game history:', error.response);
     }
   };  
 
