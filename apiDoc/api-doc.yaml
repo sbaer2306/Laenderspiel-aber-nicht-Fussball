@@ -28,7 +28,7 @@ paths:
     get:
       summary: Google callback endpoint
       tags:
-        - Authentication
+        - user
       parameters: []
       responses:
         '200':
@@ -76,118 +76,6 @@ paths:
                   message:
                     type: string
                     example: Internal Server Error.
-  /login:
-    post:
-      tags:
-        - user
-      summary: Authenticate user
-      description: Authenticates user with third-party authentication provider.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                access_token:
-                  type: string
-                  description: >-
-                    Access token returned from third-party authentication
-                    provider
-      responses:
-        '200':
-          description: Created and authenticated.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  message:
-                    type: string
-                    example: Authenticated user successfully.
-                  token:
-                    type: string
-                    description: JWT token for user authentication
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                  user:
-                    $ref: '#/components/schemas/User'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: failed
-                  message:
-                    type: string
-                    example: Bad Request.
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: failed
-                  message:
-                    type: string
-                    example: Unauthorized.
-        '500':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: failed
-                  message:
-                    type: string
-                    example: Internal Server Error.
-  /logout:
-    post:
-      tags:
-        - user
-      summary: Log out the current user
-      description: >
-        This endpoint logs out the current user and invalidates their session
-        token.
-      responses:
-        '200':
-          description: Successfully logged out
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  message:
-                    type: string
-                    example: Successfully logged out.
-        '401':
-          description: Unauthorized (user not logged in)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: failed
-                  message:
-                    type: string
-                    example: Unauthorized.
   /ranking/all-time:
     get:
       tags:
@@ -300,7 +188,7 @@ paths:
       security:
         - google_oauth: []
       tags:
-        - User
+        - user
       summary: Delete all user data. (game history, profile, scores)
       responses:
         '200':
@@ -429,7 +317,7 @@ paths:
       security:
         - google_oauth: []
       tags:
-        - User
+        - user
       parameters:
         - name: id
           in: path
