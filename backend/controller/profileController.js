@@ -11,16 +11,17 @@ const { validateId } = require('../helpers/invalidIDhelper');
  * @throws {Error} - If an error occurs during the process.
  */
 const getProfile = async (req, res) => {
-
+    console.log("getProfile")
     const { id } = req.params;
 
     if (validateId(id, res)) return;
 
     try {
         const profile = await profileService.getProfile(parseInt(id));
+        console.log(profile.userId, " vs. ", req.user.id);
 
         // TODO: Authorization - check if profile is private and user is not owner
-        if (profile.isPrivate) {
+        if (profile.isPrivate && req.user.id !== profile.userId) {
             let error = new Error('Unauthorized - user profile is private');
             error.httpStatusCode = 403;
             throw error;

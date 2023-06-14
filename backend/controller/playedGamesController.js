@@ -16,12 +16,6 @@ const getPlayedGames = async (req, res) => {
 
     if (validateId(id, res)) return;
 
-    // TODO: auth middleware! + authorization (uswer owns profile --> deliver despite private)
-    if( id != req.user.id){
-        res.status(403).json({ message: 'Unauthorized.' });
-    }
-
-
     try {
         const parsedId = parseInt(id);
         const user = await prismaClient.user.findUnique({
@@ -35,6 +29,10 @@ const getPlayedGames = async (req, res) => {
 
         // user profile may be undefined --> treat as private
         if (!user.Profile || user.Profile.isPrivate) {
+            return res.status(403).json({ message: 'Unauthorized - the profile is set to private, therefore the game history is private too.' });
+        }
+
+        if (user.Profile.isPrivate && user.Profile.userId !== req.user.id) {
             return res.status(403).json({ message: 'Unauthorized - the profile is set to private, therefore the game history is private too.' });
         }
 
@@ -61,18 +59,20 @@ const deleteAllPlayedGames = async (req, res) => {
 
     if (validateId(id, res)) return;
 
-    if( id != req.user.id){
+    if (id != req.user.id) {
         res.status(403).json({ message: 'Unauthorized.' });
     }
 
-
-    // TODO: auth middleware! (user allowed to delete this history)
     try {
         const parsedId = parseInt(id);
         const user = await prismaClient.user.findUnique({ where: { id: parsedId } });
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (user.Profile.userId !== req.user.id) {
+            return res.status(403).json({ message: 'Unauthorized.' });
         }
 
         const deletionResult = await gameHistoryService.deletePlayedGamesByUser(id);

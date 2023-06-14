@@ -58,12 +58,6 @@ const getProfileByUserId = async (userId) => {
         throw error;
     }
 
-    if (profile.isPrivate) {
-        const error = new Error('Forbidden - Profile is private');
-        error.httpStatusCode = 403;
-        throw error;
-    }
-
     return profile;
 };
 const getUserByOAuthID = async (OAuthID) => {

@@ -38,7 +38,7 @@ const deleteUser = async (req, res) => {
 
     if (validateId(id, res)) return;
 
-    if( id != req.user.id){
+    if (id != req.user.id) {
         res.status(403).json({ message: 'Unauthorized.' });
     }
 
@@ -71,8 +71,6 @@ const getProfileByUserId = async (req, res) => {
 
     if (validateId(id, res)) return;
 
-    // todo: Authorization middleware (user allowed to see profile)
-
     try {
         const user = await userService.getUserById(parseInt(id));
 
@@ -81,6 +79,13 @@ const getProfileByUserId = async (req, res) => {
         }
 
         const profile = await userService.getProfileByUserId(parseInt(id));
+
+
+        if (profile.isPrivate && profile.userId !== req.user.id) {
+            const error = new Error('Forbidden - Profile is private');
+            error.httpStatusCode = 403;
+            throw error;
+        }
 
         res.status(200).json(profile);
     } catch (error) {
