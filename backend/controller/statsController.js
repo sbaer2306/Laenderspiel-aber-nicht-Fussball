@@ -13,7 +13,11 @@ const { validateId } = require('../helpers/invalidIDhelper');
  */
 exports.getUserStats = async (req, res) => {
     try {
-        // TODO: Authorization --> only the user itself should be able to access the stats
+        
+        if( id != req.user.id){
+            res.status(403).json({ message: 'Unauthorized.' });
+        }
+    
 
         const id = parseInt(req.params.id);
         if (validateId(id, res)) return;

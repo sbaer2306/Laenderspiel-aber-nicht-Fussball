@@ -28,65 +28,21 @@
     }
   ],
   "paths": {
-    "/signup": {
-      "post": {
+    "/google/callback": {
+      "get": {
+        "summary": "Google callback endpoint",
         "tags": [
-          "user"
+          "Authentication"
         ],
-        "summary": "Sign up with 3rd party OAuth and return JWT Token for authentication.",
-        "description": "Creates a new user account using a 3rd party OAuth provider. The username is derived from the users E-Mail adress.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "access_token": {
-                    "type": "string",
-                    "description": "Access token provided by the OAuth provider"
-                  },
-                  "email": {
-                    "type": "string",
-                    "description": "E-Mail address of the users oAuth provider account"
-                  }
-                }
-              }
-            }
-          }
-        },
+        "parameters": [],
         "responses": {
-          "201": {
-            "description": "Created and authenticated.",
+          "200": {
+            "description": "Redirects to the login page with a token in the query parameter",
             "content": {
-              "application/json": {
+              "text/html": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": "success"
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Created and authenticated user successfully."
-                    },
-                    "token": {
-                      "type": "string",
-                      "description": "JWT token for user authentication",
-                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                    },
-                    "user": {
-                      "$ref": "#/components/schemas/User"
-                    }
-                  }
+                  "type": "string"
                 }
-              }
-            },
-            "links": {
-              "CreateProfile": {
-                "description": "Create your profile after signing up",
-                "operationRef": "#/profile"
               }
             }
           },
@@ -1161,7 +1117,7 @@
                 "type": "object",
                 "properties": {
                   "data": {
-                    "$ref": "#/components/schemas/Facts"
+                    "$ref": "#/components/schemas/Answers"
                   }
                 }
               }
@@ -1345,7 +1301,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "distance" : {
+                    "distance": {
                       "type": "integer",
                       "description": "distance in km between guessed Position and the Center of a Country with the Haversine-Formela"
                     },
@@ -1741,6 +1697,36 @@
   },
   "components": {
     "schemas": {
+      "Answers": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "integer"
+          },
+          "answers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FactAnswers"
+            },
+            "minItems": 7,
+            "maxItems": 7
+          },
+          "flag": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FactAnswers": {
+        "type": "object",
+        "properties": {
+          "answer": {
+            "type": "string"
+          },
+          "tries": {
+            "type": "integer"
+          }
+        }
+      },
       "Facts": {
         "type": "object",
         "properties": {

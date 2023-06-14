@@ -17,6 +17,11 @@ const getPlayedGames = async (req, res) => {
     if (validateId(id, res)) return;
 
     // TODO: auth middleware! + authorization (uswer owns profile --> deliver despite private)
+    if( id != req.user.id){
+        res.status(403).json({ message: 'Unauthorized.' });
+    }
+
+
     try {
         const parsedId = parseInt(id);
         const user = await prismaClient.user.findUnique({
@@ -55,6 +60,11 @@ const deleteAllPlayedGames = async (req, res) => {
     const prismaClient = getPrisma();
 
     if (validateId(id, res)) return;
+
+    if( id != req.user.id){
+        res.status(403).json({ message: 'Unauthorized.' });
+    }
+
 
     // TODO: auth middleware! (user allowed to delete this history)
     try {

@@ -1,10 +1,15 @@
 openapi: 3.0.3
 info:
   title: Länderspiel (nicht Fussball)
-  description: |-
-    This API provides a trivia game that tests the players knowledge about countries.
+  description: >-
+    This API provides a trivia game that tests the players knowledge about
+    countries.
+
     Each round of the game consists of different kind of questions. 
-    The player answers the questions and earns points based on conditions, such as the amount of attempts that were needed. 
+
+    The player answers the questions and earns points based on conditions, such
+    as the amount of attempts that were needed. 
+
     The API keeps track of the players score.
   version: 4.20.0
 tags:
@@ -19,88 +24,58 @@ tags:
   - name: Profile
     description: Operations about the public or private profile of a specific user.
 paths:
-  /signup:
-      post:
-        tags:
-          - user
-        summary: Sign up with 3rd party OAuth and return JWT Token for authentication.
-        description: Creates a new user account using a 3rd party OAuth provider. The username is derived from the users E-Mail adress.
-        requestBody:
-          required: true
+  /google/callback:
+    get:
+      summary: Google callback endpoint
+      tags:
+        - Authentication
+      parameters: []
+      responses:
+        '200':
+          description: Redirects to the login page with a token in the query parameter
+          content:
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  access_token:
+                  status:
                     type: string
-                    description: Access token provided by the OAuth provider
-                  email:
+                    example: failed
+                  message:
                     type: string
-                    description: E-Mail address of the users oAuth provider account
-        responses:
-          '201':
-            description: Created and authenticated.
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      example: success
-                    message:
-                      type: string
-                      example: Created and authenticated user successfully.
-                    token:
-                      type: string
-                      description: JWT token for user authentication
-                      example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                    user:
-                      $ref: '#/components/schemas/User'
-            links:
-              CreateProfile:
-                description: Create your profile after signing up
-                operationRef: '#/profile'
-          '400':
-            description: Bad Request
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      example: failed
-                    message:
-                      type: string
-                      example: Bad Request.
-          '409':
-            description: Conflict
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      example: error
-                    message:
-                      type: string
-                      example: Username is already taken
-          '500':
-            description: Bad Request
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      example: failed
-                    message:
-                      type: string
-                      example: Internal Server Error.
+                    example: Bad Request.
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Username is already taken
+        '500':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: failed
+                  message:
+                    type: string
+                    example: Internal Server Error.
   /login:
     post:
       tags:
@@ -139,86 +114,88 @@ paths:
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                   user:
                     $ref: '#/components/schemas/User'
-
         '400':
-            description: Bad Request
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      example: failed
-                    message:
-                      type: string
-                      example: Bad Request.
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: failed
+                  message:
+                    type: string
+                    example: Bad Request.
         '401':
           description: Unauthorized
           content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      example: failed
-                    message:
-                      type: string
-                      example: Unauthorized.
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: failed
+                  message:
+                    type: string
+                    example: Unauthorized.
         '500':
-            description: Bad Request
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      example: failed
-                    message:
-                      type: string
-                      example: Internal Server Error.
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: failed
+                  message:
+                    type: string
+                    example: Internal Server Error.
   /logout:
     post:
       tags:
         - user
       summary: Log out the current user
-      description: |
-        This endpoint logs out the current user and invalidates their session token.
+      description: >
+        This endpoint logs out the current user and invalidates their session
+        token.
       responses:
         '200':
           description: Successfully logged out
           content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      example: success
-                    message:
-                      type: string
-                      example: Successfully logged out.
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Successfully logged out.
         '401':
           description: Unauthorized (user not logged in)
           content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      example: failed
-                    message:
-                      type: string
-                      example: Unauthorized.
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: failed
+                  message:
+                    type: string
+                    example: Unauthorized.
   /ranking/all-time:
     get:
       tags:
         - Ranking
       summary: Retrieve the top 10 users in all-time ranking
-      description: This endpoint returns the top 10 users with the highest all-time score, along with their user info.
+      description: >-
+        This endpoint returns the top 10 users with the highest all-time score,
+        along with their user info.
       responses:
         '200':
           description: Top 10 Users Retrieved Successfully
@@ -243,7 +220,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Internal server error."
+                message: Internal server error.
   /ranking/monthly/{year}/{month}:
     get:
       tags:
@@ -255,13 +232,17 @@ paths:
       parameters:
         - name: year
           in: path
-          description: Year(number). The year being > than the current year  will lead to a 400 Error.
+          description: >-
+            Year(number). The year being > than the current year  will lead to a
+            400 Error.
           required: true
           schema:
             type: integer
         - name: month
           in: path
-          description: Month(number from 1-12, single digits). Month < 12 will lead to a 400 error.
+          description: >-
+            Month(number from 1-12, single digits). Month < 12 will lead to a
+            400 error.
           required: true
           schema:
             type: integer
@@ -275,7 +256,9 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Top 10 users retrieved successfully for given month and year.
+                    example: >-
+                      Top 10 users retrieved successfully for given month and
+                      year.
                   year:
                     type: integer
                     example: 2023
@@ -295,7 +278,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Invalid request. Month and year must be valid numbers."
+                message: Invalid request. Month and year must be valid numbers.
         '500':
           description: Internal error.
           content:
@@ -303,7 +286,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Internal server error."
+                message: Internal server error.
   /user/{id}:
     parameters:
       - in: path
@@ -327,7 +310,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: 'User sucessfully deleted.'
+                message: User sucessfully deleted.
         '400':
           description: Bad Request - Id is not in valid format.
           content:
@@ -335,7 +318,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Invalid ID. Must be a number."
+                message: Invalid ID. Must be a number.
         '403':
           description: Forbidden.
           content:
@@ -343,7 +326,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Unauthorized."
+                message: Unauthorized.
         '404':
           description: User not found.
           content:
@@ -351,7 +334,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "User not found."
+                message: User not found.
         '500':
           description: Internal server error.
           content:
@@ -359,8 +342,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Internal server error."
-      
+                message: Internal server error.
   /user/{id}/profile:
     parameters:
       - in: path
@@ -376,7 +358,11 @@ paths:
       tags:
         - Profile
       summary: Get the user's profile information
-      description: Retrieves the profile for the specified id (the user).Profiles can be set private. Profiles will only be delivered to authenticated users. If the profile is private, but the user is the owner, the profile will be delivered anyways.
+      description: >-
+        Retrieves the profile for the specified id (the user).Profiles can be
+        set private. Profiles will only be delivered to authenticated users. If
+        the profile is private, but the user is the owner, the profile will be
+        delivered anyways.
       responses:
         '200':
           description: Successfully retrieved user profile
@@ -391,15 +377,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Invalid ID. Must be a number."
+                message: Invalid ID. Must be a number.
         '403':
-          description: Unauthorized - profile is private. (If the authenticated user is the owner he won't receive this error.)
+          description: >-
+            Unauthorized - profile is private. (If the authenticated user is the
+            owner he won't receive this error.)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Unauthorized - profile is private."
+                message: Unauthorized - profile is private.
         '404':
           description: Not Found
           content:
@@ -407,7 +395,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Profile not found."
+                message: Profile not found.
         '500':
           description: Internal server error.
           content:
@@ -415,12 +403,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Internal server error."
-
+                message: Internal server error.
   /user/{id}/stats:
     get:
       summary: Gets user statistics.
-      description: Retrieves statistics for a specific user. Most played games. Total time played, ...
+      description: >-
+        Retrieves statistics for a specific user. Most played games. Total time
+        played, ...
       security:
         - google_oauth: []
       tags:
@@ -468,7 +457,6 @@ paths:
             application/json:
               example:
                 message: Internal server error.
-  
   /profile:
     post:
       tags:
@@ -502,8 +490,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "A profile already exists for this user."
-
+                message: A profile already exists for this user.
         '500':
           description: Internal server error.
           content:
@@ -511,9 +498,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Internal server error."
-
-
+                message: Internal server error.
   /profile/{id}:
     parameters:
       - in: path
@@ -554,14 +539,14 @@ paths:
             application/json:
               example:
                 message: Internal server error.
-
-
     put:
       tags:
         - Profile
       security:
         - google_oauth: []
-      summary: Update an existing profile (only owner of the profile is allowed to do so)
+      summary: >-
+        Update an existing profile (only owner of the profile is allowed to do
+        so)
       requestBody:
         required: true
         content:
@@ -583,7 +568,6 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/ProfileViolation'
                   - $ref: '#/components/schemas/MessageResponse'
-
         '403':
           description: Forbidden
           content:
@@ -602,13 +586,16 @@ paths:
             application/json:
               example:
                 message: Internal server error.
-
   /game:
     post:
       tags:
         - Game
       summary: Create a new game
-      description: Creates a new game with a random country based on the chosen difficulty level. The Game will live for ttl seconds after that the game is deleted and can not be accessed. If the ttl expires the game will not be saved in the game history of a player.
+      description: >-
+        Creates a new game with a random country based on the chosen difficulty
+        level. The Game will live for ttl seconds after that the game is deleted
+        and can not be accessed. If the ttl expires the game will not be saved
+        in the game history of a player.
       requestBody:
         required: true
         content:
@@ -618,8 +605,11 @@ paths:
               properties:
                 difficulty:
                   type: string
-                  enum: ['easy', 'medium', 'hard']
-                  example: 'easy'
+                  enum:
+                    - easy
+                    - medium
+                    - hard
+                  example: easy
       responses:
         '201':
           description: Game Created Successfully
@@ -632,63 +622,62 @@ paths:
               description: Retrieve facts for the newly created game.
               operationRef: '#/paths/~1game~1{id}~1facts/get'
               parameters:
-                id: '$response.body#/id'
+                id: $response.body#/id
         '400':
           description: Invalid request
         '500':
           description: Internal server error
-    
   /game/{id}:
-      get:
-        tags:
-          - Game
-        summary: Retrieve a game
-        description: Retrieves the details of a game by its id.
-        parameters:
-          - name: id
-            in: path
-            description: The id of the game.
-            required: true
-            schema:
-              type: integer
-        responses:
-          '200':
-            description: Game details retrieved successfully.
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Game'
-          '400':
-            description: Invalid request
-          '403':
-            description: Unauthorized - user is not the player of the game
-          '404':
-            description: Game not found
-          '500':
-            description: Internal server error
-            
-      delete:
-        tags:
-          - Game
-        summary: Cancel a game
-        description: Cancels a game session by its id. 
-        parameters:
-          - name: id
-            in: path
-            description: The id of the game.
-            required: true
-            schema:
-              type: integer
-        responses:
-          '200':
-            description: Game successfully cancelled. No content.
-          '401':
-            description: Unauthorized. User doesn't have the necessary credentials for the resource that is being requested.
-          '404':
-            description: Game not found.
-          '500':
-            description: Internal server error.
-
+    get:
+      tags:
+        - Game
+      summary: Retrieve a game
+      description: Retrieves the details of a game by its id.
+      parameters:
+        - name: id
+          in: path
+          description: The id of the game.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Game details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '400':
+          description: Invalid request
+        '403':
+          description: Unauthorized - user is not the player of the game
+        '404':
+          description: Game not found
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - Game
+      summary: Cancel a game
+      description: Cancels a game session by its id.
+      parameters:
+        - name: id
+          in: path
+          description: The id of the game.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Game successfully cancelled. No content.
+        '401':
+          description: >-
+            Unauthorized. User doesn't have the necessary credentials for the
+            resource that is being requested.
+        '404':
+          description: Game not found.
+        '500':
+          description: Internal server error.
   /game/{id}/facts:
     get:
       tags:
@@ -717,9 +706,9 @@ paths:
           links:
             nextStep:
               description: Retrieve facts for the newly created game.
-              operationRef: '/game/{id}/rating/facts'
+              operationRef: /game/{id}/rating/facts
               parameters:
-                id: '$response.body#/id'
+                id: $response.body#/id
         '400':
           description: Invalid request
         '403':
@@ -749,7 +738,7 @@ paths:
               type: object
               properties:
                 data:
-                    $ref: '#/components/schemas/Answers'
+                  $ref: '#/components/schemas/Answers'
       description: Returns scoring for first round
       responses:
         '200':
@@ -765,9 +754,9 @@ paths:
           links:
             nextStep:
               description: get to the geo-onformation round
-              operationRef: '/game/{id}/geo-information'
+              operationRef: /game/{id}/geo-information
               parameters:
-                id: '$response.body#/id'
+                id: $response.body#/id
         '403':
           description: Forbidden
         '404':
@@ -809,13 +798,12 @@ paths:
                       lon:
                         type: number
                     description: lat and lon of the center of the country
-
           links:
             nextStep:
               description: rate geo-information
-              operationRef: '/game/{id}/rating/geo-information'
+              operationRef: /game/{id}/rating/geo-information
               parameters:
-                id: '$response.body#/id'
+                id: $response.body#/id
         '403':
           description: Forbidden
         '404':
@@ -839,16 +827,20 @@ paths:
                   description: unauthorized user id
                 guessed_position:
                   type: object
-                    properties:
-                      lat: number,
-                      lon: number
-                    description: lat and lon of guessed coordinate 
+                  properties:
+                    lat:
+                      type: number
+                    lon:
+                      type: number
+                  description: lat and lon of guessed coordinate
                 center:
-                  type: object:
-                    properties:
-                      lat: number,
-                      lon: number
-                  description: lat and lon of the center of the country   
+                  type: object
+                  properties:
+                    lat:
+                      type: number
+                    lon:
+                      type: number
+                  description: lat and lon of the center of the country
       parameters:
         - in: path
           name: id
@@ -857,7 +849,6 @@ paths:
           schema:
             type: string
       summary: Rating of second round of the game
-      
       responses:
         '200':
           description: OK
@@ -867,8 +858,10 @@ paths:
                 type: object
                 properties:
                   distance:
-                      type: integer
-                      description: "distance in km between guessed Position and the Center of a Country with the Haversine-Formela"
+                    type: integer
+                    description: >-
+                      distance in km between guessed Position and the Center of
+                      a Country with the Haversine-Formela
                   score:
                     type: integer
                     description: scoring from the second round
@@ -885,7 +878,6 @@ paths:
           description: Not Acceptable
         '500':
           description: Internal Server Error
-
   /game/{id}/sights:
     get:
       tags:
@@ -899,13 +891,15 @@ paths:
           schema:
             type: string
       summary: Third round of Länderspiel
-      description: Three sights of 3 cities. The player has to guess the cites based on the provided sights.
+      description: >-
+        Three sights of 3 cities. The player has to guess the cites based on the
+        provided sights.
       responses:
         '200':
           description: OK
           content:
             application/hal+json:
-               schema:
+              schema:
                 type: object
                 properties:
                   city_name:
@@ -920,10 +914,10 @@ paths:
           links:
             nextStep:
               description: rate geo-information
-              operationRef: '/game/{id}/rating/sights'
+              operationRef: /game/{id}/rating/sights
               parameters:
-                id: '$response.body#/id'
-        '400': 
+                id: $response.body#/id
+        '400':
           description: Bad Request
         '403':
           description: Forbidden
@@ -931,7 +925,6 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
-   
   /game/{id}/rating/sights:
     post:
       tags:
@@ -962,7 +955,9 @@ paths:
                   type: integer
                   example: 408
       summary: Rating of third round of the game
-      description: Scoring of the final round. Since the round completes the game, the time of the users attempt will also be used for scoring the whole game.
+      description: >-
+        Scoring of the final round. Since the round completes the game, the time
+        of the users attempt will also be used for scoring the whole game.
       responses:
         '200':
           description: OK
@@ -979,12 +974,12 @@ paths:
               operationId: Get next page for scoreboard
               parameters:
                 artifact-id: /game/scoreboard
+        '400':
+          description: Bad Request - e.g. wrong coordinate formatting.
         '403':
           description: Forbidden
         '404':
           description: Game not Found
-        '400':
-          description: Bad Request - e.g. wrong coordinate formatting.
         '500':
           description: Internal Server Error
   /user/{id}/played-games:
@@ -1033,7 +1028,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Invalid ID. Must be a number."
+                message: Invalid ID. Must be a number.
         '403':
           description: Unauthorized
           content:
@@ -1041,7 +1036,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Unauthorized - profile is private - this applies to game history too."
+                message: >-
+                  Unauthorized - profile is private - this applies to game
+                  history too.
         '404':
           description: Not Found
           content:
@@ -1049,7 +1046,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "User not found."
+                message: User not found.
         '500':
           description: Internal server error.
           content:
@@ -1057,7 +1054,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Internal server error."
+                message: Internal server error.
     delete:
       tags:
         - Gamehistory
@@ -1065,8 +1062,9 @@ paths:
         - google_oauth: []
       summary: Delete all played games by user.
       description: >-
-        Deletes ALL the games a user has played (clears game history). Only the owner of the history can
-        perform this operation. The overall score is reset to 0 and monthly rankings are also deleted.
+        Deletes ALL the games a user has played (clears game history). Only the
+        owner of the history can perform this operation. The overall score is
+        reset to 0 and monthly rankings are also deleted.
       parameters:
         - name: id
           in: path
@@ -1076,7 +1074,9 @@ paths:
             type: integer
       responses:
         '200':
-          description: Successful deletion - deletedNum is the total number of deleted played Games.
+          description: >-
+            Successful deletion - deletedNum is the total number of deleted
+            played Games.
           content:
             application/json:
               schema:
@@ -1093,7 +1093,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Invalid ID. Must be a number."
+                message: Invalid ID. Must be a number.
         '403':
           description: Unauthorized
           content:
@@ -1101,7 +1101,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Unauthorized - user is not the owner."
+                message: Unauthorized - user is not the owner.
         '404':
           description: Not Found
           content:
@@ -1109,7 +1109,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "User not found."
+                message: User not found.
         '500':
           description: Internal server error.
           content:
@@ -1117,13 +1117,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
               example:
-                message: "Internal server error."
+                message: Internal server error.
 components:
   schemas:
     Answers:
       type: object
       properties:
-        time: 
+        time:
           type: integer
         answers:
           type: array
@@ -1133,7 +1133,6 @@ components:
           maxItems: 7
         flag:
           type: boolean
-
     FactAnswers:
       type: object
       properties:
@@ -1141,7 +1140,6 @@ components:
           type: string
         tries:
           type: integer
-
     Facts:
       type: object
       properties:
@@ -1159,7 +1157,6 @@ components:
             $ref: '#/components/schemas/FlagOption'
           minItems: 3
           maxItems: 3
-  
     CountryFacts:
       type: object
       properties:
@@ -1167,7 +1164,6 @@ components:
           type: string
         answer:
           type: string
-
     FlagOption:
       type: object
       properties:
@@ -1212,8 +1208,8 @@ components:
           example: '2023-05-01T00:00:00Z'
         username:
           type: string
-          example: "john_doe2"
-        user_id: 
+          example: john_doe2
+        user_id:
           type: integer
           example: 123132
     Profile:
@@ -1224,13 +1220,13 @@ components:
         firstName:
           type: string
           nullable: false
-          minLength: 2      
+          minLength: 2
           maxLength: 50
           example: John
         lastName:
           type: string
           nullable: false
-          minLength: 2    
+          minLength: 2
           maxLength: 50
           example: Doe
         bio:
@@ -1254,20 +1250,19 @@ components:
         updatedAt:
           type: string
           format: date-time
-    
     ProfileUpdate:
       type: object
       properties:
         firstName:
           type: string
           nullable: false
-          minLength: 2      
+          minLength: 2
           maxLength: 50
           example: John
         lastName:
           type: string
           nullable: false
-          minLength: 2    
+          minLength: 2
           maxLength: 50
           example: Doe
         bio:
@@ -1285,7 +1280,6 @@ components:
           type: boolean
           nullable: true
           default: false
-
     Game:
       type: object
       properties:
@@ -1307,16 +1301,16 @@ components:
         ttl:
           type: integer
           format: int32
-          description: "Time to live in seconds"
+          description: Time to live in seconds
           example: 900
         created_at:
           type: string
           format: date-time
-          example: "2023-06-02T16:00:00Z"
+          example: '2023-06-02T16:00:00Z'
         difficulty:
           type: number
           format: float
-          example: 1.0
+          example: 1
         country_id:
           type: integer
           format: int64
@@ -1368,8 +1362,7 @@ components:
         createdAt:
           type: string
           format: date-time
-          example: "2023-06-01T10:30:00Z"
-
+          example: '2023-06-01T10:30:00Z'
     PaginatedPlayedGamesResponse:
       type: object
       properties:
@@ -1397,7 +1390,7 @@ components:
               properties:
                 href:
                   type: string
-                  example: "/user/123/played-games?page=2&pageSize=20"
+                  example: /user/123/played-games?page=2&pageSize=20
             next:
               type: object
               properties:
@@ -1437,17 +1430,23 @@ components:
           type: array
           items:
             type: string
-
     ProfileViolation:
       type: object
       properties:
         error:
           type: string
-          enum: [Length Limit Violation, Empty Request Body, Invalid Field(s)]
-          description: Error type indicating a length limit violation or an empty request body
+          enum:
+            - Length Limit Violation
+            - Empty Request Body
+            - Invalid Field(s)
+          description: >-
+            Error type indicating a length limit violation or an empty request
+            body
         message:
           type: string
-          description: Description of the error (length limit violation or empty request body, or the contained invalid field(s))
+          description: >-
+            Description of the error (length limit violation or empty request
+            body, or the contained invalid field(s))
         violations:
           type: array
           items:
@@ -1466,7 +1465,9 @@ components:
                 type: integer
                 description: The actual length of the field value that exceeded the limit
           description: Array of length limit violations
-      required: [error, message]
+      required:
+        - error
+        - message
       example:
         error: Length Limit Violation
         message: One or more fields violated the length limit
@@ -1479,21 +1480,25 @@ components:
             minLength: 2
             maxLength: 50
             actualLength: 1
-            
     ProfileAlreadyExistsError:
       type: object
       properties:
         error:
           type: string
-          enum: [Profile Already Exists]
+          enum:
+            - Profile Already Exists
           description: Error type indicating that the profile already exists
         message:
           type: string
           description: Description of the error
-      required: [error, message]
+      required:
+        - error
+        - message
       example:
         error: Profile Already Exists
-        message: A profile already exists for the user. Use put to update the users profile.
+        message: >-
+          A profile already exists for the user. Use put to update the users
+          profile.
     CountrySummary:
       type: object
       properties:
@@ -1507,7 +1512,6 @@ components:
           type: integer
         AverageTime:
           type: integer
-
     UserStats:
       type: object
       properties:
@@ -1535,10 +1539,10 @@ components:
     google_oauth:
       type: oauth2
       description: Google OAuth
-      flows: 
+      flows:
         authorizationCode:
           authorizationUrl: /oauth/authorize
-          tokenUrl: /oauth/token             
+          tokenUrl: /oauth/token
           scopes: {}
   Geo-Information:
     type: object

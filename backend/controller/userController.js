@@ -38,7 +38,10 @@ const deleteUser = async (req, res) => {
 
     if (validateId(id, res)) return;
 
-    // TODO: auth middleware! (user allowed to delete themselves)
+    if( id != req.user.id){
+        res.status(403).json({ message: 'Unauthorized.' });
+    }
+
     try {
         const parsedId = parseInt(id);
         const user = await prismaClient.user.findUnique({ where: { id: parsedId } });
