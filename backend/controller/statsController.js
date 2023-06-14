@@ -13,14 +13,14 @@ const { validateId } = require('../helpers/invalidIDhelper');
  */
 exports.getUserStats = async (req, res) => {
     try {
-        
-        if( id != req.user.id){
+        const id = parseInt(req.params.id);
+
+        if (validateId(id, res)) return;
+
+        if (id != req.user.id) {
             res.status(403).json({ message: 'Unauthorized.' });
         }
-    
 
-        const id = parseInt(req.params.id);
-        if (validateId(id, res)) return;
         const user = await userService.getUserById(id); // throws 404 if user not found
 
         const etag = req.headers['if-none-match'];
