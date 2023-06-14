@@ -28,11 +28,7 @@ const getPlayedGames = async (req, res) => {
         }
 
         // user profile may be undefined --> treat as private
-        if (!user.Profile || user.Profile.isPrivate) {
-            return res.status(403).json({ message: 'Unauthorized - the profile is set to private, therefore the game history is private too.' });
-        }
-
-        if (user.Profile.isPrivate && user.Profile.userId !== req.user.id) {
+        if (!user.Profile || (user.Profile.isPrivate && user.Profile.userId !== req.user.id)) {
             return res.status(403).json({ message: 'Unauthorized - the profile is set to private, therefore the game history is private too.' });
         }
 
