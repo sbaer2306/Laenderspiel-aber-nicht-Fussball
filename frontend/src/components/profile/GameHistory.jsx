@@ -25,9 +25,6 @@ function GameHistory({ id }) {
           pageSize: pageSize
         }
       });
-  
-      
-      console.log("next", response.data._links.next?.href)
       const data = response.data;
       setGameHistory(data.playedGames);
       setNextPage(data._links.next?.href);
