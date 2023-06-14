@@ -115,7 +115,7 @@
           "user"
         ],
         "summary": "Authenticate user",
-        "description": "Authenticates user with third-party authentication provider",
+        "description": "Authenticates user with third-party authentication provider.",
         "requestBody": {
           "required": true,
           "content": {
@@ -462,6 +462,19 @@
               }
             }
           },
+          "401": {
+            "description": "User is not authenticated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Unauthenticated."
+                }
+              }
+            }
+          },
           "403": {
             "description": "Forbidden.",
             "content": {
@@ -548,6 +561,19 @@
                 },
                 "example": {
                   "message": "Invalid ID. Must be a number."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User is not authenticated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Unauthenticated."
                 }
               }
             }
@@ -646,8 +672,21 @@
               }
             }
           },
+          "401": {
+            "description": "User is not authenticated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Unauthenticated."
+                }
+              }
+            }
+          },
           "403": {
-            "description": "Forbidden",
+            "description": "Forbidden - Only the user himself is allowed to look at his statistics.",
             "content": {
               "application/json": {
                 "example": {
@@ -684,7 +723,8 @@
         "tags": [
           "Profile"
         ],
-        "summary": "Create a profile for the currently authenticated user.",
+        "summary": "Create a profile for the currently authenticated user. [DEPRECATED]",
+        "description": "User profile gets created on Signup, this endpoint will always return 409 - Conflict since a profile already exists for a signed up user.",
         "security": [
           {
             "google_oauth": []
@@ -717,6 +757,19 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProfileViolation"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User is not authenticated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Unauthenticated."
                 }
               }
             }
@@ -784,6 +837,19 @@
               }
             }
           },
+          "401": {
+            "description": "User is not authenticated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Unauthenticated."
+                }
+              }
+            }
+          },
           "403": {
             "description": "Forbidden",
             "content": {
@@ -820,6 +886,7 @@
         "tags": [
           "Profile"
         ],
+        "description": "User profile gets created on Signup. The created profile can be updated. All fields in the body if request are optional. Only set values will be updated. An empty body is not allowed (400). Invalid fields will result in a 400 error. Length limit contraint violations also result in a 400 response.",
         "security": [
           {
             "google_oauth": []
@@ -860,6 +927,19 @@
                       "$ref": "#/components/schemas/MessageResponse"
                     }
                   ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User is not authenticated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Unauthenticated."
                 }
               }
             }
@@ -1558,6 +1638,19 @@
               }
             }
           },
+          "401": {
+            "description": "User is not authenticated. Only authenticated users are allowed to look at public profiles.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Unauthenticated."
+                }
+              }
+            }
+          },
           "403": {
             "description": "Unauthorized",
             "content": {
@@ -1648,6 +1741,19 @@
                 },
                 "example": {
                   "message": "Invalid ID. Must be a number."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User is not authenticated. Must be authenticated in order to be authorised to perform action.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Unauthenticated."
                 }
               }
             }
@@ -1837,34 +1943,29 @@
           },
           "firstName": {
             "type": "string",
-            "nullable": false,
             "minLength": 2,
             "maxLength": 50,
             "example": "John"
           },
           "lastName": {
             "type": "string",
-            "nullable": false,
             "minLength": 2,
             "maxLength": 50,
             "example": "Doe"
           },
           "bio": {
             "type": "string",
-            "nullable": true,
             "maxLength": 500,
             "example": "Hi, this is John Doe.",
             "default": "Hi there!"
           },
           "location": {
             "type": "string",
-            "nullable": true,
             "maxLength": 100,
             "example": "Alabama"
           },
           "isPrivate": {
             "type": "boolean",
-            "nullable": true,
             "default": false
           },
           "createdAt": {
@@ -1882,34 +1983,29 @@
         "properties": {
           "firstName": {
             "type": "string",
-            "nullable": false,
             "minLength": 2,
             "maxLength": 50,
             "example": "John"
           },
           "lastName": {
             "type": "string",
-            "nullable": false,
             "minLength": 2,
             "maxLength": 50,
             "example": "Doe"
           },
           "bio": {
             "type": "string",
-            "nullable": true,
             "maxLength": 500,
             "example": "Hi, this is John Doe.",
             "default": "Hi there!"
           },
           "location": {
             "type": "string",
-            "nullable": true,
             "maxLength": 100,
             "example": "Buffalo"
           },
           "isPrivate": {
             "type": "boolean",
-            "nullable": true,
             "default": false
           }
         }
@@ -2055,7 +2151,7 @@
                 "properties": {
                   "href": {
                     "type": "string",
-                    "example": "/user/123/played-games?page=2&pageSize=20"
+                    "example": "http://localhost:8000/user/13/played-games?page=1&pageSize=5"
                   }
                 }
               },
@@ -2063,7 +2159,8 @@
                 "type": "object",
                 "properties": {
                   "href": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "http://localhost:8000/user/13/played-games?page=2&pageSize=5"
                   }
                 }
               },
@@ -2071,7 +2168,8 @@
                 "type": "object",
                 "properties": {
                   "href": {
-                    "type": "string"
+                    "type": "string",
+                    "example": null
                   }
                 }
               }
