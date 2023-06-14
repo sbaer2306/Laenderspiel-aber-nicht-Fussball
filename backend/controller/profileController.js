@@ -102,8 +102,15 @@ const updateProfile = async (req, res) => {
  */
 const createProfile = async (req, res) => {
     try {
-        const user_id = 9; // TODO: get user id from auth token
-        // Authorization - check if user already has a profile
+        const user_id = req.user.id;
+
+        const profile = await profileService.getProfile(user_id);
+        if (profile) {
+            return res.status(409).json({
+                message: "Conflict. User already has a profile."
+            });
+        }
+
         const profile_data = req.body;
 
         if (Object.keys(profile_data).length === 0) {
