@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import SightCard from '../components/Sights/SightCard';
+import LocationMarker from '../components/map/LocationMarker';
 import '../css/ThirdRound.css'
-import { Text, Button, Input, Spinner, Box } from '@chakra-ui/react';
+import { Text, Button, Spinner, Box, Center } from '@chakra-ui/react';
+import { MapContainer, TileLayer } from 'react-leaflet';
 
 axios.defaults.withCredentials = true;
 
@@ -11,18 +13,15 @@ const ThirdRound = () => {
   const [sights, setSights] = useState([]);
   const [countryName, setCountryName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [userInputs, setUserInputs] = useState([]);
-
-  const example = {
-    // ...
-  };
-
+  const [answerState, setAnswerState] = useState({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [currentCityIndex, setCurrentCityIndex] = useState(0);
+  const [markerPosition, setMarkerPosition] = useState(null);
+  const [cityCoordinates, setCityCoordinates] = useState([]);
+  const [coordinatesData, setCoordinatesData] = useState(null);
+  const [centerCity, setCenterCity] = useState([]);
+  const [lastMarkerPosition, setLastMarkerPosition] = useState(null);
 
-  const nextCity = () => {
-    setCurrentCityIndex((prevIndex) => (prevIndex + 1) % Object.keys(sights).length);
-  };
-  
   const createGame = async () => {
     try {
       const gameResponse = await axios.post('http://localhost:8000/game', {
@@ -38,19 +37,32 @@ const ThirdRound = () => {
     try {
       const response = await axios.get(url);
       setSights(response.data);
+
+
+
+
       setIsLoading(false);
       console.log(response.data);
+
+      const key = Object.keys(response.data)[0];
+      setCenterCity(response.data[key].coordinates);
+      // console.log(response.data[key].coordinates);
+      console.log(centerCity);
+
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
+    console.log('centerCity:', centerCity);
+  }, [centerCity]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         await createGame();
         await getSights();
-        setUserInputs(Array(Object.keys(sights).length).fill('')); // Initialisierung des Arrays für Benutzereingaben
       } catch (error) {
         console.log(error);
       }
@@ -58,26 +70,63 @@ const ThirdRound = () => {
 
     fetchData();
   }, []);
-
-  useEffect(() => {
-    if (!isLoading && Object.keys(sights).length > 0) {
-      // Überprüfung, ob die Sights-Daten verfügbar sind
-      console.log('Sights are available');
-    }
-  }, [isLoading, sights]);
-
-  const handleInputChange = (event) => {
-    const index = currentCityIndex;
-    const updatedInputs = [...userInputs];
-    updatedInputs[index] = event.target.value;
-    setUserInputs(updatedInputs);
+  
+  /*
+  const handleMarkerClick = (position) => {
+    setCityCoordinates((prevCoordinates) => [...prevCoordinates, position]);
   };
 
-  const saveUserInput = () => {
-    const index = currentCityIndex;
-    const userInput = userInputs[index];
-    // Hier kannst du die Benutzereingabe speichern oder weitere logische Operationen durchführen
-    console.log(`User Input for City ${index + 1}:`, userInput);
+  const handleNextCity = () => {
+    const nextIndex = currentCityIndex + 1;
+
+    if (nextIndex < Object.keys(sights).length) {
+      setCurrentCityIndex(nextIndex);
+    } else {
+      setIsSubmitted(true);
+
+      const updatedCoordinatesData = Object.keys(sights).reduce((acc, city, index) => {
+        const cityData = {
+          coordinates: sights[city].coordinates,
+          guessed_coordinates: cityCoordinates[index],
+        };
+        acc[city] = cityData;
+        return acc;
+      }, {});
+
+      console.log('Coordinates data:', updatedCoordinatesData);
+      setCoordinatesData(updatedCoordinatesData);
+    }
+  };
+  */
+
+  const handleMarkerClick = (position) => {
+    setCityCoordinates((prevCoordinates) => {
+      const updatedCoordinates = [...prevCoordinates];
+      updatedCoordinates[currentCityIndex] = position;
+      return updatedCoordinates;
+    });
+  };
+  
+  const handleNextCity = () => {
+    const nextIndex = currentCityIndex + 1;
+  
+    if (nextIndex < Object.keys(sights).length) {
+      setCurrentCityIndex(nextIndex);
+    } else {
+      setIsSubmitted(true);
+  
+      const updatedCoordinatesData = Object.keys(sights).reduce((acc, city, index) => {
+        const cityData = {
+          coordinates: sights[city].coordinates,
+          guessed_coordinates: cityCoordinates[index],
+        };
+        acc[city] = cityData;
+        return acc;
+      }, {});
+  
+      console.log('Coordinates data:', updatedCoordinatesData);
+      setCoordinatesData(updatedCoordinatesData);
+    }
   };
 
   return (
@@ -109,13 +158,18 @@ const ThirdRound = () => {
               <p>No sights available</p>
             )}
           </div>
+          <Center>
+            <MapContainer center={centerCity} zoom={5} scrollWheelZoom={true}>
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png"
+            />
+            <LocationMarker childToParent={handleMarkerClick} clicked={isSubmitted}/>
+            </MapContainer>
+            <Button spacing={5} colorScheme='blue' size='md' align='center' onClick={handleNextCity}>Submit</Button>
+            </Center>
         </div>
       )}
-      <div className='Submit-Container'>
-        <Input type="text" value={userInputs[currentCityIndex]} onChange={handleInputChange} placeholder="Enter your guess" />
-        <Button onClick={saveUserInput} colorScheme='blue' size="md">Submit</Button>
-        <Button onClick={nextCity} colorScheme='blue' size="md">Next City</Button>
-      </div>
     </div>
   );
 };

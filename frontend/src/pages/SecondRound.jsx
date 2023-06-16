@@ -39,7 +39,12 @@ function SecondRound() {
 
       // Verwende die Session-ID, um das Game-Objekt abzurufen
       const response = await axios.get(url);
+      
+      console.log(response.data.geometry);
+
       setData(converter(response.data.geometry));
+
+      
       
       let centerCountry = {lat: response.data.center.lat, lon: response.data.center.lon};
       setCenter(centerCountry);
