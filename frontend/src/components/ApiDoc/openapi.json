@@ -2195,6 +2195,90 @@
             "description": "A message indicating the outcome"
           }
         }
+      },
+      "Geo-Information": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "number"
+          },
+          "generator": {
+            "type": "string"
+          },
+          "osm3s": {
+            "type": "object",
+            "properties": {
+              "timestamp_osm_base": {
+                "type": "string"
+              },
+              "copyright": {
+                "type": "string"
+              }
+            }
+          },
+          "elements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "number"
+                },
+                "bounds": {
+                  "type": "object",
+                  "properties": {
+                    "minlat": {
+                      "type": "number"
+                    },
+                    "minlon": {
+                      "type": "number"
+                    },
+                    "maxlat": {
+                      "type": "number"
+                    },
+                    "maxlon": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "members": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      },
+                      "ref": {
+                        "type": "number"
+                      },
+                      "role": {
+                        "type": "string"
+                      },
+                      "geometry": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "lat": {
+                              "type": "number"
+                            },
+                            "lon": {
+                              "type": "number"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "securitySchemes": {
@@ -2206,90 +2290,6 @@
             "authorizationUrl": "/oauth/authorize",
             "tokenUrl": "/oauth/token",
             "scopes": {}
-          }
-        }
-      }
-    },
-    "Geo-Information": {
-      "type": "object",
-      "properties": {
-        "version": {
-          "type": "number"
-        },
-        "generator": {
-          "type": "string"
-        },
-        "osm3s": {
-          "type": "object",
-          "properties": {
-            "timestamp_osm_base": {
-              "type": "string"
-            },
-            "copyright": {
-              "type": "string"
-            }
-          }
-        },
-        "elements": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string"
-              },
-              "id": {
-                "type": "number"
-              },
-              "bounds": {
-                "type": "object",
-                "properties": {
-                  "minlat": {
-                    "type": "number"
-                  },
-                  "minlon": {
-                    "type": "number"
-                  },
-                  "maxlat": {
-                    "type": "number"
-                  },
-                  "maxlon": {
-                    "type": "number"
-                  }
-                }
-              },
-              "members": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string"
-                    },
-                    "ref": {
-                      "type": "number"
-                    },
-                    "role": {
-                      "type": "string"
-                    },
-                    "geometry": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "lat": {
-                            "type": "number"
-                          },
-                          "lon": {
-                            "type": "number"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
           }
         }
       }
