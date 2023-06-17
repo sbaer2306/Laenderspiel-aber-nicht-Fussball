@@ -2,7 +2,7 @@ import '../css/SecondRound.css'
 import 'leaflet/dist/leaflet.css'
 import { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet'
-import { Text, Center, Box, Button } from '@chakra-ui/react';
+import { Text, Center, Box, Button, CircularProgress } from '@chakra-ui/react';
 import axios from 'axios';
 import converter from 'osmtogeojson'
 import LocationMarker from '../components/map/LocationMarker';
@@ -19,8 +19,10 @@ function SecondRound() {
   const [center, setCenter] = useState('');
   const [buttonClicked, setButtonClicked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [time, setTime] = useState(0);
 
   const url = 'http://localhost:8000/game/400/geo-information';
+  const MAX_TIME = 600;
 
   const createGame = async () => {
     try{
@@ -57,11 +59,20 @@ function SecondRound() {
 
   useEffect(() => {
     createGame();
+    //time
+    const timer = setInterval(() => {
+      setTime((prevTime) => prevTime + 1);
+  }, 1000);
+
+  return () => {
+      clearInterval(timer);
+  }
   }, []);
 
   return (
     <Box align="center">
       <Text mb={1} fontSize='2xl' textAlign="center">Round 2</Text>
+      <Box align="right"><CircularProgress value={time * (100/MAX_TIME)} size='60px' /></Box>
       <Text m={2} fontSize='xl'>Try to guess the center of the country</Text>
       <Text m={2} fontSize='xl' fontWeight='700'>{countryName}</Text>
       <Center>
