@@ -12,3 +12,9 @@
 .Submit-Container input[type="text"] {
     width: 200px; 
 }
+
+.Timer-Container {
+    position: absolute;
+    top: 115px;
+    right: 400px;  
+}

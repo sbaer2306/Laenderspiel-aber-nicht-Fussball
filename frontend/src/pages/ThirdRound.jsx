@@ -3,7 +3,7 @@ import axios from 'axios';
 import SightCard from '../components/Sights/SightCard';
 import LocationMarker from '../components/map/LocationMarker';
 import '../css/ThirdRound.css'
-import { Text, Button, Spinner, Box, Center } from '@chakra-ui/react';
+import { Text, Button, Spinner, Box, Center, CircularProgress } from '@chakra-ui/react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 
 axios.defaults.withCredentials = true;
@@ -21,6 +21,9 @@ const ThirdRound = () => {
   const [coordinatesData, setCoordinatesData] = useState(null);
   const [centerCity, setCenterCity] = useState([]);
   const [lastMarkerPosition, setLastMarkerPosition] = useState(null);
+  const [time, setTime] = useState(0)
+
+  const MAX_TIME = 100; //10min for now
 
   const createGame = async () => {
     try {
@@ -37,9 +40,6 @@ const ThirdRound = () => {
     try {
       const response = await axios.get(url);
       setSights(response.data);
-
-
-
 
       setIsLoading(false);
       console.log(response.data);
@@ -67,37 +67,21 @@ const ThirdRound = () => {
         console.log(error);
       }
     };
-
+  
     fetchData();
   }, []);
   
-  /*
-  const handleMarkerClick = (position) => {
-    setCityCoordinates((prevCoordinates) => [...prevCoordinates, position]);
-  };
-
-  const handleNextCity = () => {
-    const nextIndex = currentCityIndex + 1;
-
-    if (nextIndex < Object.keys(sights).length) {
-      setCurrentCityIndex(nextIndex);
-    } else {
-      setIsSubmitted(true);
-
-      const updatedCoordinatesData = Object.keys(sights).reduce((acc, city, index) => {
-        const cityData = {
-          coordinates: sights[city].coordinates,
-          guessed_coordinates: cityCoordinates[index],
-        };
-        acc[city] = cityData;
-        return acc;
-      }, {});
-
-      console.log('Coordinates data:', updatedCoordinatesData);
-      setCoordinatesData(updatedCoordinatesData);
+  useEffect(() => {
+    if (!isLoading) {
+      const timer = setInterval(() => {
+        setTime((prevTime) => prevTime + 1);
+      }, 1000);
+  
+      return () => {
+        clearInterval(timer);
+      };
     }
-  };
-  */
+  }, [isLoading]);
 
   const handleMarkerClick = (position) => {
     setCityCoordinates((prevCoordinates) => {
@@ -131,6 +115,10 @@ const ThirdRound = () => {
 
   return (
     <div>
+      <div className="Timer-Container">
+        <CircularProgress value={time * (100 / MAX_TIME)} size="70px" />
+      </div>
+
       <Text mb={1} fontSize='2xl' textAlign="center">Round 3</Text>
       <Text m={2} fontSize='xl'>Try to guess the cities based on some sights of</Text>
       <Text m={2} fontSize='xl' fontWeight='700'>{countryName}</Text>
