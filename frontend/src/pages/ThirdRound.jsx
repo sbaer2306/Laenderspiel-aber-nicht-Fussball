@@ -6,9 +6,7 @@ import { Text, Button, Spinner, Box, Center, CircularProgress } from '@chakra-ui
 import { MapContainer, TileLayer } from 'react-leaflet';
 import {useLocation, useNavigate} from 'react-router-dom'
 import api from '../helpers/axios';
-
 import CityMarker from '../components/map/CityMarker'; // adjusted
-
 
 const ThirdRound = () => {
 
@@ -29,7 +27,6 @@ const ThirdRound = () => {
   const [markerPosition, setMarkerPosition] = useState(null);
   const [cityCoordinates, setCityCoordinates] = useState([]);
   const [coordinatesData, setCoordinatesData] = useState(null);
-  const [centerCity, setCenterCity] = useState([]);
   const [lastMarkerPosition, setLastMarkerPosition] = useState(null);
   const [time, setTime] = useState(0)
   const [isTimerRunning, setIsTimerRunning] = useState(true);
@@ -75,13 +72,8 @@ const ThirdRound = () => {
   };
 
   useEffect(() => {
-    console.log('centerCity:', centerCity);
-  }, [centerCity]);
-
-  useEffect(() => {
     const fetchData = async () => {
       try {
-        // await createGame();
         await getSights();
       } catch (error) {
         console.log(error);
