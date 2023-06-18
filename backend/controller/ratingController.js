@@ -70,7 +70,7 @@ async function calculateDistance(req, res){
    
     const links = {
       nextStep: {
-        description: 'Link for next round with id of game ',
+        description: 'Link for next round with id of game and the center of the country',
         operationRef: `/game/sights`,   
         parameters: {
           id: id,
