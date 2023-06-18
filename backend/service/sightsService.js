@@ -2,7 +2,7 @@ const axios = require('axios');
 
 async function fetchCities(countryCode) {
   try {
-    const query = `[out:json][timeout:5000];area['ISO3166-1'='${countryCode}'];node[place=city](area);out center;`;
+    const query = `[out:json][timeout:5000];area['ISO3166-1'='${countryCode}'];node[place=city](area)[population~"^[0-9]{6,}$"];out center;`;
 
     const response = await axios.get('https://overpass-api.de/api/interpreter', {
       params: {
@@ -10,12 +10,15 @@ async function fetchCities(countryCode) {
       },
     });
 
-    const cities = response.data.elements.map(city => {
-      const name = city.tags['name:en'] || city.tags.name;
-      const lat = city.lat;
-      const lon = city.lon;
-      return { name, lat, lon };
-    });
+    const cities = response.data.elements
+      .sort((a, b) => b.tags.population - a.tags.population)
+      .slice(0, 10)
+      .map(city => {
+        const name = city.tags['name:en'] || city.tags.name;
+        const lat = city.lat;
+        const lon = city.lon;
+        return { name, lat, lon };
+      });
 
     return cities;
   } catch (error) {

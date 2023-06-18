@@ -22,8 +22,34 @@ const ThirdRound = () => {
   const [centerCity, setCenterCity] = useState([]);
   const [lastMarkerPosition, setLastMarkerPosition] = useState(null);
   const [time, setTime] = useState(0)
+  const [isTimerRunning, setIsTimerRunning] = useState(true);
 
   const MAX_TIME = 100; //10min for now
+
+  const sendGameData = async () => {
+    const gameData = {
+      time_to_complete_game: time,
+      ...Object.keys(sights).reduce((acc, city, index) => {
+        const cityData = {
+          coordinates: sights[city].coordinates,
+          guessed_coordinates: Object.values(cityCoordinates[index]),
+          sights: sights[city].sights.length
+        };
+        acc[city] = cityData;
+        return acc;
+      }, {})
+    };
+  
+    try {
+      // const response = await axios.post('DEIN_ENDPOINT', gameData);
+      // console.log('Game data sent:', response.data);
+        
+      console.log(gameData);
+    } catch (error) {
+      console.error('Failed to send game data:', error);
+      // Fehlerbehandlung
+    }
+  };
 
   const createGame = async () => {
     try {
@@ -72,7 +98,7 @@ const ThirdRound = () => {
   }, []);
   
   useEffect(() => {
-    if (!isLoading) {
+    if (isTimerRunning && !isLoading) {
       const timer = setInterval(() => {
         setTime((prevTime) => prevTime + 1);
       }, 1000);
@@ -81,7 +107,7 @@ const ThirdRound = () => {
         clearInterval(timer);
       };
     }
-  }, [isLoading]);
+  }, [isTimerRunning, isLoading]);
 
   const handleMarkerClick = (position) => {
     setCityCoordinates((prevCoordinates) => {
@@ -98,6 +124,7 @@ const ThirdRound = () => {
       setCurrentCityIndex(nextIndex);
     } else {
       setIsSubmitted(true);
+      setIsTimerRunning(false); // Timer stoppen
   
       const updatedCoordinatesData = Object.keys(sights).reduce((acc, city, index) => {
         const cityData = {
@@ -109,10 +136,14 @@ const ThirdRound = () => {
       }, {});
   
       console.log('Coordinates data:', updatedCoordinatesData);
+      console.log('Time:', time); // Zeit ausgeben
+  
       setCoordinatesData(updatedCoordinatesData);
+  
+      sendGameData(); // Daten an den Endpunkt senden
     }
   };
-
+  
   return (
     <div>
       <div className="Timer-Container">
@@ -147,11 +178,14 @@ const ThirdRound = () => {
             )}
           </div>
           <Center>
-            <MapContainer center={centerCity} zoom={5} scrollWheelZoom={true}>
+            <MapContainer center={centerCity} zoom={6} scrollWheelZoom={true}>
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png"
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
             />
+            {
+              // https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png
+            }
             <LocationMarker childToParent={handleMarkerClick} clicked={isSubmitted}/>
             </MapContainer>
             <Button spacing={5} colorScheme='blue' size='md' align='center' onClick={handleNextCity}>Submit</Button>
