@@ -4,14 +4,17 @@ import { Box, Button, Center, Text, Input, Slider,
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
-  SliderMark,Tooltip } from '@chakra-ui/react';
+  SliderMark,Tooltip,
+useToast } from '@chakra-ui/react';
 import { FaQuestionCircle, FaSpinner, FaCheck } from 'react-icons/fa';
 
 export const Facts = ({title, solution, tip, updateAnswer}) => {
+  const toast = useToast();
     
     const [isPopulation, setIsPopulation] = useState(false)
     const [sliderValue, setSliderValue] = useState(0)
     const [isArea, setIsArea] = useState(false)
+    const [area, setArea] = useState(0)
     const [showTooltip, setShowTooltip] = useState(false)
     const [maxTriesReached, setMaxTriesReached] = useState(false)
     const [correct, setCorrect] = useState(false)
@@ -26,7 +29,7 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
 
     useEffect(() => {
       console.log(`${title}:  with solution: ${solution}`);
-      setSolutionInput(solution ? solution.toString().toLowerCase() : "")
+      setSolutionInput(solution.toString().toLowerCase())
       if(tip){
         setInput(solution);
         setMessage("Tipp")
@@ -36,11 +39,15 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
         if(tip) setSliderValue(solution)
         else setSliderValue(38*solution/100);
       }
-      if(title.toLowerCase() == 'area') setIsArea(true)
+      if(title.toLowerCase() == 'area'){
+        setIsArea(true)
+        if(tip) setArea(solution);
+        else setArea(63*solution/100)
+      } 
     },[title])
 
     const testValue = () => {
-      if(input == "" && !isPopulation) return;
+      if(input == "" && !isPopulation && !isArea) return;
       compareSolution()
       setTries(prevTries =>{
         const newTries = prevTries + 1
@@ -51,41 +58,68 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
 
     const compareSolution = () => {
       if(tries === 3) return;
-      if(title == "country_name" || title == "border"){
-        console.log("Country or border solution: ", input, "and the inputSolution: ", solutionInput);
-        const isInSolution = solutionInput.includes(input);
-        if(isInSolution){
-          return setCorrect(true);
-        }
-      }
       if(isPopulation){
         return compareNumberSolution(sliderValue);
       }
-      if(title == "area"){
-        const inputAsNumber = Number(input);
-        return compareNumberSolution(inputAsNumber);
+      if(isArea){
+        return compareNumberSolution(area);
       }
-      if(input == solutionInput){
+      if(input.trim() == solutionInput){ 
+        toast({
+          title: "Richtig ",
+          status:"success",
+          duration: 3000,
+          isClosable: true,
+        });
         return setCorrect(true);
       }
+      toast({
+        title: "Falsch ",
+        status:"error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
 
     const compareNumberSolution = (value) => {
       const upperEnd = solution * 1.1
       const lowerEnd = solution * 0.9
-      if(lowerEnd <= value && value <= upperEnd){
-        //alert("richtig")
+      if(lowerEnd < value && value < upperEnd){
+        toast({
+          title: "Richtig ",
+          status:"success",
+          duration: 3000,
+          isClosable: true,
+        });
         return setCorrect(true)
       }
-      if(upperEnd < value)  return setCorrect(false);
-      if(lowerEnd > value)  return setCorrect(false);
+      if (upperEnd < value) {
+        toast({
+          title: "Incorrect ",
+          description: "Too much.",
+          status:"error",
+          duration: 3000,
+          isClosable: true,
+        });
+        return;
+      }
+      if (lowerEnd > value) {
+        toast({
+          title: "Incorrect",
+          description: "Too low.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+        return;
+      }
     }
 
     useEffect(() => {
       if(tries != 0){
         const answer = {
           question_keyword: title,
-          answer: isPopulation ? sliderValue : isArea ? Number(input) : input,
+          answer: isPopulation ? sliderValue : isArea ? area : input,
           tries: tries
         }
         setAnswerObj(answer);
@@ -101,7 +135,7 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
         <Text mb={1} fontSize='2xl' textAlign="left">
           {title.charAt(0).toUpperCase()+title.slice(1)}
         </Text>
-        <div className={`textfield_container_fact rounded_shadow ${correct? 'right' : tries > 1 ? 'wrong' : ""}`}>
+        <div className={`textfield_container_fact rounded_shadow ${correct? 'right' : tries > 0 ? 'wrong' : ""}`}>
           <div className={`inputContainer `}>
           {
             isPopulation ? 
@@ -109,12 +143,11 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
               id='slider' 
               aria-label='slider-ex-1'
               value={maxTriesReached ? solution : sliderValue}
-              min={1*solution/100}
+              min={28*solution/100}
               max={169*solution/100}
               onChange={(v) => setSliderValue(v)}
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
-              onChangeEnd={(val) =>console.log("sliderval: ", val)}
               isReadOnly={tip || maxTriesReached}
             >
               <SliderTrack>
@@ -126,13 +159,41 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
                 color='white'
                 placement='top'
                 isOpen={showTooltip}
-                label={sliderValue.toLocaleString()}
+                label={`${sliderValue.toLocaleString(undefined, {maximumFractionDigits: 0})}`}
               >
                 <SliderThumb />
               </Tooltip>
               
             </Slider>
-          : tip ?
+          : isArea?
+          <Slider 
+              id='slider' 
+              aria-label='slider-ex-1'
+              value={maxTriesReached ? solution : area}
+              min={43*solution/100}
+              max={179*solution/100}
+              onChange={(a) => setArea(a)}
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+              onChangeEnd={(val) =>console.log("areaval: ", val)}
+              isReadOnly={tip || maxTriesReached}
+            >
+              <SliderTrack>
+                <SliderFilledTrack />
+              </SliderTrack>
+              <Tooltip 
+                hasArrow
+                bg='teal.500'
+                color='white'
+                placement='top'
+                isOpen={showTooltip}
+                label={`${area.toLocaleString()} Kilometer`}
+              >
+                <SliderThumb />
+              </Tooltip>
+              
+            </Slider>
+          :tip ?
           <Text mb={1} fontSize='xl' textAlign="center">
               {input}
           </Text>
@@ -145,8 +206,8 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
                 variant='outline'
                 borderWidth='1px'
                 borderColor='black'
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
+                value={input.charAt(0).toUpperCase()+input.slice(1)}
+                onChange={(e) => setInput(e.target.value.toLowerCase())}
             />
           }
             

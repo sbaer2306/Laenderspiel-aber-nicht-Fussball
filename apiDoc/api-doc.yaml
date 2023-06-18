@@ -563,8 +563,22 @@ paths:
                 id: $response.body#/id
         '400':
           description: Invalid request
+          content:
+            application/json:
+              example:
+                message: Invalid Request
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                message: Game is already in session.
         '500':
           description: Internal server error
+          content:
+            application/json:
+              example:
+                message: Internal server error.
   /game/{id}:
     get:
       tags:
@@ -588,7 +602,7 @@ paths:
         '400':
           description: Invalid request
         '403':
-          description: Unauthorized - user is not the player of the game
+          description: Forbidden - user is not the player of the game
         '404':
           description: Game not found
         '500':
@@ -608,12 +622,18 @@ paths:
       responses:
         '200':
           description: Game successfully cancelled. No content.
-        '401':
-          description: >-
-            Unauthorized. User doesn't have the necessary credentials for the
-            resource that is being requested.
+        '403':
+          description: Forbidden. User is only allowed to delete their own games.
+          content:
+            application/json:
+              example:
+                message: Can not delete games of other player
         '404':
-          description: Game not found.
+          description: Game in no active session found.
+          content:
+            application/json:
+              example:
+                message: Game not found in session.
         '500':
           description: Internal server error.
   /game/{id}/facts:
@@ -650,7 +670,11 @@ paths:
         '400':
           description: Invalid request
         '403':
-          description: Unauthorized - user is not the player of the game
+          description: Forbidden. User is not player of the game.
+          content:
+            application/json:
+              example:
+                message: This is not your game
         '404':
           description: Game not found
         '500':
@@ -696,11 +720,13 @@ paths:
               parameters:
                 id: $response.body#/id
         '403':
-          description: Forbidden
+          description: Forbidden. User is not player of the game.
+          content:
+            application/json:
+              example:
+                message: This is not your game.
         '404':
           description: Game not Found
-        '406':
-          description: Not Acceptable
         '500':
           description: Internal Server Error
   /game/{id}/geo-information:
@@ -1088,6 +1114,8 @@ components:
       properties:
         answer:
           type: string
+        question_keyword:
+          type: string
         tries:
           type: integer
     Facts:
@@ -1255,6 +1283,9 @@ components:
           type: integer
           format: int64
           example: 10
+        country_name:
+          type: string
+          example: "Mexico"
         current_score:
           type: integer
           example: 143
