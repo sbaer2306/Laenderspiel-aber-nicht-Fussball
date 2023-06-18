@@ -1,5 +1,5 @@
 async function calculateRatingFacts(facts, guessedData){
-  const MAX_TIME = 600 //10min
+  const MAX_TIME = 300 //5min
     try{
       let score = 0;
   
@@ -28,12 +28,28 @@ async function calculateRatingFacts(facts, guessedData){
     for(let i = 0 ; i < answers.length; i++){
       const answerObj = answers[i];
       const answer = String(answerObj.answer);
-      if(answer.toLowerCase() === facts[i]){
-        score += 400 - 100*answerObj.tries;
-      }
+        if(answer.toLowerCase() === facts[i]){
+          score += 400 - 100*answerObj.tries;
+        }
     }
     return score;
   }
+
+  /**
+   * facts = {
+          country_name: factsData.name.official,
+          facts: [
+            {border: borderCountryName}, 
+            {currency: Object.values(factsData.currencies)[0].name},
+            {capital: factsData.capital[0]},
+            {language: Object.values(factsData.languages)[0]},
+            {area: factsData.area},
+            {continent: factsData.continents[0]},
+            {population: factsData.population},
+          ], 
+          flags: flagResponses,
+        }
+   */
 
   function calculateGeoInformation(distance){
         let score;

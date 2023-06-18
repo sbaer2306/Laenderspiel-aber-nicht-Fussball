@@ -16,7 +16,7 @@ const initialAnswerObj = {
       { area: { answer: "", tries: 0 } },
       { continent: { answer: "", tries: 0 } },
       { population: { answer: "", tries: 0 } },
-      { country: { answer: "", tries: 0 } }
+      { country_name: { answer: "", tries: 0 } }
     ],
     flag: ""
 };
@@ -36,13 +36,17 @@ export const FirstRound = () => {
 
     const [answer, setAnswer] = useState(initialAnswerObj)
 
-    const MAX_TIME = 600; //10min for now
+    const MAX_TIME = 300; //10min for now
     const LENGTH = 7
     const COUNT = 3
 
     useEffect(() => {
         randomGenerator();
         fetchGameFacts();
+        //time
+        const timer = setInterval(() => {
+            setTime((prevTime) => prevTime + 1);
+        }, 1000);
         return () => {
             clearInterval(timer);
         }
@@ -60,17 +64,14 @@ export const FirstRound = () => {
             if(error.response) {
                 if(error.response.status === 403){
                     alert("error-response: ", error.response.data.message); //toast
-                    navigate('/') // logged for now
+                    navigate('/')  
                 }
                 //other status controlls
             }
             else console.log("error fetching: "+error.message);
         }
     }
-    //time
-    const timer = setInterval(() => {
-        setTime((prevTime) => prevTime + 1);
-    }, 1000);
+    
 
 
     const randomGenerator = () => {
@@ -94,7 +95,8 @@ export const FirstRound = () => {
         }));
     }
 
-    const updateAnswer = (title, answer) => {
+    const updateAnswer = (title, answer, correct) => {
+        console.log("Updating answer with title: ", title, "  - answer: ",answer, "and if correct: ",correct);
         setAnswer(prevState => {
           const updatedAnswers = prevState.answers.map(ans => {
             const key = Object.keys(ans)[0];
@@ -108,8 +110,8 @@ export const FirstRound = () => {
             answers: updatedAnswers
           };
         });
-        console.log("title : ", title, "  and answer  ", answer)
-        if(title === "country" && answer.tries === 3) setCountryAnswered(true)
+        console.log("Answer:  ", answer)
+        if(title === "country_name" && (correct ||  answer.tries === 3)) setCountryAnswered(true)
     }
     useEffect(()=>{
         setAnswer(prevState => {
@@ -136,8 +138,7 @@ export const FirstRound = () => {
             const {score, links } = response.data;
             console.log("score: ", score)
             if(links.nextStep){
-                console.log("should be this url: ", links.nextStep.operationRef)
-                navigate(links.nextStep.operationRef, {state: {id: links.nextStep.parameters.id}});  //LOGGED FOR NOW
+                navigate(links.nextStep.operationRef, {state: {id: links.nextStep.parameters.id, country_name: links.nextStep.parameters.country_name}}); 
             }
         }catch(error){
             if(error.response) {
@@ -177,13 +178,17 @@ export const FirstRound = () => {
             <div className='right_content_first_round'>
                 <div className='country_solution_container '>
                     <div className='country_solution rounded_shadow'>
-                        <Facts
-                        key={1}
-                        title={"country"}
-                        solution={countryAnswer}
-                        tip={false}
-                        updateAnswer={updateAnswer}
-                    />
+                    {
+                        countryAnswer && (
+                            <Facts
+                            key={1}
+                            title={"country_name"}
+                            solution={countryAnswer}
+                            tip={false}
+                            updateAnswer={updateAnswer}
+                        />
+                        )
+                    }
                     </div>
                 </div>
                 {

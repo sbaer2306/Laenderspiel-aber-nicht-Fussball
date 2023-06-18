@@ -10,7 +10,7 @@ const checkSessionTTL = (req, res, next) => {
             } 
         })
     }else{
-        req.session.cookie.maxAge = 60000 // 100 sek for testing purposes
+        req.session.cookie.maxAge = 600000 // 10 minutes per request
     }
     next();
 }

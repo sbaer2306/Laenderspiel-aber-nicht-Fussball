@@ -14,6 +14,8 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
     const [showTooltip, setShowTooltip] = useState(false)
     const [maxTriesReached, setMaxTriesReached] = useState(false)
     const [correct, setCorrect] = useState(false)
+    const [solutionInput, setSolutionInput] = useState("")
+    const [answerObj, setAnswerObj] = useState({answer: "", tries: 0})
     
     //userNote (maybe toast)
     const [message, setMessage] = useState("")
@@ -22,11 +24,14 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
     const [tries, setTries] = useState(0)
 
     useEffect(() => {
+      console.log(`${title}:  with solution: ${solution}`);
+      setSolutionInput(solution ? solution.toString().toLowerCase() : "")
       if(tip){
         setInput(solution);
         setMessage("Tipp")
       }
       if(title.toLowerCase() == 'population'){
+        console.log("Title: ",title," is pouplation");
         setIsPopulation(true);
         if(tip) setSliderValue(solution)
         else setSliderValue(38*solution/100);
@@ -36,37 +41,55 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
     },[title])
 
     const testValue = () => {
+      if(input == "" && !isPopulation) return;
       setTries(prevTries =>{
         const newTries = prevTries + 1
         if(newTries == 3) setMaxTriesReached(true)
         return newTries
       })
-      if(isPopulation){
-        return comparePopulation()
-      }
       const answer = {
         answer: input,
         tries: tries + 1
       }
-      updateAnswer(title, answer)
+      setAnswerObj(answer);
+      return compareSolution()
     }
 
-    const comparePopulation = () => {
+    const compareSolution = () => {
+      if(title == "country" || title == "border" || title == "currency"){
+        const isInSolution = solutionInput.includes(input);
+        if(isInSolution){
+          return setCorrect(true);
+        }
+      }
+      if(isPopulation){
+        return compareNumberSolution(sliderValue);
+      }
+      if(title == "area"){
+        const inputAsNumber = Number(input);
+        return compareNumberSolution(inputAsNumber);
+      }
+      if(input == solutionInput){
+        return setCorrect(true);
+      }
+      setCorrect(false);
+    }
+
+    const compareNumberSolution = (value) => {
       const upperEnd = solution * 1.1
       const lowerEnd = solution * 0.9
-      if(lowerEnd <= sliderValue && sliderValue <= upperEnd){
-        alert("richtig")
-        setCorrect(true)
+      if(lowerEnd <= value && value <= upperEnd){
+        //alert("richtig")
+        return setCorrect(true)
       }
-      if(upperEnd < sliderValue)  alert("zu viel")
-      if(lowerEnd > sliderValue)  alert("zu wenig")
-
-      const answer = {
-        answer: sliderValue,
-        tries: tries +1
-      }
-      updateAnswer(title,answer)
+      if(upperEnd < value)  return setCorrect(false);
+      if(lowerEnd > value)  return setCorrect(false);
     }
+
+    useEffect(() => {
+      updateAnswer(title, answerObj, correct)
+    },[correct, tries])
+
   return (
     <div className='container_fact_component rounded_shadow'>
         <Text mb={1} fontSize='2xl' textAlign="left">

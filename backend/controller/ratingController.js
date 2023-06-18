@@ -19,17 +19,20 @@ async function calculateRatingFacts(req, res){
 
     const score = await scoringService.calculateRatingFacts(facts, data);
 
-    game.current_score = score; //total_score needed?
+    game.total_score = score;
     game.current_round = 2;
+    const country_name = game.country_name;
     req.session.game = game;
     req.session.facts = facts;
 
+    
     const links = {
       nextStep: {
         description: 'Link for next round with id of game ',
-        operationRef: `/logged/game/geo-information`,   //LOGGED ONLY UNTIL PROTECTED ROUTES 
+        operationRef: `/game/geo-information`,   
         parameters: {
           id: id,
+          country_name: country_name
         }
       }
     }

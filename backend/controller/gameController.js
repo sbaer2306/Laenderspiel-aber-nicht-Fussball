@@ -47,7 +47,6 @@ async function createGame(req, res){
         difficulty: selectedCountry.difficultyMultiplier,
         country_id: Number(selectedCountry.id),
         country_name: selectedCountry.name,
-        current_score: 0,
         total_score: 0,
       }
 
