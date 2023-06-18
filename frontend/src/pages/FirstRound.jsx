@@ -3,7 +3,7 @@ import {useLocation, useNavigate} from 'react-router-dom'
 import '../css/FirstRound.css'
 import { Facts } from '../components/Facts';
 import {Text, CircularProgress, Button} from '@chakra-ui/react';
-import axios from 'axios';
+import api from '../helpers/axios'
 
 
 const initialAnswerObj = {
@@ -41,40 +41,37 @@ export const FirstRound = () => {
     const COUNT = 3
 
     useEffect(() => {
-        randomGenerator()
-    },[])
-
-    useEffect(() =>{
-        const fetchGameFacts = async () => {
-            try{
-                const response = await axios.get(`http://localhost:8000/game/${id}/facts`); 
-                
-                const factObject = response.data.facts;
-                setFacts(factObject.facts);
-                setFlags(factObject.flags);
-                setCountryAnswer(factObject.country_name)
-            }catch(error){
-                if(error.response) {
-                    if(error.response.status === 403){
-                        alert("error-response: ", error.response.data.message); //toast
-                        navigate('/logged') // logged for now
-                    }
-                    //other status controlls
-                }
-                else console.log("error fetching: "+error.message);
-            }
-        }
-        //time
-        const timer = setInterval(() => {
-            setTime((prevTime) => prevTime + 1);
-        }, 1000);
-
+        randomGenerator();
         fetchGameFacts();
-
         return () => {
             clearInterval(timer);
         }
-    }, [id])
+    },[])
+
+    const fetchGameFacts = async () => {
+        try{
+            const response = await api.get(`/game/${id}/facts`); 
+            
+            const factObject = response.data.facts;
+            setFacts(factObject.facts);
+            setFlags(factObject.flags);
+            setCountryAnswer(factObject.country_name)
+        }catch(error){
+            if(error.response) {
+                if(error.response.status === 403){
+                    alert("error-response: ", error.response.data.message); //toast
+                    navigate('/') // logged for now
+                }
+                //other status controlls
+            }
+            else console.log("error fetching: "+error.message);
+        }
+    }
+    //time
+    const timer = setInterval(() => {
+        setTime((prevTime) => prevTime + 1);
+    }, 1000);
+
 
     const randomGenerator = () => {
         let updatedArray = [...randomBoolean]; 
@@ -130,11 +127,11 @@ export const FirstRound = () => {
         }
         console.log("requestBody: ", requestBody.data)
         try{
-            const response = await axios.post(`http://localhost:8000/game/${id}/rating/facts`, requestBody, {
+            const response = await api.post(`/game/${id}/rating/facts`, requestBody, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            }); 
+            }, {withCredentials: true}); 
             
             const {score, links } = response.data;
             console.log("score: ", score)

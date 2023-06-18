@@ -29,8 +29,8 @@ function App() {
           <Route path='/api/doc' element={<SwaggerDocDisplay/>} />
 
           {/*GAME ROUTES -- should be protected too!*/}
-          <Route path='logged/game/facts' element={<FirstRound/>} />  {/*logged only for testing purposes for now */}
-          <Route path='logged/game/geo-information' element={<SecondRound/>} />
+          <Route path='/game/facts' element={<ProtectedRoute><FirstRound/></ProtectedRoute>} />  {/*logged only for testing purposes for now */}
+          <Route path='/game/geo-information' element={<ProtectedRoute><SecondRound/></ProtectedRoute>} />
           <Route path='logged/game/sights' element={<ThirdRound />} />
 
           {/*PROTECTED ROUTES*/}

@@ -16,6 +16,7 @@ async function createGame(req, res){
     
   const difficulty = req.body.difficulty;
   try{
+      
       //auth
       //user_id = something
 
@@ -37,7 +38,7 @@ async function createGame(req, res){
       let selectedCountry = await createHelper.getRandomCountryForDifficulty(countriesByDifficulty);
 
       const game = {
-        id: 400, //some number to test: -> user_id
+        id: req.session.id, //session_id
         user_id: 3, //user_id comes from middleware - please give it to me bastiiii :D
         current_round: 1,
         max_rounds: 3,
@@ -53,7 +54,7 @@ async function createGame(req, res){
       const links = {
         nextStep: {
           description: 'Retrieve facts for the newly created game. ',
-          operationRef: `game/facts/`,
+          operationRef: `/game/facts/`,
           parameters: {
             id: game.id,
           }
