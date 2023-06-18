@@ -51,15 +51,19 @@ async function calculateRatingFacts(facts, guessedData){
         }
    */
 
-  function calculateGeoInformation(distance){
+  function calculateGeoInformation(distance, time){
         let score;
+        max_time = 300; //Timelimit of 5 mins
+
+        //if the distance is greater than 2000 km, the score is 0 
+        score = 2000 - distance; 
         
-        score = 2000 - distance;
-        
-        //TODO: Time component
         if(score <= 0) {
             return 0;
         }
+
+        //add the remaining time to the score 
+        score += max_time - time;
         
     return score;
   }

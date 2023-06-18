@@ -1,38 +1,30 @@
 import '../css/SecondRound.css'
 import 'leaflet/dist/leaflet.css'
 import { useState, useEffect } from 'react'
+import {useLocation, useNavigate} from 'react-router-dom'
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet'
 import { Text, Center, Box, Button, CircularProgress } from '@chakra-ui/react';
-import axios from 'axios';
+import api from '../helpers/axios'
 import converter from 'osmtogeojson'
 import LocationMarker from '../components/map/LocationMarker';
 import Polyline from '../components/map/Polyline'
-import Distance from '../components/scoring/calculateDistance'
-
-axios.defaults.withCredentials = true;
 
 function SecondRound() {
-
-  const [countryName, setCountryName] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const id = location.state?.id;
+  const countryName = location.state?.country_name;
   const [data, setData] = useState('');
   const [position, setPosition] = useState('');
   const [center, setCenter] = useState('');
   const [buttonClicked, setButtonClicked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [time, setTime] = useState(0);
+  const [distance, setDistance] = useState(null);
+  const [score, setScore] = useState(null);
+  const [links, setLinks] = useState(null);
 
-  const url = 'http://localhost:8000/game/400/geo-information';
-  const MAX_TIME = 600;
-
-  const createGame = async () => {
-    try{
-      const gameResponse = await axios.post('http://localhost:8000/game', { "difficulty": "easy" });
-      setCountryName(gameResponse.data.game.country_name);
-    }catch(error){
-      console.log(error);
-    }
-
-  }
+  const MAX_TIME = 300;
 
   const getOsmData = async () => {
     try{
@@ -40,17 +32,12 @@ function SecondRound() {
       setIsLoading(true);
 
       // Verwende die Session-ID, um das Game-Objekt abzurufen
-      const response = await axios.get(url);
-      
-      console.log(response.data.geometry);
-
+      const response = await api.get(`/game/${id}/geo-information`);
       setData(converter(response.data.geometry));
 
-      
-      
       let centerCountry = {lat: response.data.center.lat, lon: response.data.center.lon};
       setCenter(centerCountry);
-     
+      calculateRequest(centerCountry);
       setIsLoading(false);
     }catch(error){
       console.error(error);
@@ -62,9 +49,26 @@ function SecondRound() {
     setPosition(childdata);
   }
 
+  const calculateRequest = async (center) => {
+    try{
+      const response = await api.post(`/game/${id}/rating/geo-information`, {"time": time, "guessed_position": {lat: position.lat, lon: position.lng}, "center": {lat: center.lat, lon: center.lon}})
+      setDistance(response.data.distance);
+      setScore(response.data.score);
+      setLinks(response.data.links);
+    }catch(error){
+      console.error(error);
+    }
+    
+  }
+
+  const nextRound = () => {
+    if(links.nextStep){
+      console.log(links);
+      navigate(links.nextStep.operationRef, {state: {id: links.nextStep.parameters.id, center: links.nextStep.parameters.center}});
+    }
+  }
+
   useEffect(() => {
-    createGame();
-    //time
     const timer = setInterval(() => {
       setTime((prevTime) => prevTime + 1);
   }, 1000);
@@ -92,9 +96,13 @@ function SecondRound() {
           </MapContainer>
       </Center>
       {!data && position ? <Button isLoading={isLoading} mt={5} spacing={5} colorScheme='blue' size='md' align='center' onClick={getOsmData}>evaluate try</Button> : null}
-      <Box align="left" mt={5} fontSize="xl" fontWeight="700">
-        {data ? <Distance markerPosition={position} center={center}/> : null}
-      </Box>
+      {distance && score ? 
+        <Box align="left" mt={5} fontSize="xl" fontWeight="700">
+          <Text>The distance to the center is: {distance}km</Text>
+          <Center>Your new Score is: {score}!</Center>
+        </Box>
+       : null}
+      {data ? <Box align="right"><Button colorScheme='blue' size='md' onClick={nextRound}>Next Round</Button ></Box> : null}
     </Box>
   );
 }
