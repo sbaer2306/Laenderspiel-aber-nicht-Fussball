@@ -37,13 +37,16 @@ function LoggenInHomepage() {
         
         //link logic
         if(links && links.nextStep){
-            navigate(links.nextStep.operationRef, {state: {id: links.nextStep.parameters.id}}); //should be /game/facts
+            navigate(links.nextStep.operationRef, {state: {id: links.nextStep.parameters.id}}); 
         }
         console.log("Game from response.data: ", game);
       }catch(error){
-          if(error.response && error.response.status === 400){
-            alert("You already have a game in progress");
-            navigate('game/facts')
+          if(error.response && error.response.status === 403){
+            alert(error.message);
+            console.log("round: ", error.response.current_round);
+            if(error.response.current_round == 1) navigate('/game/facts')
+            if(error.response.current_round == 2) navigate('/game/geo-information')
+            if(error.response.current_round == 3) navigate('/game/sights')
           } 
           else console.log("error: ", error.message)
       }
