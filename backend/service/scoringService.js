@@ -3,53 +3,72 @@ async function calculateRatingFacts(facts, guessedData){
     try{
       let score = 0;
   
-      // Modify factsObj to include country_name and exclude unMember
-      const modifiedFacts = [
-        ...facts.facts.map((fact) => String(Object.values(fact)[0]).toLowerCase()),
-        facts.country_name.toLowerCase(),
-      ];
+      const countryObject = {
+        question_keyword: "country_name",
+        answer: facts.country_name.toLowerCase(),
+      }
+      let modifiedFacts = facts.facts.slice(); //array
+      modifiedFacts.push(countryObject);
+      modifiedFacts = modifiedFacts.map(fact => {
+        if (typeof fact.answer === "string") {
+          return {
+            ...fact,
+            answer: fact.answer.toLowerCase()
+          };
+        } else {
+          return fact;
+        }
+      });
+      
+      const data = guessedData.answers.map(answer => {
+        if (typeof answer.answer === "string") {
+          return {
+            ...answer,
+            answer: answer.answer.toLowerCase()
+          };
+        } else {
+          return answer;
+        }
+      });
+      score = evaluatePointsFacts(modifiedFacts, data)
   
-      //Scoring wrong = 0, right = 400 - 100/try
-      score += evaluatePointsForFacts(guessedData.answers, modifiedFacts);
-  
-      score += guessedData.flag ? 300 : 0;
-  
+      if(guessedData.flag) score+= 300;
       const time = guessedData.time;
-      score += score == 0 ? 0 : MAX_TIME - time  //only time score if some values are right
+      if(score !== 0) score += MAX_TIME - time;
+
       return score;
   
     }catch(error){
-      return {error: error.message, facts: facts, guessedData: guessedData};
+      return {error: error.message, facts: facts, guessedData: guessedData, guessedDataAnswers: guessedData.answers};
     }
   }
-  
-  const evaluatePointsForFacts = (answers, facts) => {
+
+  const evaluatePointsFacts = (modifiedFacts, data) => {
     let score = 0;
-    for(let i = 0 ; i < answers.length; i++){
-      const answerObj = answers[i];
-      const answer = String(answerObj.answer);
-        if(answer.toLowerCase() === facts[i]){
-          score += 400 - 100*answerObj.tries;
+    for(let i = 0; i < modifiedFacts.length; i ++){
+      if(data[i].answer === "") continue; 
+      const fact = modifiedFacts[i];
+      const matchingData = data.find(answer => answer.question_keyword ===fact.question_keyword);
+      if(matchingData){
+        if(typeof fact.answer == 'number') score += numberTolerance(fact.answer, matchingData.answer, matchingData.tries)
+        else if(matchingData.answer === fact.answer){
+          const dataTries = matchingData.tries;
+          score += 800 - (dataTries * 100);
         }
+      }
+      
+      
     }
     return score;
   }
 
-  /**
-   * facts = {
-          country_name: factsData.name.official,
-          facts: [
-            {border: borderCountryName}, 
-            {currency: Object.values(factsData.currencies)[0].name},
-            {capital: factsData.capital[0]},
-            {language: Object.values(factsData.languages)[0]},
-            {area: factsData.area},
-            {continent: factsData.continents[0]},
-            {population: factsData.population},
-          ], 
-          flags: flagResponses,
-        }
-   */
+  const numberTolerance = (fact, data, tries) => {
+    let score = 0;
+    const upperEnd = fact* 1.1;
+    const lowerEnd = fact * 0.9;
+    if(upperEnd > data && data > lowerEnd) score += 800 - (100 * tries);
+    return score;
+  }
 
   function calculateGeoInformation(distance){
         let score;

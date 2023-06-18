@@ -9,14 +9,14 @@ import api from '../helpers/axios'
 const initialAnswerObj = {
     time: 0,
     answers: [
-      { border: { answer: "", tries: 0 } },
-      { currency: { answer: "", tries: 0 } },
-      { capital: { answer: "", tries: 0 } },
-      { language: { answer: "", tries: 0 } },
-      { area: { answer: "", tries: 0 } },
-      { continent: { answer: "", tries: 0 } },
-      { population: { answer: "", tries: 0 } },
-      { country_name: { answer: "", tries: 0 } }
+      { question_keyword:"border", answer: "", tries: 0 } ,
+      { question_keyword:"currency",answer: "", tries: 0 } ,
+      { question_keyword:"capital",answer: "", tries: 0 } ,
+      {question_keyword:"language",answer: "", tries: 0 } ,
+      { question_keyword:"area",answer: "", tries: 0 } ,
+      { question_keyword:"continent",answer: "", tries: 0 } ,
+      { question_keyword:"population",answer: "", tries: 0 } ,
+      { question_keyword:"country_name",answer: "", tries: 0 } 
     ],
     flag: ""
 };
@@ -57,6 +57,7 @@ export const FirstRound = () => {
             const response = await api.get(`/game/${id}/facts`); 
             
             const factObject = response.data.facts;
+            console.log("fact object facts: ", factObject.facts);
             setFacts(factObject.facts);
             setFlags(factObject.flags);
             setCountryAnswer(factObject.country_name)
@@ -95,13 +96,17 @@ export const FirstRound = () => {
         }));
     }
 
-    const updateAnswer = (title, answer, correct) => {
-        console.log("Updating answer with title: ", title, "  - answer: ",answer, "and if correct: ",correct);
+    const updateAnswer = (answer, correct) => {
+        console.log("Updating answer with question_keyword: ", answer.question_keyword, " answer: ",answer.answer, "and if correct: ",correct);
         setAnswer(prevState => {
           const updatedAnswers = prevState.answers.map(ans => {
-            const key = Object.keys(ans)[0];
-            if (key === title) {
-              return { [key]: answer };
+            const question_keyword = ans.question_keyword;
+            if (question_keyword === answer.question_keyword) {
+              return { 
+                question_keyword,
+                answer: answer.answer,
+                tries: answer.tries
+               };
             }
             return ans;
           });
@@ -111,7 +116,7 @@ export const FirstRound = () => {
           };
         });
         console.log("Answer:  ", answer)
-        if(title === "country_name" && (correct ||  answer.tries === 3)) setCountryAnswered(true)
+        if(answer.question_keyword === "country_name" && (correct ||  answer.tries === 3)) setCountryAnswered(true)
     }
     useEffect(()=>{
         setAnswer(prevState => {
@@ -164,12 +169,12 @@ export const FirstRound = () => {
         <div className='content_container_first_round'>
             <div className='left_content_first_round '>
                 {
-                    facts && randomBoolean.map((isTrue, index) => (
+                    facts && facts.map((fact, index) => (
                     <Facts
-                        key={Object.keys(facts[index])[0]}
-                        title={Object.keys(facts[index])[0]}
-                        solution={Object.values(facts[index])[0]}
-                        tip={isTrue}
+                        key={index}
+                        title={fact.question_keyword}
+                        solution={fact.answer}
+                        tip={randomBoolean[index]}
                         updateAnswer={updateAnswer}
                     />
                     ))

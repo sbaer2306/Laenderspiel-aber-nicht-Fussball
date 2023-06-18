@@ -68,13 +68,13 @@ async function fetchCountryFacts(countryCode){
         facts = {
           country_name: factsData.name.official,
           facts: [
-            {border: borderCountryName}, 
-            {currency: Object.values(factsData.currencies)[0].name},
-            {capital: factsData.capital[0]},
-            {language: Object.values(factsData.languages)[0]},
-            {area: factsData.area},
-            {continent: factsData.continents[0]},
-            {population: factsData.population},
+            {question_keyword: "border", answer: borderCountryName},
+            {question_keyword: "currency", answer: Object.values(factsData.currencies)[0].name},
+            {question_keyword: "capital", answer: factsData.capital[0]},
+            {question_keyword: "language", answer: Object.values(factsData.languages)[0]},
+            {question_keyword: "area", answer: factsData.area},
+            {question_keyword: "continent", answer: factsData.continents[0]},
+            {question_keyword: "population", answer: factsData.population},
           ], 
           flags: flagResponses,
         }
