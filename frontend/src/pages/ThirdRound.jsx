@@ -24,7 +24,7 @@ const ThirdRound = () => {
   const [time, setTime] = useState(0)
   const [isTimerRunning, setIsTimerRunning] = useState(true);
 
-  const MAX_TIME = 100; //10min for now
+  const MAX_TIME = 180; // 3 Minuten
 
   const sendGameData = async () => {
     const gameData = {
@@ -41,13 +41,13 @@ const ThirdRound = () => {
     };
   
     try {
-      // const response = await axios.post('DEIN_ENDPOINT', gameData);
+      const response = await axios.post('http://localhost:8000/game/400/rating/sights', gameData);
+      
       // console.log('Game data sent:', response.data);
         
-      console.log(gameData);
+      console.log(response.data);
     } catch (error) {
       console.error('Failed to send game data:', error);
-      // Fehlerbehandlung
     }
   };
 
