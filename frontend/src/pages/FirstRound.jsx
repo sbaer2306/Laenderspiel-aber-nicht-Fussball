@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 import '../css/FirstRound.css'
 import { Facts } from '../components/Facts';
-import {Text, CircularProgress, Button} from '@chakra-ui/react';
+import {Text, CircularProgress, Button, useToast, Box} from '@chakra-ui/react';
 import api from '../helpers/axios'
 
 
@@ -22,16 +22,19 @@ const initialAnswerObj = {
 };
 
 export const FirstRound = () => {
+    const toast = useToast();
     const location = useLocation();
     const navigate = useNavigate();
     const id = location.state?.id;
     const [time, setTime] = useState(0)
     const [facts, setFacts] = useState()
     const [flags, setFlags] = useState()
+    const [nextStep, setNextStep] = useState();
+    const [answerSubmitted, setAnswerSubmitted] = useState();
     const [countryAnswer, setCountryAnswer] = useState()
     const [allFactsAnswered, setAllFactsAnswered] = useState(false)
     const [countryAnswered, setCountryAnswered] = useState(false)
-    const [flagClicked, setFlagClicked] = useState(false)
+    const [flagClicked, setFlagClicked] = useState("")
     const [randomBoolean, setRandomBoolean] = useState(Array(7).fill(false))
 
     const [answer, setAnswer] = useState(initialAnswerObj)
@@ -89,7 +92,7 @@ export const FirstRound = () => {
         setRandomBoolean(updatedArray);
     }
     const handleFlagClick = (flag) => {
-        setFlagClicked(true)
+        setFlagClicked(flag.country_code)
         setAnswer(prevState => ({
             ...prevState,
             flag: flag.correct_option
@@ -118,6 +121,7 @@ export const FirstRound = () => {
         console.log("Answer:  ", answer)
         if(answer.question_keyword === "country_name" && (correct ||  answer.tries === 3)) setCountryAnswered(true)
     }
+
     useEffect(()=>{
         setAnswer(prevState => {
             return {
@@ -128,7 +132,15 @@ export const FirstRound = () => {
     },[time])
 
     const submitAnswer = async () => {
-        
+        if(answerSubmitted){
+            toast({
+                title: "Already submitted ",
+                status:"info",
+                duration: 3000,
+                isClosable: true,
+            });
+            return;
+        }
         const requestBody = {
             data: answer
         }
@@ -141,9 +153,16 @@ export const FirstRound = () => {
             }, {withCredentials: true}); 
             
             const {score, links } = response.data;
-            console.log("score: ", score)
+            toast({
+                title: "Points ",
+                description: `Wow, you made ${score} Points`,
+                status:"success",
+                duration: 3000,
+                isClosable: true,
+            });
             if(links.nextStep){
-                navigate(links.nextStep.operationRef, {state: {id: links.nextStep.parameters.id, country_name: links.nextStep.parameters.country_name}}); 
+                setNextStep(links.nextStep)
+                setAnswerSubmitted(true);
             }
         }catch(error){
             if(error.response) {
@@ -155,12 +174,18 @@ export const FirstRound = () => {
             else console.log("error fetching: "+error.message);
         }
     }
+
+    const next = () => {
+        if(nextStep){
+            navigate(nextStep.operationRef, {state: {id: nextStep.parameters.id, country_name: nextStep.parameters.country_name}});
+        }
+    }
   return (
     <div className='container_first_round'>
         <div className='headline'>
             <div className='headline_right'>
                 <Text mb={1} fontSize='2xl' textAlign="center">
-                Runde 1
+                Round 1
                 </Text>
                 <CircularProgress value={time * (100/MAX_TIME)} size='70px' />
             </div>
@@ -202,7 +227,11 @@ export const FirstRound = () => {
                             <h3>Flagge</h3>
                             {flags &&
                                 flags.map((flag) => (
-                                <button key={flag.country_code} onClick={() => handleFlagClick(flag)}>
+                                <button 
+                                    key={flag.country_code}
+                                    onClick={() => handleFlagClick(flag)}
+                                    className={flagClicked === flag.country_code ? 'selected' : ''}
+                                >
                                     <img src={flag.flag_url} alt='Flagge' />
                                 </button>
                                 ))
@@ -211,13 +240,21 @@ export const FirstRound = () => {
                         </div>
                     )
                 }
+                {
+                    flagClicked !== "" && (
+                        <Box textAlign="center" mt={5}>
+                            <Button onClick={submitAnswer} colorScheme='blue' size="md">OK</Button>
+                        </Box>
+                        
+                    )
+                }
                 
             </div>
         </div>
         <div className='button_container'>
          {
-            flagClicked && (
-                <Button onClick={submitAnswer} colorScheme='blue' size="md">OK</Button>
+            answerSubmitted && (
+                <Button onClick={next} colorScheme='blue' size="md">Weiter</Button>
             )
          }
         </div>

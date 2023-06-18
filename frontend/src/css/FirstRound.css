@@ -80,3 +80,6 @@
 .button_container{
     text-align: right;
 }
+.selected{
+    border: 2px solid rgb(10, 138, 10)
+}
