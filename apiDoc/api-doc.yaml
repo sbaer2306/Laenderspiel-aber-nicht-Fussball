@@ -736,12 +736,6 @@ paths:
                       lon:
                         type: number
                     description: lat and lon of the center of the country
-          links:
-            nextStep:
-              description: rate geo-information
-              operationRef: /game/{id}/rating/geo-information
-              parameters:
-                id: $response.body#/id
         '403':
           description: Forbidden
         '404':
@@ -760,9 +754,9 @@ paths:
             schema:
               type: object
               properties:
-                id:
-                  type: string
-                  description: unauthorized user id
+                time:
+                  type: integer
+                  description: time needed for second round
                 guessed_position:
                   type: object
                   properties:
@@ -804,10 +798,12 @@ paths:
                     type: integer
                     description: scoring from the second round
           links:
-            next:
-              operationId: getThirdRound
+            nextStep:
+              description: Link for next round with id of game and the center of the country
+              operationRef: /game/sights
               parameters:
-                game_id: $request.path.game_id
+                id: $request.path.game_id
+                center: §request.center
         '403':
           description: Forbidden
         '404':

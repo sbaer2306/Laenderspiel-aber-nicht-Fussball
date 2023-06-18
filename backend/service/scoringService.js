@@ -1,3 +1,52 @@
+const sightsService = require('../service/sightsService');
+
+async function calculateRatingSights(data) {
+  try {
+
+    const MAX_TIME = 180;
+
+    const scores = {};
+
+    for (const city in data) {
+      if (city !== "time_to_complete_game") {
+        const coordinates = data[city].coordinates;
+        const guessedCoordinates = data[city].guessed_coordinates;
+        const numberOfSights = data[city].sights;
+
+        const distance = sightsService.calculateDistance(coordinates[0], coordinates[1], guessedCoordinates[0], guessedCoordinates[1]);
+
+        const score = calculateScore(distance, numberOfSights);
+
+        scores[city] = score;
+      }
+    }
+
+    const time = data.time_to_complete_game;
+
+    let totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0);
+
+    totalScore += totalScore == 0 ? 0 : MAX_TIME - time;
+
+    return totalScore;
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
+function calculateScore(distance, numberOfSights) {
+
+  let score = 500 - Math.round(distance);
+
+  if (numberOfSights === 1) {
+    score *= 2;
+  } else if (numberOfSights === 2) {
+    score *= 1.5;
+  }
+
+  score = score <= 0 ? 0 : score;
+  return Math.round(score);
+}
+
 async function calculateRatingFacts(facts, guessedData){
   const MAX_TIME = 300 //5min
     try{
@@ -70,18 +119,24 @@ async function calculateRatingFacts(facts, guessedData){
     return score;
   }
 
-  function calculateGeoInformation(distance){
+  function calculateGeoInformation(distance, time){
         let score;
+        max_time = 300; //Timelimit of 5 mins
+
+        //if the distance is greater than 2000 km, the score is 0 
+        score = 2000 - distance; 
         
-        score = 2000 - distance;
-        
-        //TODO: Time component
         if(score <= 0) {
             return 0;
         }
+
+        //add the remaining time to the score 
+        score += max_time - time;
         
     return score;
   }
 
+  
 
-  module.exports = {calculateRatingFacts, calculateGeoInformation};
+
+  module.exports = {calculateRatingFacts, calculateGeoInformation, calculateRatingSights};

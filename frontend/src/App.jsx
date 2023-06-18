@@ -31,7 +31,7 @@ function App() {
           {/*GAME ROUTES -- should be protected too!*/}
           <Route path='/game/facts' element={<ProtectedRoute><FirstRound/></ProtectedRoute>} /> 
           <Route path='/game/geo-information' element={<ProtectedRoute><SecondRound/></ProtectedRoute>} />
-          <Route path='logged/game/sights' element={<ThirdRound />} />
+          <Route path='game/sights' element={<ProtectedRoute><ThirdRound/></ProtectedRoute>} />
 
           {/*PROTECTED ROUTES*/}
           <Route path='/welcome' element={<ProtectedRoute><LoggedInHomepage/></ProtectedRoute>} />

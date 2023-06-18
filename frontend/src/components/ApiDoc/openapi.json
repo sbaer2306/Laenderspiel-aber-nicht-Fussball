@@ -1057,7 +1057,7 @@
             },
             "links": {
               "nextStep": {
-                "description": "get to the geo-onformation round",
+                "description": "get to the geo-information round",
                 "operationRef": "/game/{id}/geo-information",
                 "parameters": {
                   "id": "$response.body#/id"
@@ -1126,15 +1126,6 @@
                   }
                 }
               }
-            },
-            "links": {
-              "nextStep": {
-                "description": "rate geo-information",
-                "operationRef": "/game/{id}/rating/geo-information",
-                "parameters": {
-                  "id": "$response.body#/id"
-                }
-              }
             }
           },
           "403": {
@@ -1162,9 +1153,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {
-                    "type": "string",
-                    "description": "unauthorized user id"
+                  "time": {
+                    "type": "integer",
+                    "description": "time needed for second round"
                   },
                   "guessed_position": {
                     "type": "object",
@@ -1228,10 +1219,12 @@
               }
             },
             "links": {
-              "next": {
-                "operationId": "getThirdRound",
+              "nextStep": {
+                "description": "Link for next round with id of game and the center of the country",
+                "operationRef": "/game/sights",
                 "parameters": {
-                  "game_id": "$request.path.game_id"
+                  "id": "$request.path.game_id",
+                  "center": "§request.center"
                 }
               }
             }

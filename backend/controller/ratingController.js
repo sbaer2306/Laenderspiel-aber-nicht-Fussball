@@ -1,6 +1,7 @@
 const geoService = require('../service/geoService');
 const factsService = require('../service/factsService');
 const scoringService = require('../service/scoringService')
+const sightsService = require('../service/sightsService');
 
 async function calculateRatingFacts(req, res){
   const {id} = req.params;
@@ -52,26 +53,61 @@ async function calculateDistance(req, res){
     //Game from session
     const game = req.session.game;
 
-    if(!game || game.id !== Number(id)){
-      return res.status(404).json({error: "Game not found", game: game, id: id})
+    if(!game) return res.status(404).json({error: "Game not found"})
+    
+
+    const guessed_position = req.body.guessed_position;
+    const center = req.body.center;
+    const time = req.body.time;
+
+    let distance = geoService.calculateDistance(guessed_position, center);
+
+    let score = scoringService.calculateGeoInformation(distance, time) + game.total_score;
+    game.total_score = score;
+    
+    game.current_round = 3;
+    req.session.game = game;
+   
+    const links = {
+      nextStep: {
+        description: 'Link for next round with id of game and the center of the country',
+        operationRef: `/game/sights`,   
+        parameters: {
+          id: id,
+          center: center
+        }
+      }
     }
 
-    const positions = req.body;
-    
-    let distance = geoService.calculateDistance(positions.guessed_position, positions.center);
-
-    let score = scoringService.calculateGeoInformation(distance);
-    score = score + game.current_score;
-    game.current_score = score; 
-
-    req.session.game = game;
-
-    res.status(200).json( {distance: distance, score: score})
+    res.status(200).json( {distance: distance, score: score, links: links})
   }catch (error){
     console.log(error);
     res.status(500).json({error: 'Internal Server Error'});
   }
 }
 
-module.exports = {calculateRatingFacts, calculateDistance}
+async function calculateRatingSights(req, res) {
+  try {
+    const {id} = req.params;
+    const game = req.session.game;
+
+    if(!game){
+      return res.status(404).json({error: "Game not found", game: game, id: id})
+    }
+
+    const data = req.body;
+
+    const score = await scoringService.calculateRatingSights(data);
+
+    req.session.game = game;
+
+    res.status(200).json( { score: score } );
+  }
+  catch(error) {
+    console.log(error);
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+}
+
+module.exports = {calculateRatingFacts, calculateDistance, calculateRatingSights}
 
