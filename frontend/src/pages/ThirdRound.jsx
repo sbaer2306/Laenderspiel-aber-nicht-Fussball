@@ -7,7 +7,7 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import {useLocation, useNavigate} from 'react-router-dom'
 import api from '../helpers/axios';
 
-import CityMarkers from '../components/map/CityMarkers'; // adjusted
+import CityMarker from '../components/map/CityMarker'; // adjusted
 
 
 const ThirdRound = () => {
@@ -17,6 +17,8 @@ const ThirdRound = () => {
   const id = location.state?.id;
   const countryName = location.state?.country_name;
   const center = location.state?.center;
+
+  const [isRoundCompleted, setIsRoundCompleted] = useState(false); // adjusted.
 
   const [sights, setSights] = useState([]);
   // const [countryName, setCountryName] = useState('');
@@ -133,6 +135,8 @@ const ThirdRound = () => {
       setCoordinatesData(updatedCoordinatesData);
   
       sendGameData(); // Daten an den Endpunkt senden
+
+      setIsRoundCompleted(true); // adjusted.
     }
   };
   
@@ -152,8 +156,6 @@ const ThirdRound = () => {
         </Box>
       ) : (
         <div className='SightCards-Container'>
-          {/* <h2>Sights Response:</h2>
-              <pre>{JSON.stringify(sights, null, 2)}</pre> */}
           <div
             style={{
               display: 'flex',
@@ -178,7 +180,10 @@ const ThirdRound = () => {
               {
                 // https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png
               }
-              <LocationMarker childToParent={handleMarkerClick} clicked={isSubmitted} />
+              
+              {isRoundCompleted && <CityMarker cities={sights} />}
+              {!isRoundCompleted && <LocationMarker childToParent={handleMarkerClick} clicked={isSubmitted} />}
+              
             </MapContainer>
           </div>
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>

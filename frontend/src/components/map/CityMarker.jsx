@@ -1,24 +1,38 @@
-import React from 'react'
-import {useState} from 'react'
-import markerIconPng from "leaflet/dist/images/marker-icon.png"
-import {Icon} from 'leaflet'
-import {Marker, Popup, useMapEvents } from 'react-leaflet'
+import React from 'react';
+import { Icon } from 'leaflet';
+import { Marker, Popup } from 'react-leaflet';
+import markerIconPng from 'leaflet/dist/images/marker-icon.png';
 
-const CityMarker = ( {cities} ) => {
+const CityMarker = ({ cities }) => {
+
     return (
         <>
-          {cities.map((city, index) => (
-            <Marker key={index} position={[city.lat, city.lon]}>
-              <Popup>
-                Stadt {index + 1}<br />
-                Koordinaten:<br />
-                lat: {city.lat}<br />
-                lon: {city.lon}
-              </Popup>
-            </Marker>
-          ))}
+            {Object.keys(cities).map((cityName) => {
+                const city = cities[cityName];
+                const lat = city.coordinates[0];
+                const lon = city.coordinates[1];
+
+                return (
+                    <Marker
+                        key={cityName}
+                        position={[lat, lon]}
+                        icon={new Icon({iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41]})}
+                    >
+                        <Popup>
+                            City: {cityName}
+                            <br />
+                            Coordinates:
+                            <br />
+                            lat: {lat}
+                            <br />
+                            lon: {lon}
+                        </Popup>
+                    </Marker>
+                );
+            })}
         </>
     );
-}
+};
 
-export default CityMarker
+export default CityMarker;
+
