@@ -1,17 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import SightCard from '../components/Sights/SightCard';
 import LocationMarker from '../components/map/LocationMarker';
 import '../css/ThirdRound.css'
 import { Text, Button, Spinner, Box, Center, CircularProgress } from '@chakra-ui/react';
 import { MapContainer, TileLayer } from 'react-leaflet';
+import {useLocation, useNavigate} from 'react-router-dom'
+import api from '../helpers/axios';
 
-axios.defaults.withCredentials = true;
+import CityMarkers from '../components/map/CityMarkers'; // adjusted
+
 
 const ThirdRound = () => {
-  const url = 'http://localhost:8000/game/400/sights';
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const id = location.state?.id;
+  const countryName = location.state?.country_name;
+  const center = location.state?.center;
+
   const [sights, setSights] = useState([]);
-  const [countryName, setCountryName] = useState('');
+  // const [countryName, setCountryName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [answerState, setAnswerState] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -41,7 +49,7 @@ const ThirdRound = () => {
     };
   
     try {
-      const response = await axios.post('http://localhost:8000/game/400/rating/sights', gameData);
+      const response = await api.post(`/game/${id}/rating/sights`, gameData);
       
       // console.log('Game data sent:', response.data);
         
@@ -51,29 +59,13 @@ const ThirdRound = () => {
     }
   };
 
-  const createGame = async () => {
-    try {
-      const gameResponse = await axios.post('http://localhost:8000/game', {
-        difficulty: 'easy',
-      });
-      setCountryName(gameResponse.data.game.country_name);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const getSights = async () => {
     try {
-      const response = await axios.get(url);
+      const response = await api.get(`/game/${id}/sights`);
       setSights(response.data);
 
       setIsLoading(false);
       console.log(response.data);
-
-      const key = Object.keys(response.data)[0];
-      setCenterCity(response.data[key].coordinates);
-      // console.log(response.data[key].coordinates);
-      console.log(centerCity);
 
     } catch (error) {
       console.error(error);
@@ -87,7 +79,7 @@ const ThirdRound = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await createGame();
+        // await createGame();
         await getSights();
       } catch (error) {
         console.log(error);
@@ -177,19 +169,21 @@ const ThirdRound = () => {
               <p>No sights available</p>
             )}
           </div>
-          <Center>
-            <MapContainer center={centerCity} zoom={6} scrollWheelZoom={true}>
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-            />
-            {
-              // https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png
-            }
-            <LocationMarker childToParent={handleMarkerClick} clicked={isSubmitted}/>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+            <MapContainer center={[center.lat, center.lon]} zoom={6} scrollWheelZoom={true}>
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+              />
+              {
+                // https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png
+              }
+              <LocationMarker childToParent={handleMarkerClick} clicked={isSubmitted} />
             </MapContainer>
-            <Button spacing={5} colorScheme='blue' size='md' align='center' onClick={handleNextCity}>Submit</Button>
-            </Center>
+          </div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+              <Button spacing={5} colorScheme='blue' size='md' align='center' onClick={handleNextCity}>Submit</Button>
+            </div>
         </div>
       )}
     </div>

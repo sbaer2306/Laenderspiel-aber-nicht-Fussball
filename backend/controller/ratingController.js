@@ -91,7 +91,7 @@ async function calculateRatingSights(req, res) {
     const {id} = req.params;
     const game = req.session.game;
 
-    if(!game || game.id !== Number(id)){
+    if(!game){
       return res.status(404).json({error: "Game not found", game: game, id: id})
     }
 

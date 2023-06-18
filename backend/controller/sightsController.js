@@ -16,7 +16,7 @@ async function getSights(req, res) {
           return res.status(403).json({error: "Not authorized", game: game, id: id})
         }
         */
-        if(!game || game.id !== Number(id)){
+        if(!game){
           return res.status(404).json({error: "Game not found", game: game, id: id})
         }
     
