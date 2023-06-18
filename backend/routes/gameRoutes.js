@@ -36,6 +36,7 @@ gameRoutes.post('/:id/rating/geo-information', ratingController.calculateDistanc
 
 //Sights
 gameRoutes.get('/:id/sights', sightsController.getSights);
+gameRoutes.post('/:id/rating/sights', ratingController.calculateRatingSights);
 
 //Export router
 module.exports = gameRoutes;

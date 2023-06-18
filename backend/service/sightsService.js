@@ -1,5 +1,36 @@
 const axios = require('axios');
 
+
+function degToRad(degrees) {
+  return (degrees * Math.PI) / 180;
+}
+
+function calculateDistance(latitude, longitude, guessedLatitude, guessedlongitude) {
+  
+  const earthRadius = 6371;
+
+  const latitudeRadius = degToRad(latitude);
+  const longitudeRadius = degToRad(longitude);
+  const guessedLatitudeRadius = degToRad(guessedLatitude);
+  const guessedLongitudeRadius = degToRad(guessedlongitude);
+
+  const latitudeDifference = guessedLatitudeRadius - latitudeRadius;
+  const longitudeDifference = guessedLongitudeRadius - longitudeRadius;
+
+  const a =
+    Math.sin(latitudeDifference / 2) * Math.sin(latitudeDifference / 2) +
+    Math.cos(latitudeRadius) *
+    Math.cos(guessedLatitudeRadius) *
+    Math.sin(longitudeDifference / 2) *
+    Math.sin(longitudeDifference / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = earthRadius * c;
+
+return distance;
+
+}
+
+
 async function fetchCities(countryCode) {
   try {
     const query = `[out:json][timeout:5000];area['ISO3166-1'='${countryCode}'];node[place=city](area)[population~"^[0-9]{6,}$"];out center;`;
@@ -88,4 +119,4 @@ async function fetchRandomCities(countryCode) {
 }
 
 
-module.exports = { fetchSights, fetchCities, fetchRandomCities };
+module.exports = { fetchSights, fetchCities, fetchRandomCities, calculateDistance };
