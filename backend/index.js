@@ -21,7 +21,7 @@ app.use(cors({
 
 // Include the auth routes
 const authRoutes = require('./routes/authRoutes');
-app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
 
 app.get('/example', (req, res) => {
   res.send('Hello, this is the example route!');

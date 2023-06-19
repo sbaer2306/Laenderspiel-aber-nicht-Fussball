@@ -20,6 +20,9 @@ module.exports = function (passport) {
           email: profile.emails[0].value,
           OAuthID: profile.id,
           username: profile.emails[0].value.split("@")[0],
+          firstName:  profile.name.givenName,
+          lastName:  profile.name.familyName,
+          location: profile._json.locale
         }
         try {
           const OAuthID = profile.id;
