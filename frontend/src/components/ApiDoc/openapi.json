@@ -1384,21 +1384,38 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "coordinates": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "coordinates_guessed": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "time_to_complete_game": {
+                  "time_to_complete": {
                     "type": "integer",
-                    "example": 408
+                    "example": 100
+                  },
+                  "city_1": {
+                    "type": "object",
+                    "properties": {
+                      "coordinates": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 10.5
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      },
+                      "guessed_coordinates": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 10.5
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      },
+                      "sights": {
+                        "type": "integer",
+                        "example": 2
+                      }
+                    }
                   }
                 }
               }
