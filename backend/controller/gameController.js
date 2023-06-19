@@ -23,7 +23,7 @@ async function createGame(req, res){
 
       // Check if the user already has a game in the session
       if (req.session.game) {
-        return res.status(403).json({ error: 'You already have a game in progress', game: req.session.game });
+        return res.status(403).json({ message: 'You already have a game in progress', game: req.session.game });
         //further logic to implement: delete old session or continue same game
       } 
 
@@ -81,7 +81,7 @@ async function createGame(req, res){
 async function getGame(req, res){
   
   const {id} = req.params;
-  if(validateId(id, res)) return; //400
+  //if(validateId(id, res)) return; //400
   
   try{
     const game = req.session.game;
@@ -89,7 +89,7 @@ async function getGame(req, res){
     const user_id = 3;
       //bastis user_id
       if(game.user_id !== user_id) return res.status(403).json({message: "Unauthorized - user is not the player of the game"})
-      if(game.id !== Number(id)) return res.status(404).json({message: "Game not found"})
+      if(game.id !== id) return res.status(404).json({message: "Game not found"})
       req.session.game = game;
       res.status(200).json({ game: game });
 
@@ -106,7 +106,7 @@ async function getGame(req, res){
  */
 async function deleteGame(req, res){
   const {id} = req.params;
-  if(validateId(id, res)) return; //400
+  //if(validateId(id, res)) return; //400
   
   try{
     const game = req.session.game;
@@ -114,7 +114,7 @@ async function deleteGame(req, res){
     const user_id = 3;
     //bastis user_id
     if(game.user_id !== user_id) return res.status(403).json({message: "Unauthorized - user is not the player of the game"})
-    if(game.id !== Number(id)) return res.status(404).json({message: "Game not found", gameid: game.id, id: id})
+    if(game.id !== id) return res.status(404).json({message: "Game not found", gameid: game.id, id: id})
     
     req.session.game = null;
     res.status(200).json({ message: "Game successfully cancelled." });

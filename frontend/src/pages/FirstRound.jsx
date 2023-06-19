@@ -199,7 +199,9 @@ export const FirstRound = () => {
             navigate('/welcome', {replace: true})
             return;
         }catch(error){
-            console.log("error fetching: "+error.message);
+            console.log("error fetching: "+error.response.data.message);
+            console.log("game-id: ", error.response.data.gameid);
+            console.log("id: ", error.response.data.id);
         }
     }
   return (
