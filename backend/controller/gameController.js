@@ -23,7 +23,7 @@ async function createGame(req, res){
 
       // Check if the user already has a game in the session
       if (req.session.game) {
-        return res.status(403).json({ error: 'You already have a game in progress', game: req.session.game.current_round });
+        return res.status(403).json({ error: 'You already have a game in progress', game: req.session.game });
         //further logic to implement: delete old session or continue same game
       } 
 

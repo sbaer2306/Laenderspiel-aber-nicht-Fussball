@@ -44,9 +44,9 @@ function LoggenInHomepage() {
           if(error.response && error.response.status === 403){
             alert(error.response.data.message);
             console.log("round: ", error.response.data.game);
-            if(error.response.data.game == 1) navigate('/game/facts')
-            if(error.response.data.game == 2) navigate('/game/geo-information')
-            if(error.response.data.game == 3) navigate('/game/sights')
+            if(error.response.data.game.current_round == 1) navigate('/game/facts', {state: {id: game.id}})
+            if(error.response.data.game.current_round == 2) navigate('/game/geo-information', {state: {id: game.id}})
+            if(error.response.data.game.current_round == 3) navigate('/game/sights', {state: {id: game.id}})
           } 
           else console.log("error: ", error.message)
       }

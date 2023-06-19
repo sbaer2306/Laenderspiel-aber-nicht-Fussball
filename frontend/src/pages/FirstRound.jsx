@@ -25,7 +25,6 @@ export const FirstRound = () => {
     const toast = useToast();
     const location = useLocation();
     const navigate = useNavigate();
-    const history = useHistory();
     const id = location.state?.id;
     const [time, setTime] = useState(0)
     const [facts, setFacts] = useState()
@@ -186,8 +185,9 @@ export const FirstRound = () => {
             const response = await api.delete(`/game/${id}`, {
                 headers: {
                     'Content-Type': 'application/json'
-                }
-            }, {withCredentials: true}); 
+                },
+                withCredentials: true
+                }); 
 
             toast({
                 title: "Deletion  ",
@@ -196,7 +196,7 @@ export const FirstRound = () => {
                 duration: 3000,
                 isClosable: true,
             });
-            history.push('/welcome')
+            navigate('/welcome', {replace: true})
             return;
         }catch(error){
             console.log("error fetching: "+error.message);
