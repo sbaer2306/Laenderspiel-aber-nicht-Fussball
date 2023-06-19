@@ -1321,15 +1321,26 @@
                   "type": "object",
                   "properties": {
                     "city_name": {
-                      "type": "string",
-                      "description": "name of the city"
-                    },
-                    "sights": {
-                      "type": "array",
-                      "minItems": 3,
-                      "maxItems": 3,
-                      "items": {
-                        "$ref": "#/components/schemas/City"
+                      "type": "object",
+                      "properties": {
+                        "sights": {
+                          "type": "array",
+                          "minItems": 1,
+                          "maxItems": 3,
+                          "items": {
+                            "$ref": "#/components/schemas/Sight"
+                          }
+                        },
+                        "coordinates": {
+                          "type": "array",
+                          "items": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 52.520008
+                          },
+                          "minItems": 2,
+                          "maxItems": 2
+                        }
                       }
                     }
                   }
@@ -1396,7 +1407,7 @@
                         "items": {
                           "type": "number",
                           "format": "float",
-                          "example": 10.5
+                          "example": 13.404954
                         },
                         "minItems": 2,
                         "maxItems": 2
@@ -1406,7 +1417,7 @@
                         "items": {
                           "type": "number",
                           "format": "float",
-                          "example": 10.5
+                          "example": 13.404954
                         },
                         "minItems": 2,
                         "maxItems": 2
@@ -2108,12 +2119,6 @@
               "$ref": "#/components/schemas/Sight",
               "minItems": 3,
               "maxItems": 3
-            }
-          },
-          "coordinates": {
-            "type": "array",
-            "items": {
-              "type": "string"
             }
           }
         }
