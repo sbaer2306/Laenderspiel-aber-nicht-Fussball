@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {useLocation, useNavigate} from 'react-router-dom'
+import {useLocation, useNavigate, useHistory} from 'react-router-dom'
 import '../css/FirstRound.css'
 import { Facts } from '../components/Facts';
 import {Text, CircularProgress, Button, useToast, Box} from '@chakra-ui/react';
@@ -25,6 +25,7 @@ export const FirstRound = () => {
     const toast = useToast();
     const location = useLocation();
     const navigate = useNavigate();
+    const history = useHistory();
     const id = location.state?.id;
     const [time, setTime] = useState(0)
     const [facts, setFacts] = useState()
@@ -180,6 +181,27 @@ export const FirstRound = () => {
             navigate(nextStep.operationRef, {state: {id: nextStep.parameters.id, country_name: nextStep.parameters.country_name}});
         }
     }
+    const cancel = async () => {
+        try{
+            const response = await api.delete(`/game/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }, {withCredentials: true}); 
+
+            toast({
+                title: "Deletion  ",
+                description: `${response.data.message}`,
+                status:"success",
+                duration: 3000,
+                isClosable: true,
+            });
+            history.push('/welcome')
+            return;
+        }catch(error){
+            console.log("error fetching: "+error.message);
+        }
+    }
   return (
     <div className='container_first_round'>
         <div className='headline'>
@@ -252,6 +274,7 @@ export const FirstRound = () => {
             </div>
         </div>
         <div className='button_container'>
+        <Button onClick={cancel} colorScheme='red' size="md">Abbrechen</Button>
          {
             answerSubmitted && (
                 <Button onClick={next} colorScheme='blue' size="md">Weiter</Button>

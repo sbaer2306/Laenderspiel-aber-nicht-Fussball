@@ -117,7 +117,7 @@ async function deleteGame(req, res){
     if(game.id !== Number(id)) return res.status(404).json({message: "Game not found", gameid: game.id, id: id})
     
     req.session.game = null;
-    res.status(200).json({ message: "Game successfully cancelled. No content." });
+    res.status(200).json({ message: "Game successfully cancelled." });
 
   }catch(error){
     res.status(500).json({ error: 'Internal Server Error', message: error.message });

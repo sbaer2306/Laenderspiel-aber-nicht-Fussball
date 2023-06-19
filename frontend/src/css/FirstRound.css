@@ -78,7 +78,8 @@
     padding-right: 1rem;
 }
 .button_container{
-    text-align: right;
+    display: flex;
+    justify-content: space-between;
 }
 .selected{
     border: 2px solid rgb(10, 138, 10)
