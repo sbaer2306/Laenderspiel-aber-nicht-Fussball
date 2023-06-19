@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {useLocation, useNavigate, useHistory} from 'react-router-dom'
+import {useLocation, useNavigate} from 'react-router-dom'
 import '../css/FirstRound.css'
 import { Facts } from '../components/Facts';
 import {Text, CircularProgress, Button, useToast, Box} from '@chakra-ui/react';
