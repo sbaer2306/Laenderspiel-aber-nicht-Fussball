@@ -1,7 +1,27 @@
+const { getPrisma } = require('../prisma/prisma');
+
 const geoService = require('../service/geoService');
 const factsService = require('../service/factsService');
 const scoringService = require('../service/scoringService')
 const sightsService = require('../service/sightsService');
+
+async function saveScore(userId, score) {
+  try {
+    const prismaClient = getPrisma();
+    await prismaClient.playedGame.create({
+      data: {
+        userId: userId,
+        score: score,
+        // Weitere Daten, die in der playedGame-Tabelle gespeichert werden sollen
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to save score in the database');
+  }
+}
+
+
 
 async function calculateRatingFacts(req, res){
   const {id} = req.params;
@@ -100,6 +120,8 @@ async function calculateRatingSights(req, res) {
     const score = await scoringService.calculateRatingSights(data);
 
     req.session.game = game;
+
+    // await saveScore(id, score);
 
     res.status(200).json( { score: score } );
   }

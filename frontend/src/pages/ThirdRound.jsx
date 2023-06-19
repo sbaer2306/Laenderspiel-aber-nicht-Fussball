@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import SightCard from '../components/Sights/SightCard';
 import LocationMarker from '../components/map/LocationMarker';
 import '../css/ThirdRound.css'
-import { Text, Button, Spinner, Box, Center, CircularProgress } from '@chakra-ui/react';
+import { Text, Button, Spinner, Box, Center, CircularProgress, useToast } from '@chakra-ui/react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import {useLocation, useNavigate} from 'react-router-dom'
 import api from '../helpers/axios';
@@ -10,6 +10,7 @@ import CityMarker from '../components/map/CityMarker'; // adjusted
 
 const ThirdRound = () => {
 
+  const toast = useToast();
   const location = useLocation();
   const navigate = useNavigate();
   const id = location.state?.id;
@@ -18,10 +19,10 @@ const ThirdRound = () => {
 
   const [isRoundCompleted, setIsRoundCompleted] = useState(false); // adjusted.
 
+  const [showScoreButton, setShowScoreButton] = useState(false);
+
   const [sights, setSights] = useState([]);
-  // const [countryName, setCountryName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [answerState, setAnswerState] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [currentCityIndex, setCurrentCityIndex] = useState(0);
   const [markerPosition, setMarkerPosition] = useState(null);
@@ -51,6 +52,18 @@ const ThirdRound = () => {
       const response = await api.post(`/game/${id}/rating/sights`, gameData);
       
       // console.log('Game data sent:', response.data);
+
+      const score = response.data;
+
+      toast({
+        title: "Your Total Points",
+        description: `Wow, you made ${score.score} points this game!!!`,
+        status:"success",
+        duration: 3000,
+        isClosable: true,
+      });
+
+      setShowScoreButton(true);
         
       console.log(response.data);
     } catch (error) {
@@ -131,6 +144,10 @@ const ThirdRound = () => {
       setIsRoundCompleted(true); // adjusted.
     }
   };
+
+  const handleScoreButtonClick = () => {
+    navigate('/ranking');
+  };
   
   return (
     <div>
@@ -178,9 +195,13 @@ const ThirdRound = () => {
               
             </MapContainer>
           </div>
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-              <Button spacing={5} colorScheme='blue' size='md' align='center' onClick={handleNextCity}>Submit</Button>
-            </div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+            {showScoreButton ? (
+              <Button spacing={5} colorScheme='blue' size='md' align='center' onClick={handleScoreButtonClick}>Go to Ranking</Button>
+            ) : (
+            <Button spacing={5} colorScheme='blue' size='md' align='center' onClick={handleNextCity}>Submit</Button>
+          )}
+        </div>
         </div>
       )}
     </div>
