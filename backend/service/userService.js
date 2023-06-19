@@ -67,7 +67,11 @@ const getUserByOAuthID = async (OAuthID) => {
     return user;
 };
 const createUser = async (newUser) => {
-    const user = await prismaClient.user.create({ data: newUser });
+    const user = await prismaClient.user.create({ data: {
+        email: newUser.email,
+        OAuthID: newUser.OAuthID,
+        username: newUser.username
+      } });
     // create profile for user
     // split username into first and last name
     // half of the username is the first name, the other half is the last name
@@ -79,9 +83,9 @@ const createUser = async (newUser) => {
         data: {
             userId: user.id,
             isPrivate: false,
-            firstName: firstName,
-            lastName: lastName,
-            location: "Earth"
+            firstName: newUser.firstName,
+            lastName: newUser.lastName,
+            location: newUser.location
         }
     });
 
