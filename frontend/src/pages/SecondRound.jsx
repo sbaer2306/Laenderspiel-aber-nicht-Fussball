@@ -89,6 +89,8 @@ function SecondRound() {
               <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png"
+                  noWrap="false"
+
               />
               <LocationMarker childToParent={MarkerPosition} clicked={buttonClicked}/>
               {data ? <GeoJSON data={data} pointToLayer= {e =>{return null}}/> : null}

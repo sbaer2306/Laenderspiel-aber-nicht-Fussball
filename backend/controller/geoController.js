@@ -23,10 +23,10 @@ async function getOsmData(req, res){
       const center = geoService.getCenterOfCountry(osmData.elements[0].members);
       
       req.session.game = game;
-      res.json({geometry: osmData, center: center});
+      res.status(200).json({geometry: osmData, center: center});
     }catch(error){
         console.error('Fehler beim Abrufen der OSM-Daten', error);
-        res.status(500).json({error: 'Interner Serverfehler'});
+        res.status(500).json({error: 'Interner Internal Server Error'});
     }
 }
 

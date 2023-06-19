@@ -2,6 +2,7 @@
     height: 60vh;
     width: 120vh;
     border-radius: 10px;
+    background: none !important;
   }
 
 .container_second_round{

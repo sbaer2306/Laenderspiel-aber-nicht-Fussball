@@ -9,8 +9,18 @@ function LocationMarker({childToParent, clicked}) {
     useMapEvents({
       click(e) {
         if(!clicked){
-          setPosition(e.latlng);
-          childToParent(e.latlng);  
+          let lat = e.latlng.lat;
+          let lng = e.latlng.lng;
+
+          if(lng < -180){
+            lng = -180;
+          }
+
+          if(lng > 180){
+            lng = 180;
+          }
+          setPosition({lat: lat, lng: lng});
+          childToParent({lat: lat, lng: lng});  
         }
       },
     })
