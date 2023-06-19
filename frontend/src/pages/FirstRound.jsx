@@ -2,8 +2,9 @@ import React, {useEffect, useState} from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 import '../css/FirstRound.css'
 import { Facts } from '../components/Facts';
-import {Text, CircularProgress, Button, useToast, Box} from '@chakra-ui/react';
+import {Text, CircularProgress, Button, useToast, Box, useDisclosure} from '@chakra-ui/react';
 import api from '../helpers/axios'
+import ConfirmationModal from '../components/UI/ConfirmationModal';
 
 
 const initialAnswerObj = {
@@ -25,6 +26,7 @@ export const FirstRound = () => {
     const toast = useToast();
     const location = useLocation();
     const navigate = useNavigate();
+    const { isOpen: deletionModalIsOpen, onOpen: onOpenDeletionModal, onClose: onCloseDeletionModal } = useDisclosure();
     const id = location.state?.id;
     const [time, setTime] = useState(0)
     const [facts, setFacts] = useState()
@@ -54,6 +56,18 @@ export const FirstRound = () => {
             clearInterval(timer);
         }
     },[])
+
+    const showToastMessage = (title, description, status) => {
+        toast({
+          title: title,
+          description: description,
+          status: status,
+          duration: 3000,
+          isClosable: true,
+          position: "bottom-left",
+          variant: "left-accent"
+        });
+      };
 
     const fetchGameFacts = async () => {
         try{
@@ -133,12 +147,7 @@ export const FirstRound = () => {
 
     const submitAnswer = async () => {
         if(answerSubmitted){
-            toast({
-                title: "Already submitted ",
-                status:"info",
-                duration: 3000,
-                isClosable: true,
-            });
+            showToastMessage("Already submitted", "", "info");
             return;
         }
         const requestBody = {
@@ -153,13 +162,7 @@ export const FirstRound = () => {
             }, {withCredentials: true}); 
             
             const {score, links } = response.data;
-            toast({
-                title: "Points ",
-                description: `Wow, you made ${score} Points`,
-                status:"success",
-                duration: 3000,
-                isClosable: true,
-            });
+            showToastMessage("Points", `Wow, you made ${score} Points`, "success")
             if(links.nextStep){
                 setNextStep(links.nextStep)
                 setAnswerSubmitted(true);
@@ -189,13 +192,7 @@ export const FirstRound = () => {
                 withCredentials: true
                 }); 
 
-            toast({
-                title: "Deletion  ",
-                description: `${response.data.message}`,
-                status:"success",
-                duration: 3000,
-                isClosable: true,
-            });
+            showToastMessage("Deletion",`${response.data.message}`, "success" );
             navigate('/welcome', {replace: true})
             return;
         }catch(error){
@@ -276,14 +273,14 @@ export const FirstRound = () => {
             </div>
         </div>
         <div className='button_container'>
-        <Button onClick={cancel} colorScheme='red' size="md">Abbrechen</Button>
+        <Button onClick={onOpenDeletionModal} colorScheme='red' size="md">Abbrechen</Button>
          {
             answerSubmitted && (
                 <Button onClick={next} colorScheme='blue' size="md">Weiter</Button>
             )
          }
         </div>
-        
+        <ConfirmationModal isOpen={deletionModalIsOpen} onClose={onCloseDeletionModal} onConfirm={cancel} title='Cancel Game.'/>
     </div>
   )
 }
