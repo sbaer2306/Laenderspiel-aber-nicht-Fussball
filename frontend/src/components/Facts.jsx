@@ -27,6 +27,18 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
     const [input, setInput] = useState("")
     const [tries, setTries] = useState(0)
 
+    const showToastMessage = (title, description, status) => {
+      toast({
+        title: title,
+        description: description,
+        status: status,
+        duration: 3000,
+        isClosable: true,
+        position: "bottom-left",
+        variant: "left-accent"
+      });
+    };
+
     useEffect(() => {
       console.log(`${title}:  with solution: ${solution}`);
       setSolutionInput(solution.toString().toLowerCase())
@@ -65,52 +77,25 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
         return compareNumberSolution(area);
       }
       if(input.trim() == solutionInput){ 
-        toast({
-          title: "Richtig ",
-          status:"success",
-          duration: 3000,
-          isClosable: true,
-        });
+        showToastMessage("Correct", "", "success");
         return setCorrect(true);
       }
-      toast({
-        title: "Falsch ",
-        status:"error",
-        duration: 3000,
-        isClosable: true,
-      });
+      showToastMessage("Wrong", "", "error");
     }
 
     const compareNumberSolution = (value) => {
       const upperEnd = solution * 1.1
       const lowerEnd = solution * 0.9
       if(lowerEnd < value && value < upperEnd){
-        toast({
-          title: "Richtig ",
-          status:"success",
-          duration: 3000,
-          isClosable: true,
-        });
+        showToastMessage("Correct", "", "success");
         return setCorrect(true)
       }
       if (upperEnd < value) {
-        toast({
-          title: "Incorrect ",
-          description: "Too much.",
-          status:"error",
-          duration: 3000,
-          isClosable: true,
-        });
+        showToastMessage("Wrong", "Too much", "error");
         return;
       }
       if (lowerEnd > value) {
-        toast({
-          title: "Incorrect",
-          description: "Too low.",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
+        showToastMessage("Wrong", "Too low", "error");
         return;
       }
     }
