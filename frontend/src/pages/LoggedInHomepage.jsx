@@ -52,7 +52,7 @@ function LoggenInHomepage() {
           else console.log("error: ", error.message)
       }
     }
-    else alert("Wähle Schwierigkeit")
+    else alert("Select Difficulty")
   };
 
   useEffect(() => {
@@ -79,14 +79,14 @@ function LoggenInHomepage() {
             Spiel
           </Text>
           <Select
-            placeholder="Schwierigkeitsgrad wählen"
+            placeholder="Select Difficulty"
             value={selectedDifficulty}
             onChange={handleDifficultyChange}
             mb={4}
           >
-            <option value="easy">Einfach</option>
-            <option value="medium">Mittel</option>
-            <option value="hard">Schwer</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
           </Select>
           <Button
             leftIcon={<FaPlus />}
@@ -95,7 +95,7 @@ function LoggenInHomepage() {
             width="100%"
             onClick={startNewGame}
           >
-            Neues Spiel
+            New Game
           </Button>
         </Box>
       </Center>

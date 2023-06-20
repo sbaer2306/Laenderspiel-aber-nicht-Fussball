@@ -273,10 +273,10 @@ export const FirstRound = () => {
             </div>
         </div>
         <div className='button_container'>
-        <Button onClick={onOpenDeletionModal} colorScheme='red' size="md">Abbrechen</Button>
+        <Button onClick={onOpenDeletionModal} colorScheme='red' size="md">Cancel</Button>
          {
             answerSubmitted && (
-                <Button onClick={next} colorScheme='blue' size="md">Weiter</Button>
+                <Button onClick={next} colorScheme='blue' size="md">Next Round</Button>
             )
          }
         </div>

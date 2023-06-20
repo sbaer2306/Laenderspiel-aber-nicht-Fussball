@@ -3,13 +3,15 @@ import 'leaflet/dist/leaflet.css'
 import { useState, useEffect } from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet'
-import { Text, Center, Box, Button, CircularProgress } from '@chakra-ui/react';
+import { Text, Center, Box, Button, CircularProgress, useToast, useDisclosure } from '@chakra-ui/react';
 import api from '../helpers/axios'
 import converter from 'osmtogeojson'
 import LocationMarker from '../components/map/LocationMarker';
 import Polyline from '../components/map/Polyline'
+import ConfirmationModal from '../components/UI/ConfirmationModal';
 
 function SecondRound() {
+  const toast = useToast();
   const location = useLocation();
   const navigate = useNavigate();
   const id = location.state?.id;
@@ -23,6 +25,8 @@ function SecondRound() {
   const [distance, setDistance] = useState(null);
   const [score, setScore] = useState(null);
   const [links, setLinks] = useState(null);
+  const { isOpen: deletionModalIsOpen, onOpen: onOpenDeletionModal, onClose: onCloseDeletionModal } = useDisclosure();
+
 
   const MAX_TIME = 300;
 
@@ -68,6 +72,39 @@ function SecondRound() {
     }
   }
 
+  const cancelGame = async () => {
+    try{
+      
+        const response = await api.delete(`/game/${id}`, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true
+            }); 
+
+        showToastMessage("Deletion",`${response.data.message}`, "success" );
+        navigate('/welcome', {replace: true})
+        return;
+    }catch(error){
+      console.log(error);
+/*         console.log("error fetching: "+error.response.data.message);
+        console.log("game-id: ", error.response.data.gameid);
+        console.log("id: ", error.response.data.id); */
+    }
+}
+
+const showToastMessage = (title, description, status) => {
+  toast({
+    title: title,
+    description: description,
+    status: status,
+    duration: 3000,
+    isClosable: true,
+    position: "bottom-left",
+    variant: "left-accent"
+  });
+};
+
   useEffect(() => {
     const timer = setInterval(() => {
       setTime((prevTime) => prevTime + 1);
@@ -105,6 +142,8 @@ function SecondRound() {
         </Box>
        : null}
       {data ? <Box align="right"><Button colorScheme='blue' size='md' onClick={nextRound}>Next Round</Button ></Box> : null}
+      <Box align="left" mt={5}><Button onClick={onOpenDeletionModal} colorScheme='red' size="md">Cancel</Button></Box>
+      <ConfirmationModal isOpen={deletionModalIsOpen} onClose={onCloseDeletionModal} onConfirm={cancelGame} title='Cancel Game.'/>
     </Box>
   );
 }
