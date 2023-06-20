@@ -141,9 +141,13 @@ const showToastMessage = (title, description, status) => {
           <Center>Your new Score is: {score}!</Center>
         </Box>
        : null}
-      {data ? <Box align="right"><Button colorScheme='blue' size='md' onClick={nextRound}>Next Round</Button ></Box> : null}
-      <Box align="left" mt={5}><Button onClick={onOpenDeletionModal} colorScheme='red' size="md">Cancel</Button></Box>
+      
+      <Box mt={5}>
+        <Button onClick={onOpenDeletionModal} colorScheme='red' size="md">Cancel</Button>
+        {data ? <Box align="right"><Button colorScheme='blue' size='md' onClick={nextRound}>Next Round</Button ></Box> : null}
+      </Box>
       <ConfirmationModal isOpen={deletionModalIsOpen} onClose={onCloseDeletionModal} onConfirm={cancelGame} title='Cancel Game.'/>
+      
     </Box>
   );
 }
