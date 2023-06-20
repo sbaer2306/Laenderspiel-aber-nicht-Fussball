@@ -9,8 +9,13 @@ async function getOsmData(req, res){
       
       //Game from session
       const game = req.session.game;
+      const userID = game.user_id;
 
-      if(!game) return res.status(404).json({error: "Game not found"})
+      if(!game) return res.status(404).json({error: "Game not found"});
+
+      if(userID !== req.user.id) return res.status(403).json({error: "Forbidden"});
+
+      //console.log(req.user);
     
 
       const country = await prismaClient.country.findUnique({

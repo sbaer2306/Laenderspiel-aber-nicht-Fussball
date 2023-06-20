@@ -20,7 +20,6 @@ async function createGame(req, res){
       //auth
       //user_id = something
 
-
       // Check if the user already has a game in the session
       if (req.session.game) {
         return res.status(403).json({ message: 'You already have a game in progress', game: req.session.game });
@@ -37,7 +36,7 @@ async function createGame(req, res){
 
       const game = {
         id: req.session.id, //session_id
-        user_id: 3, //user_id comes from middleware - please give it to me bastiiii :D
+        user_id: req.user.id, //user_id comes from middleware - please give it to me bastiiii :D
         current_round: 1,
         max_rounds: 3,
         ttl: 900,

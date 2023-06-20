@@ -72,8 +72,10 @@ async function calculateDistance(req, res){
 
     //Game from session
     const game = req.session.game;
+    const userID = game.user_id;
 
-    if(!game) return res.status(404).json({error: "Game not found"})
+    if(!game) return res.status(404).json({error: "Game not found"});
+    if(userID !== req.user.id) return res.status(403).json({error: "Forbidden"});
     
 
     const guessed_position = req.body.guessed_position;
