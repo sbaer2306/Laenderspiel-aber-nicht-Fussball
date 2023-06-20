@@ -120,22 +120,22 @@ async function calculateRatingFacts(facts, guessedData){
   }
 
   function calculateGeoInformation(distance, time, difficulty){
-        let score;
-        max_time = 300; //Timelimit of 5 mins
+    let score;
+    max_time = 300; //Timelimit of 5 mins
 
-        //if the distance is greater than 2000 km, the score is 0 
-        score = 2000 - distance; 
-        
-        if(score <= 0) {
-            return 0;
-        }
+    //if the distance is greater than 2000 km, the score is 0 
+    score = 2000 - distance; 
+    
+    if(score <= 0) {
+        return 0;
+    }
 
-        //add the remaining time to the score 
-        score += max_time - time;
+    //add the remaining time to the score 
+    score += max_time - time;
+    
+    //Multiply the Score with the difficulty
+    score = score * difficulty;
 
-        //Multiply the Score with the difficulty
-        score = score * difficulty;
-        
     return score;
   }
 

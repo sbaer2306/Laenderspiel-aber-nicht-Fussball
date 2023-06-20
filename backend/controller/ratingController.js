@@ -83,13 +83,11 @@ async function calculateDistance(req, res){
 
     const center = req.body.center;
     const time = req.body.time;
-    const difficulty = req.body.difficulty;
-
-    
+    const difficulty = req.session.game.difficulty;
 
     let distance = geoService.calculateDistance(guessed_position, center);
     
-    let score = scoringService.calculateGeoInformation(distance, time, difficulty) + game.total_score;
+    let score = scoringService.calculateGeoInformation(distance, time, Math.round(difficulty)) + game.total_score;
     game.total_score = score;
     
     game.current_round = 3;
