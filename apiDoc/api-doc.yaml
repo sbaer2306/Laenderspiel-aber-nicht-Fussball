@@ -763,11 +763,29 @@ paths:
                         type: number
                     description: lat and lon of the center of the country
         '403':
-          description: Forbidden
+          description: Forbidden. User is not player of the game.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: This is not your game.
         '404':
-          description: Not Found
+          description: Game not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: Game not found.
         '500':
-          description: Internal Server Error
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: Internal server error.
   /game/{id}/rating/geo-information:
     post:
       tags:
@@ -817,12 +835,10 @@ paths:
                 properties:
                   distance:
                     type: integer
-                    description: >-
-                      distance in km between guessed Position and the Center of
-                      a Country with the Haversine-Formela
+                    description: distance in km between guessed Position and the Center of a Country with the Haversine-Formela
                   score:
                     type: integer
-                    description: scoring from the second round
+                    description: Score from the second round. Calculated as follows "2000km - guessed km + remaining time * difficulty"
           links:
             nextStep:
               description: Link for next round with id of game and the center of the country
@@ -830,14 +846,38 @@ paths:
               parameters:
                 id: $request.path.game_id
                 center: §request.center
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: Bad Request with this coordinates.
         '403':
-          description: Forbidden
+          description: Forbidden. User is not player of the game.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: This is not your game.
         '404':
-          description: Game Not Found
-        '406':
-          description: Not Acceptable
+          description: Game not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: Game not found.
         '500':
-          description: Internal Server Error
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: Internal server error.
   /game/{id}/sights:
     get:
       tags:
