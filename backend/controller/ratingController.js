@@ -75,13 +75,17 @@ async function calculateDistance(req, res){
     const userID = game.user_id;
 
     if(!game) return res.status(404).json({error: "Game not found"});
-    if(userID !== req.user.id) return res.status(403).json({error: "Forbidden"});
+    if(userID !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
     
 
     const guessed_position = req.body.guessed_position;
+    if((guessed_position.lat < -90 || guessed_position.lat > 90) || (guessed_position.lon < -180 || guessed_position.lon > 180)) return res.status(400).json({error: "Bad Request"});
+
     const center = req.body.center;
     const time = req.body.time;
     const difficulty = req.body.difficulty;
+
+    
 
     let distance = geoService.calculateDistance(guessed_position, center);
     
@@ -105,7 +109,7 @@ async function calculateDistance(req, res){
     res.status(200).json( {distance: distance, score: score, links: links})
   }catch (error){
     console.log(error);
-    res.status(500).json({error: 'Internal Server Error'});
+    res.status(500).json({error: 'Internal server error'});
   }
 }
 
