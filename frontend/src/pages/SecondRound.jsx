@@ -58,6 +58,8 @@ function SecondRound() {
       const response = await api.post(`/game/${id}/rating/geo-information`, {"time": time, "guessed_position": {lat: position.lat, lon: position.lng}, "center": {lat: center.lat, lon: center.lon}})
       setDistance(response.data.distance);
 
+      console.log(response.data);
+
       setScore(response.data.score);
       setLinks(response.data.links);
     }catch(error){

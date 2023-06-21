@@ -160,6 +160,8 @@ export const FirstRound = () => {
                     'Content-Type': 'application/json'
                 }
             }, {withCredentials: true}); 
+
+            console.log(response.data);
             
             const {score, links } = response.data;
             showToastMessage("Points", `Wow, you made ${score} Points`, "success")

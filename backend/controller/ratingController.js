@@ -121,8 +121,9 @@ async function calculateRatingSights(req, res) {
     }
 
     const data = req.body;
+    const difficulty = game.difficulty;
 
-    const score = await scoringService.calculateRatingSights(data) + game.total_score;
+    const score = await scoringService.calculateRatingSights(data, Math.round(difficulty)) + game.total_score;
 
     req.session.game = game;
 

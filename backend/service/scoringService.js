@@ -1,6 +1,6 @@
 const sightsService = require('../service/sightsService');
 
-async function calculateRatingSights(data) {
+async function calculateRatingSights(data, difficulty) {
   try {
 
     const MAX_TIME = 180;
@@ -26,6 +26,7 @@ async function calculateRatingSights(data) {
     let totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0);
 
     totalScore += totalScore == 0 ? 0 : MAX_TIME - time;
+    totalScore *= difficulty;
 
     return totalScore;
   } catch (error) {
