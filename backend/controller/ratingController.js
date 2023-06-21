@@ -97,25 +97,6 @@ async function calculateDistance(req, res){
 async function saveScore(userId, score, gameDuration, countryId, createdAt) {
   try {
     const prismaClient = getPrisma();
-    await prismaClient.playedGame.create({
-      data: {
-        userId: userId,
-        score: score,
-        gameDuration: gameDuration,
-        countryId: countryId,
-        createdAt: createdAt
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    throw new Error('Failed to save score in the database');
-  }
-}
-*/
-
-async function saveScore(userId, score, gameDuration, countryId, createdAt) {
-  try {
-    const prismaClient = getPrisma();
 
     await prismaClient.playedGame.create({
       data: {
@@ -146,7 +127,81 @@ async function saveScore(userId, score, gameDuration, countryId, createdAt) {
     throw new Error('Failed to save score and update ranking in the database');
   }
 }
+*/
 
+async function saveScore(userId, score, gameDuration, countryId, createdAt) {
+  try {
+    const prismaClient = getPrisma();
+
+    await prismaClient.playedGame.create({
+      data: {
+        userId: userId,
+        score: score,
+        gameDuration: gameDuration,
+        countryId: countryId,
+        createdAt: createdAt
+      },
+    });
+
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth() + 1; // Monate in JavaScript sind nullbasiert, daher +1
+    const currentYear = currentDate.getFullYear();
+
+    // Prüfe, ob ein Datensatz für das aktuelle Monat und Jahr vorhanden ist
+    const existingMonthlyRanking = await prismaClient.monthlyRanking.findFirst({
+      where: { userId, month: currentMonth, year: currentYear }
+    });
+
+    if (existingMonthlyRanking) {
+      // Wenn ein Datensatz vorhanden ist, aktualisiere den Score
+      await prismaClient.monthlyRanking.update({
+        where: { id: existingMonthlyRanking.id },
+        data: {
+          score: existingMonthlyRanking.score + score,
+          lastUpdated: currentDate
+        }
+      });
+    } else {
+      // Wenn kein Datensatz vorhanden ist, erstelle einen neuen Datensatz
+      await prismaClient.monthlyRanking.create({
+        data: {
+          userId,
+          score,
+          month: currentMonth,
+          year: currentYear,
+          lastUpdated: currentDate
+        }
+      });
+    }
+
+    await prismaClient.allTimeRanking.upsert({
+      where: { userId },
+      create: {
+        userId,
+        score,
+        lastUpdated: currentDate
+      },
+      update: {
+        score: {
+          increment: score
+        },
+        lastUpdated: currentDate
+      }
+    });
+
+    return {
+      allTimeRanking: await prismaClient.allTimeRanking.findUnique({
+        where: { userId }
+      }),
+      monthlyRanking: await prismaClient.monthlyRanking.findFirst({
+        where: { userId, month: currentMonth, year: currentYear }
+      })
+    };
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to save score and update rankings in the database');
+  }
+}
 
 
 async function calculateRatingSights(req, res) {
