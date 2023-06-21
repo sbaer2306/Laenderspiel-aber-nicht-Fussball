@@ -93,6 +93,7 @@ async function calculateDistance(req, res){
   }
 }
 
+/*
 async function saveScore(userId, score, gameDuration, countryId, createdAt) {
   try {
     const prismaClient = getPrisma();
@@ -110,6 +111,43 @@ async function saveScore(userId, score, gameDuration, countryId, createdAt) {
     throw new Error('Failed to save score in the database');
   }
 }
+*/
+
+async function saveScore(userId, score, gameDuration, countryId, createdAt) {
+  try {
+    const prismaClient = getPrisma();
+
+    await prismaClient.playedGame.create({
+      data: {
+        userId: userId,
+        score: score,
+        gameDuration: gameDuration,
+        countryId: countryId,
+        createdAt: createdAt
+      },
+    });
+
+    await prismaClient.allTimeRanking.upsert({
+      where: { userId },
+      create: {
+        userId,
+        score,
+        lastUpdated: new Date()
+      },
+      update: {
+        score: {
+          increment: score
+        },
+        lastUpdated: new Date()
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to save score and update ranking in the database');
+  }
+}
+
+
 
 async function calculateRatingSights(req, res) {
   try {
@@ -125,17 +163,18 @@ async function calculateRatingSights(req, res) {
 
     const score = await scoringService.calculateRatingSights(data, Math.round(difficulty)) + game.total_score;
 
-    req.session.game = game;
-
     const userId = game.user_id;
     const countryId = game.country_id;
     const createdAt = game.created_at;
     const gameDuration = data.time_to_complete_game;
 
+    // await saveScore(userId, score, gameDuration, countryId, createdAt);
+    const ranking = await saveScore(userId, score, gameDuration, countryId, createdAt);
 
-    await saveScore(userId, score, gameDuration, countryId, createdAt);
+    delete req.session.game;
+    delete game;
 
-    res.status(200).json( { score: score } );
+    res.status(200).json({ score: score, game: game, ranking: ranking });
   }
   catch(error) {
     console.log(error);
