@@ -20,7 +20,6 @@ async function createGame(req, res){
       //auth
       //user_id = something
 
-
       // Check if the user already has a game in the session
       if (req.session.game) {
         return res.status(403).json({ message: 'You already have a game in progress', game: req.session.game });
@@ -37,7 +36,7 @@ async function createGame(req, res){
 
       const game = {
         id: req.session.id, //session_id
-        user_id: 3, //user_id comes from middleware - please give it to me bastiiii :D
+        user_id: req.user.id, //user_id comes from middleware - please give it to me bastiiii :D
         current_round: 1,
         max_rounds: 3,
         ttl: 900,
@@ -85,13 +84,12 @@ async function getGame(req, res){
   
   try{
     const game = req.session.game;
-    //to test
-    const user_id = 3;
-      //bastis user_id
-      if(game.user_id !== user_id) return res.status(403).json({message: "Unauthorized - user is not the player of the game"})
-      if(game.id !== id) return res.status(404).json({message: "Game not found"})
-      req.session.game = game;
-      res.status(200).json({ game: game });
+    const userID = game.user_id;
+
+    if(userID !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
+    if(game.id !== id) return res.status(404).json({message: "Game not found"})
+    req.session.game = game;
+    res.status(200).json({ game: game });
 
   }catch(error){
     res.status(500).json({ error: 'Internal Server Error', message: error.message });
@@ -110,10 +108,9 @@ async function deleteGame(req, res){
   
   try{
     const game = req.session.game;
-    //to test
-    const user_id = 3;
-    //bastis user_id
-    if(game.user_id !== user_id) return res.status(403).json({message: "Unauthorized - user is not the player of the game"})
+    const userID = game.user_id;
+
+    if(userID !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
     if(game.id !== id) return res.status(404).json({message: "Game not found", gameid: game.id, id: id})
     
     req.session.game = null;

@@ -9,8 +9,13 @@ async function getOsmData(req, res){
       
       //Game from session
       const game = req.session.game;
+      const userID = game.user_id;
 
-      if(!game) return res.status(404).json({error: "Game not found"})
+      if(!game) return res.status(404).json({error: "Game not found"});
+
+      if(userID !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
+
+      //console.log(req.user);
     
 
       const country = await prismaClient.country.findUnique({
@@ -25,8 +30,7 @@ async function getOsmData(req, res){
       req.session.game = game;
       res.status(200).json({geometry: osmData, center: center});
     }catch(error){
-        console.error('Fehler beim Abrufen der OSM-Daten', error);
-        res.status(500).json({error: 'Interner Internal Server Error'});
+        res.status(500).json({error: 'Internal server error'});
     }
 }
 

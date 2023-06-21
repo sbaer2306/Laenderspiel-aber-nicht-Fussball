@@ -57,6 +57,7 @@ function SecondRound() {
     try{
       const response = await api.post(`/game/${id}/rating/geo-information`, {"time": time, "guessed_position": {lat: position.lat, lon: position.lng}, "center": {lat: center.lat, lon: center.lon}})
       setDistance(response.data.distance);
+
       setScore(response.data.score);
       setLinks(response.data.links);
     }catch(error){
@@ -141,9 +142,13 @@ const showToastMessage = (title, description, status) => {
           <Center>Your new Score is: {score}!</Center>
         </Box>
        : null}
-      {data ? <Box align="right"><Button colorScheme='blue' size='md' onClick={nextRound}>Next Round</Button ></Box> : null}
-      <Box align="left" mt={5}><Button onClick={onOpenDeletionModal} colorScheme='red' size="md">Cancel</Button></Box>
+      
+      <Box mt={5}>
+          <Button onClick={onOpenDeletionModal} colorScheme='red' size="md" mr= {15}>Cancel</Button>
+          {data ? <Button colorScheme='blue' size='md' onClick={nextRound}>Next Round</Button > : null} 
+      </Box>
       <ConfirmationModal isOpen={deletionModalIsOpen} onClose={onCloseDeletionModal} onConfirm={cancelGame} title='Cancel Game.'/>
+      
     </Box>
   );
 }

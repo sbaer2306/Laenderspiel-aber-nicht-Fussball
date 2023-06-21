@@ -5,7 +5,7 @@ const gameController = require('../controller/gameController');
 const factsController = require('../controller/factsController');
 const ratingController = require('../controller/ratingController');
 const sightsController = require('../controller/sightsController');
-
+const passport = require('passport');
 const {checkSessionTTL} = require('../service/sessionService')
 
 
@@ -20,23 +20,23 @@ gameRoutes.use((req,res,next) => {
 //Game
 
 
-gameRoutes.get('/:id', gameController.getGame);
-gameRoutes.delete('/:id', gameController.deleteGame);
+gameRoutes.get('/:id',passport.authenticate('jwt', { session: true }), gameController.getGame);
+gameRoutes.delete('/:id',passport.authenticate('jwt', { session: true }), gameController.deleteGame);
 
-gameRoutes.post('/', gameController.createGame);
+gameRoutes.post('/',passport.authenticate('jwt', { session: true }), gameController.createGame);
 
 //Facts
-gameRoutes.get('/:id/facts', factsController.getFacts);
+gameRoutes.get('/:id/facts',passport.authenticate('jwt', { session: true }), factsController.getFacts);
 
-gameRoutes.post('/:id/rating/facts', ratingController.calculateRatingFacts);
+gameRoutes.post('/:id/rating/facts',passport.authenticate('jwt', { session: true }), ratingController.calculateRatingFacts);
 
 //Geo-Information
-gameRoutes.get('/:id/geo-information', geoController.getOsmData);
-gameRoutes.post('/:id/rating/geo-information', ratingController.calculateDistance);
+gameRoutes.get('/:id/geo-information',passport.authenticate('jwt', { session: true }), geoController.getOsmData);
+gameRoutes.post('/:id/rating/geo-information',passport.authenticate('jwt', { session: true }), ratingController.calculateDistance);
 
 //Sights
-gameRoutes.get('/:id/sights', sightsController.getSights);
-gameRoutes.post('/:id/rating/sights', ratingController.calculateRatingSights);
+gameRoutes.get('/:id/sights',passport.authenticate('jwt', { session: true }), sightsController.getSights);
+gameRoutes.post('/:id/rating/sights',passport.authenticate('jwt', { session: true }), ratingController.calculateRatingSights);
 
 //Export router
 module.exports = gameRoutes;

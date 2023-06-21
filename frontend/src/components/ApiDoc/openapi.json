@@ -1178,13 +1178,43 @@
             }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden. User is not player of the game.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "This is not your game."
+                }
+              }
+            }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Game not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Game not found."
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Internal server error."
+                }
+              }
+            }
           }
         }
       }
@@ -1261,7 +1291,7 @@
                     },
                     "score": {
                       "type": "integer",
-                      "description": "scoring from the second round"
+                      "description": "Score from the second round. Calculated as follows \"2000km - guessed km + remaining time * difficulty\""
                     }
                   }
                 }
@@ -1278,17 +1308,57 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Bad Request with this coordinates."
+                }
+              }
+            }
+          },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden. User is not player of the game.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "This is not your game."
+                }
+              }
+            }
           },
           "404": {
-            "description": "Game Not Found"
-          },
-          "406": {
-            "description": "Not Acceptable"
+            "description": "Game not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Game not found."
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Internal server error."
+                }
+              }
+            }
           }
         }
       }
@@ -1321,26 +1391,15 @@
                   "type": "object",
                   "properties": {
                     "city_name": {
-                      "type": "object",
-                      "properties": {
-                        "sights": {
-                          "type": "array",
-                          "minItems": 1,
-                          "maxItems": 3,
-                          "items": {
-                            "$ref": "#/components/schemas/Sight"
-                          }
-                        },
-                        "coordinates": {
-                          "type": "array",
-                          "items": {
-                            "type": "number",
-                            "format": "float",
-                            "example": 52.520008
-                          },
-                          "minItems": 2,
-                          "maxItems": 2
-                        }
+                      "type": "string",
+                      "description": "name of the city"
+                    },
+                    "sights": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "$ref": "#/components/schemas/City"
                       }
                     }
                   }
@@ -1395,38 +1454,21 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "time_to_complete": {
-                    "type": "integer",
-                    "example": 100
-                  },
-                  "city_1": {
-                    "type": "object",
-                    "properties": {
-                      "coordinates": {
-                        "type": "array",
-                        "items": {
-                          "type": "number",
-                          "format": "float",
-                          "example": 13.404954
-                        },
-                        "minItems": 2,
-                        "maxItems": 2
-                      },
-                      "guessed_coordinates": {
-                        "type": "array",
-                        "items": {
-                          "type": "number",
-                          "format": "float",
-                          "example": 13.404954
-                        },
-                        "minItems": 2,
-                        "maxItems": 2
-                      },
-                      "sights": {
-                        "type": "integer",
-                        "example": 2
-                      }
+                  "coordinates": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
                     }
+                  },
+                  "coordinates_guessed": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "time_to_complete_game": {
+                    "type": "integer",
+                    "example": 408
                   }
                 }
               }
@@ -2119,6 +2161,12 @@
               "$ref": "#/components/schemas/Sight",
               "minItems": 3,
               "maxItems": 3
+            }
+          },
+          "coordinates": {
+            "type": "array",
+            "items": {
+              "type": "string"
             }
           }
         }
