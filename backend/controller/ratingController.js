@@ -5,24 +5,6 @@ const factsService = require('../service/factsService');
 const scoringService = require('../service/scoringService')
 const sightsService = require('../service/sightsService');
 
-async function saveScore(userId, score) {
-  try {
-    const prismaClient = getPrisma();
-    await prismaClient.playedGame.create({
-      data: {
-        userId: userId,
-        score: score,
-        // Weitere Daten, die in der playedGame-Tabelle gespeichert werden sollen
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    throw new Error('Failed to save score in the database');
-  }
-}
-
-
-
 async function calculateRatingFacts(req, res){
   const {id} = req.params;
   try {
@@ -111,6 +93,24 @@ async function calculateDistance(req, res){
   }
 }
 
+async function saveScore(userId, score, gameDuration, countryId, createdAt) {
+  try {
+    const prismaClient = getPrisma();
+    await prismaClient.playedGame.create({
+      data: {
+        userId: userId,
+        score: score,
+        gameDuration: gameDuration,
+        countryId: countryId,
+        createdAt: createdAt
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to save score in the database');
+  }
+}
+
 async function calculateRatingSights(req, res) {
   try {
     const {id} = req.params;
@@ -122,11 +122,17 @@ async function calculateRatingSights(req, res) {
 
     const data = req.body;
 
-    const score = await scoringService.calculateRatingSights(data);
+    const score = await scoringService.calculateRatingSights(data) + game.total_score;
 
     req.session.game = game;
 
-    // await saveScore(id, score);
+    const userId = game.user_id;
+    const countryId = game.country_id;
+    const createdAt = game.created_at;
+    const gameDuration = data.time_to_complete_game;
+
+
+    await saveScore(userId, score, gameDuration, countryId, createdAt);
 
     res.status(200).json( { score: score } );
   }
