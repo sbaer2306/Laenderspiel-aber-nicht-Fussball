@@ -44,6 +44,21 @@ Müssen (noch) manuell durchgeführt werden, falls der db-Container noch nicht r
 ## API Credentials
 - **TODO**: API Zugangsdaten bzw. Anleitung zum Erstellen und setzen dieser für die 3rd party APIs (RESTcountries, Wikipedia, ...)
 
+# Wikipedia API: 
+    URL = "https://en.wikipedia.org/w/api.php?action=query&format=json&generator=categorymembers&gcmtitle=Category:Tourist_attractions_in_${city.name}&gcmlimit=max&prop=pageimages&piprop=original&pithumbsize=500"
+
+    Die Wikipedia-API wird genutzt, um Informationen über touristische Attraktionen einer bestimmten Stadt abzurufen. Indem man die richtigen Parameter verwendet und einstellt, erhält man eine Liste im JSON-Format, die Namen und Bilder der touristischen Attraktionen in der angegebenen Stadt enthält.
+
+    Beschreibung der Parameter: 
+        `action=query`: gibt, das Abfrage an Wikipedia API gesendet wird.
+        `format=json`: die Antwort wird im JSON-Format zurückgegeben.
+        `generator=categorymembers`: ruft die Seiten in der angegegeben Kategorie auf.
+        `gcmtitle=Category:Tourist_attractions_in_${city.name}`: gibt die Kategorie an, nach der gesucht werden soll.
+        `gcmlimit=max`: setzt das Limit für die Anzahl der zurückgegebenen Ergebnisse.
+        `prop=pageimages`: ruft die Bilder der Seiten auf.
+        `piprop=original`: ruft das Originalbild auf anstatt ein Miniaturbild.
+        `pithumbsize=500`: legt die Größe des Miniaturbilds fest (Maximale Breite 500px).
+
 ## StA-Kriterien
 - [x] **Hypermedia:** Pagination bei /user/{id}/played-games
 - [x] **ETag Caching:** /user/{id}/stats
