@@ -84,8 +84,16 @@ const ThirdRound = () => {
       setIsLoading(false);
       console.log(response.data);
 
-    } catch (error) {
-      console.error(error);
+    } 
+    catch (error) {
+      if(error.response) {
+        if(error.response.status === 403){
+            alert("error-response: ", error.response.data.message);
+        }
+      }
+      else {
+        console.log("error fetching: " + error.message);
+      }
     }
   };
 

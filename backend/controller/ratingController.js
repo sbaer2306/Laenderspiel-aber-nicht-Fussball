@@ -93,42 +93,6 @@ async function calculateDistance(req, res){
   }
 }
 
-/*
-async function saveScore(userId, score, gameDuration, countryId, createdAt) {
-  try {
-    const prismaClient = getPrisma();
-
-    await prismaClient.playedGame.create({
-      data: {
-        userId: userId,
-        score: score,
-        gameDuration: gameDuration,
-        countryId: countryId,
-        createdAt: createdAt
-      },
-    });
-
-    await prismaClient.allTimeRanking.upsert({
-      where: { userId },
-      create: {
-        userId,
-        score,
-        lastUpdated: new Date()
-      },
-      update: {
-        score: {
-          increment: score
-        },
-        lastUpdated: new Date()
-      }
-    });
-  } catch (error) {
-    console.error(error);
-    throw new Error('Failed to save score and update ranking in the database');
-  }
-}
-*/
-
 async function saveScore(userId, score, gameDuration, countryId, createdAt) {
   try {
     const prismaClient = getPrisma();
@@ -209,19 +173,20 @@ async function calculateRatingSights(req, res) {
     const {id} = req.params;
     const game = req.session.game;
 
+    const userId = game.user_id;
+    const countryId = game.country_id;
+    const createdAt = game.created_at;
+    const gameDuration = data.gameDuration;
+
     if(!game){
       return res.status(404).json({error: "Game not found", game: game, id: id})
     }
+    if(userID !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
 
     const data = req.body;
     const difficulty = game.difficulty;
 
     const score = await scoringService.calculateRatingSights(data, Math.round(difficulty)) + game.total_score;
-
-    const userId = game.user_id;
-    const countryId = game.country_id;
-    const createdAt = game.created_at;
-    const gameDuration = data.gameDuration;
 
     const ranking = await saveScore(userId, score, gameDuration, countryId, createdAt);
 
