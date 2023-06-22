@@ -221,15 +221,14 @@ async function calculateRatingSights(req, res) {
     const userId = game.user_id;
     const countryId = game.country_id;
     const createdAt = game.created_at;
-    const gameDuration = data.time_to_complete_game;
+    const gameDuration = data.gameDuration;
 
-    // await saveScore(userId, score, gameDuration, countryId, createdAt);
     const ranking = await saveScore(userId, score, gameDuration, countryId, createdAt);
 
     delete req.session.game;
     delete game;
 
-    res.status(200).json({ score: score, game: game, ranking: ranking });
+    res.status(200).json({ score: score });
   }
   catch(error) {
     console.log(error);

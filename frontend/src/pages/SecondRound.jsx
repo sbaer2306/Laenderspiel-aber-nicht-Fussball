@@ -15,6 +15,7 @@ function SecondRound() {
   const location = useLocation();
   const navigate = useNavigate();
   const id = location.state?.id;
+  let gameDuration = location.state?.time;
   const countryName = location.state?.country_name;
   const [data, setData] = useState('');
   const [position, setPosition] = useState('');
@@ -70,8 +71,9 @@ function SecondRound() {
 
   const nextRound = () => {
     if(links.nextStep){
+      gameDuration += time;
       console.log(links);
-      navigate(links.nextStep.operationRef, {state: {id: links.nextStep.parameters.id, center: links.nextStep.parameters.center}});
+      navigate(links.nextStep.operationRef, {state: {id: links.nextStep.parameters.id, center: links.nextStep.parameters.center, gameDuration: gameDuration}});
     }
   }
 

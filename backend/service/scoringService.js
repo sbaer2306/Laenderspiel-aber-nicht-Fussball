@@ -8,7 +8,7 @@ async function calculateRatingSights(data, difficulty) {
     const scores = {};
 
     for (const city in data) {
-      if (city !== "time_to_complete_game") {
+      if (city !== "time" && city !== "gameDuration") {
         const coordinates = data[city].coordinates;
         const guessedCoordinates = data[city].guessed_coordinates;
         const numberOfSights = data[city].sights;
@@ -21,14 +21,14 @@ async function calculateRatingSights(data, difficulty) {
       }
     }
 
-    const time = data.time_to_complete_game;
+    const time = data.time;
 
     let totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0);
 
     totalScore += totalScore == 0 ? 0 : MAX_TIME - time;
     totalScore *= difficulty;
 
-    return totalScore;
+    return Math.round(totalScore);
   } catch (error) {
     return { error: error.message };
   }

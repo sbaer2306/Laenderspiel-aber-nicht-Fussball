@@ -182,7 +182,7 @@ export const FirstRound = () => {
 
     const next = () => {
         if(nextStep){
-            navigate(nextStep.operationRef, {state: {id: nextStep.parameters.id, country_name: nextStep.parameters.country_name}});
+            navigate(nextStep.operationRef, {state: {id: nextStep.parameters.id, country_name: nextStep.parameters.country_name, time: time}});
         }
     }
     const cancel = async () => {
