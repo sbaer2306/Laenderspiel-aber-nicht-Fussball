@@ -1,6 +1,6 @@
 const sightsService = require('../service/sightsService');
 
-async function calculateRatingSights(data) {
+async function calculateRatingSights(data, difficulty) {
   try {
 
     const MAX_TIME = 180;
@@ -8,7 +8,7 @@ async function calculateRatingSights(data) {
     const scores = {};
 
     for (const city in data) {
-      if (city !== "time_to_complete_game") {
+      if (city !== "time" && city !== "gameDuration") {
         const coordinates = data[city].coordinates;
         const guessedCoordinates = data[city].guessed_coordinates;
         const numberOfSights = data[city].sights;
@@ -21,13 +21,14 @@ async function calculateRatingSights(data) {
       }
     }
 
-    const time = data.time_to_complete_game;
+    const time = data.time;
 
     let totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0);
 
     totalScore += totalScore == 0 ? 0 : MAX_TIME - time;
+    totalScore *= difficulty;
 
-    return totalScore;
+    return Math.round(totalScore);
   } catch (error) {
     return { error: error.message };
   }
@@ -99,9 +100,15 @@ async function calculateRatingFacts(facts, guessedData){
       const fact = modifiedFacts[i];
       const matchingData = data.find(answer => answer.question_keyword ===fact.question_keyword);
       if(matchingData){
+        const dataTries = matchingData.tries;
+        if(fact.question_keyword === "border countries"){
+          const borderSolution = fact.answer.toLowerCase();
+          if(borderSolution.includes(matchingData.answer)){
+            score += 800 - (dataTries * 100);
+          }
+        }
         if(typeof fact.answer == 'number') score += numberTolerance(fact.answer, matchingData.answer, matchingData.tries)
         else if(matchingData.answer === fact.answer){
-          const dataTries = matchingData.tries;
           score += 800 - (dataTries * 100);
         }
       }

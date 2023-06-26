@@ -15,6 +15,7 @@ function SecondRound() {
   const location = useLocation();
   const navigate = useNavigate();
   const id = location.state?.id;
+  let gameDuration = location.state?.time;
   const countryName = location.state?.country_name;
   const [data, setData] = useState('');
   const [position, setPosition] = useState('');
@@ -58,6 +59,8 @@ function SecondRound() {
       const response = await api.post(`/game/${id}/rating/geo-information`, {"time": time, "guessed_position": {lat: position.lat, lon: position.lng}, "center": {lat: center.lat, lon: center.lon}})
       setDistance(response.data.distance);
 
+      console.log(response.data);
+
       setScore(response.data.score);
       setLinks(response.data.links);
     }catch(error){
@@ -68,8 +71,9 @@ function SecondRound() {
 
   const nextRound = () => {
     if(links.nextStep){
+      gameDuration += time;
       console.log(links);
-      navigate(links.nextStep.operationRef, {state: {id: links.nextStep.parameters.id, center: links.nextStep.parameters.center}});
+      navigate(links.nextStep.operationRef, {state: {id: links.nextStep.parameters.id, center: links.nextStep.parameters.center, gameDuration: gameDuration}});
     }
   }
 

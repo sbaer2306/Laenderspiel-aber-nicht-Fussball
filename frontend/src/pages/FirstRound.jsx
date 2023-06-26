@@ -10,7 +10,7 @@ import ConfirmationModal from '../components/UI/ConfirmationModal';
 const initialAnswerObj = {
     time: 0,
     answers: [
-      { question_keyword:"border", answer: "", tries: 0 } ,
+      { question_keyword:"border countries", answer: "", tries: 0 } ,
       { question_keyword:"currency",answer: "", tries: 0 } ,
       { question_keyword:"capital",answer: "", tries: 0 } ,
       {question_keyword:"language",answer: "", tries: 0 } ,
@@ -160,6 +160,8 @@ export const FirstRound = () => {
                     'Content-Type': 'application/json'
                 }
             }, {withCredentials: true}); 
+
+            console.log(response.data);
             
             const {score, links } = response.data;
             showToastMessage("Points", `Wow, you made ${score} Points`, "success")
@@ -180,7 +182,7 @@ export const FirstRound = () => {
 
     const next = () => {
         if(nextStep){
-            navigate(nextStep.operationRef, {state: {id: nextStep.parameters.id, country_name: nextStep.parameters.country_name}});
+            navigate(nextStep.operationRef, {state: {id: nextStep.parameters.id, country_name: nextStep.parameters.country_name, time: time}});
         }
     }
     const cancel = async () => {

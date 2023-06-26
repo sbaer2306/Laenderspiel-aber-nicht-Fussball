@@ -5,36 +5,20 @@ const factsService = require('../service/factsService');
 const scoringService = require('../service/scoringService')
 const sightsService = require('../service/sightsService');
 
-async function saveScore(userId, score) {
-  try {
-    const prismaClient = getPrisma();
-    await prismaClient.playedGame.create({
-      data: {
-        userId: userId,
-        score: score,
-        // Weitere Daten, die in der playedGame-Tabelle gespeichert werden sollen
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    throw new Error('Failed to save score in the database');
-  }
-}
-
-
-
 async function calculateRatingFacts(req, res){
   const {id} = req.params;
   try {
-    //auth or return here
-    //return res.status(403).json({message: "Forbidden"})
+    const user_id = req.user.id;
     //get game from session
     const game = req.session.game;  
-    //if(!game) return res.status(404).json({message: "Game not found"})
+    if( game.user_id !== user_id){
+      return res.status(403).json({error: "Forbidden. User is not player of the game.", game: game, user_id: user_id})
+    }
+
+    if(!game) return res.status(404).json({message: "Game not found"})
     //get facts from session
     const facts = req.session.facts;
     //get user-input from body
-    //NEED TO BE: per Fact try's and overall time
     const {data} = req.body;
     //return res.status(406).json({message: "Not acceptable"})
 
@@ -111,24 +95,107 @@ async function calculateDistance(req, res){
   }
 }
 
+async function saveScore(userId, score, gameDuration, countryId, createdAt) {
+  try {
+    const prismaClient = getPrisma();
+
+    await prismaClient.playedGame.create({
+      data: {
+        userId: userId,
+        score: score,
+        gameDuration: gameDuration,
+        countryId: countryId,
+        createdAt: createdAt
+      },
+    });
+
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth() + 1; // Monate in JavaScript sind nullbasiert, daher +1
+    const currentYear = currentDate.getFullYear();
+
+    // Prüfe, ob ein Datensatz für das aktuelle Monat und Jahr vorhanden ist
+    const existingMonthlyRanking = await prismaClient.monthlyRanking.findFirst({
+      where: { userId, month: currentMonth, year: currentYear }
+    });
+
+    if (existingMonthlyRanking) {
+      // Wenn ein Datensatz vorhanden ist, aktualisiere den Score
+      await prismaClient.monthlyRanking.update({
+        where: { id: existingMonthlyRanking.id },
+        data: {
+          score: existingMonthlyRanking.score + score,
+          lastUpdated: currentDate
+        }
+      });
+    } else {
+      // Wenn kein Datensatz vorhanden ist, erstelle einen neuen Datensatz
+      await prismaClient.monthlyRanking.create({
+        data: {
+          userId,
+          score,
+          month: currentMonth,
+          year: currentYear,
+          lastUpdated: currentDate
+        }
+      });
+    }
+
+    await prismaClient.allTimeRanking.upsert({
+      where: { userId },
+      create: {
+        userId,
+        score,
+        lastUpdated: currentDate
+      },
+      update: {
+        score: {
+          increment: score
+        },
+        lastUpdated: currentDate
+      }
+    });
+
+    return {
+      allTimeRanking: await prismaClient.allTimeRanking.findUnique({
+        where: { userId }
+      }),
+      monthlyRanking: await prismaClient.monthlyRanking.findFirst({
+        where: { userId, month: currentMonth, year: currentYear }
+      })
+    };
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to save score and update rankings in the database');
+  }
+}
+
+
 async function calculateRatingSights(req, res) {
   try {
     const {id} = req.params;
     const game = req.session.game;
 
+    const userId = game.user_id;
+    const countryId = game.country_id;
+    const createdAt = game.created_at;
+    const gameDuration = data.gameDuration;
+
     if(!game){
       return res.status(404).json({error: "Game not found", game: game, id: id})
     }
+    if(userID !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
 
     const data = req.body;
+    const difficulty = game.difficulty;
 
-    const score = await scoringService.calculateRatingSights(data);
+    const score = await scoringService.calculateRatingSights(data, Math.round(difficulty)) + game.total_score;
 
-    req.session.game = game;
+    const ranking = await saveScore(userId, score, gameDuration, countryId, createdAt);
 
-    // await saveScore(id, score);
+    delete req.session.game;
+    delete game;
 
-    res.status(200).json( { score: score } );
+    res.status(200).json({ score: score });
   }
   catch(error) {
     console.log(error);

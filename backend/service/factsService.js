@@ -22,13 +22,21 @@ async function fetchCountryFacts(countryCode){
         
         let countryCodes = [countryCode];
 
-        const twoRandomCountries = await prismaClient.country.findMany({
+        const twentyRandomCountries = await prismaClient.country.findMany({
           where: {
             countryCode: {not: countryCode }
           },
-          take: 2,
+          take: 20,
         });
-        Object.values(twoRandomCountries).map((country) => {
+        
+
+        //randomize
+        for (let i = twentyRandomCountries.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [twentyRandomCountries[i], twentyRandomCountries[j]] = [twentyRandomCountries[j], twentyRandomCountries[i]];
+        }
+        const twoCountries = twentyRandomCountries.splice(0,2)
+        Object.values(twoCountries).map((country) => {
           countryCodes.push(country.countryCode)
         })
 
@@ -47,28 +55,31 @@ async function fetchCountryFacts(countryCode){
           
           flagResponses.push(flag);
         }
-        // Shuffle the flagResponses array using Fisher-Yates algorithm
+        // Shuffle again
         for (let i = flagResponses.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [flagResponses[i], flagResponses[j]] = [flagResponses[j], flagResponses[i]];
         }
 
-        //get one 'waterbordering' country
-        let borderCountryName = "";
-        if(factsData.borders){
-          const code = factsData.borders[0];
-          const url = `https://restcountries.com/v3.1/alpha/${code}`;
-
-          const res = await axios.get(url);
-          borderCountryName = res.data[0].name.common;
-        }else{
-          borderCountryName = "none"
+        let borderCountryNames = "";
+        if (factsData.borders && factsData.borders.length > 0) {
+          const borderCodes = factsData.borders;
+          const borderCountries = await Promise.all(
+            borderCodes.map(async (code) => {
+              const url = `https://restcountries.com/v3.1/alpha/${code}`;
+              const res = await axios.get(url);
+              return res.data[0].name.common;
+            })
+          );
+          borderCountryNames = borderCountries.join(", ");
+        } else {
+          borderCountryNames = "none";
         }
 
         facts = {
-          country_name: factsData.name.official,
+          country_name: factsData.name.common,
           facts: [
-            {question_keyword: "border", answer: borderCountryName},
+            {question_keyword: "border countries", answer: borderCountryNames}, //comma seperated string
             {question_keyword: "currency", answer: Object.values(factsData.currencies)[0].name},
             {question_keyword: "capital", answer: factsData.capital[0]},
             {question_keyword: "language", answer: Object.values(factsData.languages)[0]},

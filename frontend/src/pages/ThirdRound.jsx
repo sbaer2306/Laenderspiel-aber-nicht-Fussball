@@ -14,6 +14,7 @@ const ThirdRound = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const id = location.state?.id;
+  let gameDuration = location.state?.gameDuration;
   const countryName = location.state?.country_name;
   const center = location.state?.center;
 
@@ -35,8 +36,12 @@ const ThirdRound = () => {
   const MAX_TIME = 180; // 3 Minuten
 
   const sendGameData = async () => {
+
+    gameDuration += time;
+
     const gameData = {
-      time_to_complete_game: time,
+      gameDuration: gameDuration,
+      time: time,
       ...Object.keys(sights).reduce((acc, city, index) => {
         const cityData = {
           coordinates: sights[city].coordinates,
@@ -50,10 +55,10 @@ const ThirdRound = () => {
   
     try {
       const response = await api.post(`/game/${id}/rating/sights`, gameData);
-      
-      // console.log('Game data sent:', response.data);
 
       const score = response.data;
+
+      console.log(gameData);
 
       toast({
         title: "Your Total Points",
@@ -79,8 +84,16 @@ const ThirdRound = () => {
       setIsLoading(false);
       console.log(response.data);
 
-    } catch (error) {
-      console.error(error);
+    } 
+    catch (error) {
+      if(error.response) {
+        if(error.response.status === 403){
+            alert("error-response: ", error.response.data.message);
+        }
+      }
+      else {
+        console.log("error fetching: " + error.message);
+      }
     }
   };
 

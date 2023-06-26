@@ -10,15 +10,12 @@ async function getSights(req, res) {
     
         //Game from session
         const game = req.session.game;
+        const userID = game.user_id;
     
-        /*
-        if( game.user_id !== bastiUSERID){
-          return res.status(403).json({error: "Not authorized", game: game, id: id})
-        }
-        */
         if(!game){
-          return res.status(404).json({error: "Game not found", game: game, id: id})
+          return res.status(404).json({error: "Game not found", game: game, id: id});
         }
+        if(userID !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
     
         const country_id = Number(game.country_id);
         const country = await prismaClient.country.findUnique({
@@ -26,6 +23,7 @@ async function getSights(req, res) {
             id: country_id,
           },
         })
+        
         const countryCode = country.countryCode;
         
         const sights = await sightsService.fetchRandomCities(countryCode); 
