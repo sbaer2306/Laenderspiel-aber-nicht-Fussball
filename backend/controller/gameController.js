@@ -16,13 +16,9 @@ async function createGame(req, res){
     
   const difficulty = req.body.difficulty;
   try{
-      
-      //auth
-      //user_id = something
-
       // Check if the user already has a game in the session
       if (req.session.game) {
-        return res.status(403).json({ message: 'You already have a game in progress', game: req.session.game });
+        return res.status(409).json({ message: 'You already have a game in progress', game: req.session.game });
         //further logic to implement: delete old session or continue same game
       } 
 
@@ -35,8 +31,8 @@ async function createGame(req, res){
       let selectedCountry = await createHelper.getRandomCountryForDifficulty(countriesByDifficulty);
 
       const game = {
-        id: req.session.id, //session_id
-        user_id: req.user.id, //user_id comes from middleware - please give it to me bastiiii :D
+        id: req.session.id, 
+        user_id: req.user.id, 
         current_round: 1,
         max_rounds: 3,
         ttl: 900,

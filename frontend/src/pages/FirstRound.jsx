@@ -10,7 +10,7 @@ import ConfirmationModal from '../components/UI/ConfirmationModal';
 const initialAnswerObj = {
     time: 0,
     answers: [
-      { question_keyword:"border", answer: "", tries: 0 } ,
+      { question_keyword:"border countries", answer: "", tries: 0 } ,
       { question_keyword:"currency",answer: "", tries: 0 } ,
       { question_keyword:"capital",answer: "", tries: 0 } ,
       {question_keyword:"language",answer: "", tries: 0 } ,

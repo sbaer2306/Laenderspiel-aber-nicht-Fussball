@@ -3,20 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Button, Center, Text, Select } from '@chakra-ui/react';
 import { FaPlus } from 'react-icons/fa';
 import axios from 'axios'
-//import { createNewGame } from '../../../backend/apis/gameAPI';
-
-const exampleGame = {
-  id: 7,
-  user_id: 1, //userId comes from middleware - please give it to me bastiiii :D
-  current_round: 1,
-  max_rounds: 3,
-  ttl: 900,
-  created_at: new Date().toISOString(),
-  difficulty: 2.56,
-  country_id: "DE",
-  current_score: null,
-  total_score: null,
-}
 
 export const LoggedHomePage = () => {
 
@@ -46,11 +32,11 @@ export const LoggedHomePage = () => {
 
         //link logic
         if(links && links.nextStep){
-            navigate(links.nextStep.operationRef, {state: {id: links.nextStep.parameters.id}}); //should be /game/facts
+            navigate(links.nextStep.operationRef, {state: {id: links.nextStep.parameters.id}}); 
         }
         console.log("Game from response.data: ", game);
       }catch(error){
-          if(error.response && error.response.status === 403){
+          if(error.response && error.response.status === 409){
             alert("You already have a game in progress");
             if(error.game.current_round == 1) navigate('/game/facts')
             if(error.game.current_round == 2) navigate('/game/geo-information')
@@ -69,17 +55,17 @@ export const LoggedHomePage = () => {
       <Center>
         <Box maxW="md" borderWidth="1px" borderRadius="lg" p={24}>
           <Text mb={4} fontSize='2xl' textAlign="center">
-            Spiel
+            Game!
           </Text>
           <Select
-            placeholder="Schwierigkeitsgrad wählen"
+            placeholder="Choose difficulty"
             value={selectedDifficulty}
             onChange={handleDifficultyChange}
             mb={4}
           >
-            <option value="easy">Einfach</option>
-            <option value="medium">Mittel</option>
-            <option value="hard">Schwer</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
           </Select>
           <Button
             leftIcon={<FaPlus />}
@@ -88,7 +74,7 @@ export const LoggedHomePage = () => {
             width="100%"
             onClick={startNewGame}
           >
-            Neues Spiel
+            New Game
           </Button>
         </Box>
       </Center>

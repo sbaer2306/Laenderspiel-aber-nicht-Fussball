@@ -8,15 +8,17 @@ const sightsService = require('../service/sightsService');
 async function calculateRatingFacts(req, res){
   const {id} = req.params;
   try {
-    //auth or return here
-    //return res.status(403).json({message: "Forbidden"})
+    const user_id = req.user.id;
     //get game from session
     const game = req.session.game;  
-    //if(!game) return res.status(404).json({message: "Game not found"})
+    if( game.user_id !== user_id){
+      return res.status(403).json({error: "Forbidden. User is not player of the game.", game: game, user_id: user_id})
+    }
+
+    if(!game) return res.status(404).json({message: "Game not found"})
     //get facts from session
     const facts = req.session.facts;
     //get user-input from body
-    //NEED TO BE: per Fact try's and overall time
     const {data} = req.body;
     //return res.status(406).json({message: "Not acceptable"})
 

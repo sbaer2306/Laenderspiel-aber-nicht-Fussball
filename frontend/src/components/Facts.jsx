@@ -20,6 +20,8 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
     const [correct, setCorrect] = useState(false)
     const [solutionInput, setSolutionInput] = useState("")
     const [answerObj, setAnswerObj] = useState({question_keyword: title, answer: "", tries: 0})
+    const [borderSolutions, setBorderSolutions] = useState([])
+    const [isBorder, setIsBorder] = useState(false)
     
     //userNote (maybe toast)
     const [message, setMessage] = useState("")
@@ -42,6 +44,10 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
     useEffect(() => {
       console.log(`${title}:  with solution: ${solution}`);
       setSolutionInput(solution.toString().toLowerCase())
+      if(title.toLowerCase() == 'border countries'){
+        setBorderSolutions(solution.split(',').map(item => item.trim().toLowerCase()))
+        setIsBorder(true);
+      }
       if(tip){
         setInput(solution);
         setMessage("Tipp")
@@ -75,6 +81,12 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
       }
       if(isArea){
         return compareNumberSolution(area);
+      }
+      if(isBorder){
+        if(borderSolutions.includes(input.trim())){
+          showToastMessage("Corect", "", "success");
+          return setCorrect(true);
+        }
       }
       if(input.trim() == solutionInput){ 
         showToastMessage("Correct", "", "success");

@@ -100,9 +100,15 @@ async function calculateRatingFacts(facts, guessedData){
       const fact = modifiedFacts[i];
       const matchingData = data.find(answer => answer.question_keyword ===fact.question_keyword);
       if(matchingData){
+        const dataTries = matchingData.tries;
+        if(fact.question_keyword === "border countries"){
+          const borderSolution = fact.answer.toLowerCase();
+          if(borderSolution.includes(matchingData.answer)){
+            score += 800 - (dataTries * 100);
+          }
+        }
         if(typeof fact.answer == 'number') score += numberTolerance(fact.answer, matchingData.answer, matchingData.tries)
         else if(matchingData.answer === fact.answer){
-          const dataTries = matchingData.tries;
           score += 800 - (dataTries * 100);
         }
       }
