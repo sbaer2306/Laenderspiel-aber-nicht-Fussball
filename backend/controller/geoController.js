@@ -14,8 +14,6 @@ async function getOsmData(req, res){
       if(!game) return res.status(404).json({error: "Game not found"});
 
       if(userID !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
-
-      //console.log(req.user);
     
 
       const country = await prismaClient.country.findUnique({

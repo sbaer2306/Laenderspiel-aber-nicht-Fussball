@@ -44,6 +44,19 @@ Müssen (noch) manuell durchgeführt werden, falls der db-Container noch nicht r
 ## API Credentials
 - **TODO**: API Zugangsdaten bzw. Anleitung zum Erstellen und setzen dieser für die 3rd party APIs (RESTcountries, Wikipedia, ...)
 
+# Overpass-API:
+    Die Overpass API ist eine Schnittstelle für den Zugriff auf geografische Daten in der OpenStreetMap (OSM). Sie ermöglicht es Entwicklern und Benutzern, gezielte Abfragen an die OSM-Datenbank zu stellen und spezifische Informationen über geografische Objekte abzurufen. Die Overpass API bietet eine flexible Abfragesprache, die es ermöglicht, komplexe Anfragen zu stellen und verschiedene Kriterien wie Tags, Geometrie und geografischen Bereich zu berücksichtigen. Mit dieser API können Benutzer beispielsweise nach bestimmten Arten von POIs (Points of Interest), Straßen, Gebäuden oder anderen geografischen Elementen suchen.
+
+    URL = "https://overpass-api.de/api/interpreter?data=[out:json];relation["boundary"="administrative"]["name:en"="${countryName}"];out geom;"
+    
+    Beschreibung der Parameter:
+        'data=[out:json];' : : Dieser Teil der Abfrage definiert das gewünschte Ausgabeformat der Daten
+        'relation["boundary"="administrative"]["name:en"="${countryName}"];' : Dieser Teil der Abfrage definiert die spezifischen Kriterien für die zu suchende administrative Grenze. 
+            Hier werden zwei Filterkriterien verwendet:
+                - ["boundary"="administrative"] filtert nach Beziehungen (relations), die den "boundary"-Tag mit dem Wert "administrative" haben. Dadurch werden nur administrative Grenzen ausgewählt.
+                - ["name:en"="${countryName}"] filtert nach Beziehungen, deren "name:en"-Tag den Wert des Platzhalters "${countryName}" hat. Der Platzhalter ${countryName} rmöglicht die dynamische Anpassung der Abfrage für verschiedene Länder.
+        'out geom;' : Dieser Teil der Abfrage gibt an, dass neben den Informationen der administrativen Grenzen auch die Geometriedaten (Koordinaten) zurückgegeben werden sollen. Damit erhält man die tatsächlichen Grenzkoordinaten des Landes.
+
 # Wikipedia API: 
     URL = "https://en.wikipedia.org/w/api.php?action=query&format=json&generator=categorymembers&gcmtitle=Category:Tourist_attractions_in_${city.name}&gcmlimit=max&prop=pageimages&piprop=original&pithumbsize=500"
 
