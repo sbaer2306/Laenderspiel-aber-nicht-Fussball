@@ -178,14 +178,14 @@ async function calculateRatingSights(req, res) {
     const userId = game.user_id;
     const countryId = game.country_id;
     const createdAt = game.created_at;
+    const data = req.body;
     const gameDuration = data.gameDuration;
 
     if(!game){
       return res.status(404).json({error: "Game not found", game: game, id: id})
     }
-    if(userID !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
+    if(userId !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
 
-    const data = req.body;
     const difficulty = game.difficulty;
 
     const score = await scoringService.calculateRatingSights(data, Math.round(difficulty)) + game.total_score;
