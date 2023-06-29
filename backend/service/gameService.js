@@ -70,6 +70,7 @@ async function createGameInDatabase(redisClient, hashedUserId, userID, difficult
         country_id: Number(countryId),
         country_name: countryName,
         country_code: countryCode,
+        country_center: 0,
         total_score: 0,
       }
     return new Promise(async(resolve, reject) => {
