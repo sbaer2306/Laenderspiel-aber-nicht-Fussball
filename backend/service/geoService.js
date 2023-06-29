@@ -24,7 +24,7 @@ async function fetchOsmData(countryName){//gameid als parameter?
 /**
  * Retrieves the center coordinates of a country based on the provided geo-information.
  * 
- * @param {*} osmData - The retrieved geo-information and borders for a country.
+ * @param {Object} osmData - The retrieved geo-information and borders for a country.
  * @returns {Object} - The center coordinates of the country.
  */
 function getCenterOfCountry(osmData){
@@ -49,8 +49,8 @@ function getCenterOfCountry(osmData){
 /**
  * Calculates the distance between two points using the Haversine formula.
  * 
- * @param {*} markerPosition - The coordinates of the marker position.
- * @param {*} center - The center coordinates of a country.
+ * @param {Object} markerPosition - The coordinates of the marker position.
+ * @param {Object} center - The center coordinates of a country.
  * @returns {number} - The calculated distance in kilometers.
  */
 function calculateDistance(markerPosition, center){
