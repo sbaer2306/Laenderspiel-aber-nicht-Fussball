@@ -58,4 +58,24 @@ const getRandomCountryForDifficulty = async (countriesByDifficulty) => {
 }
 
 
-module.exports = {getCountries, getRandomCountryForDifficulty}
+async function createGameInDatabase(redisClient, hashedUserId, userID, difficultyMultiplier, countryId, countryName)  {
+    const game = {
+        id: hashedUserId, 
+        user_id: userID, 
+        current_round: 1,
+        max_rounds: 3,
+        ttl: 900,
+        created_at: new Date().toISOString(),
+        difficulty: difficultyMultiplier,
+        country_id: Number(countryId),
+        country_name: countryName,
+        total_score: 0,
+      }
+    return new Promise((resolve, reject) => {
+      await redisClient.hset(game.id, 'games', JSON.stringify(game));
+      resolve(game)
+    });
+}
+
+module.exports = {getCountries, getRandomCountryForDifficulty, createGameInDatabase}
+

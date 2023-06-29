@@ -1,7 +1,6 @@
-const createHelper = require('../helpers/createGameHelper')
-const prisma = require('../prisma/prisma');
-const prismaClient = prisma.getPrisma();
-const { validateId } = require('../helpers/invalidIDhelper');
+const gameService = require('../helpers/createGameHelper')
+const gameService = require('../service/gameService');
+const bcrypt = require('bcrypt');
 
 /**
  * Creates a new game for a player depending on the difficulty chosen. 
@@ -13,35 +12,27 @@ const { validateId } = require('../helpers/invalidIDhelper');
  * @returns {Object} The links object for hypermedia in JSON format when the creation is successful (HTTP 200).
  */
 async function createGame(req, res){
-    
+  const userID = req.user.id;
+  const hashedUserId = await bcrypt.hash(userID, 5)
   const difficulty = req.body.difficulty;
   try{
       // Check if the user already has a game in the session
-      if (req.session.game) {
-        return res.status(409).json({ message: 'You already have a game in progress', game: req.session.game });
-        //further logic to implement: delete old session or continue same game
-      } 
+      const redisClient = req.redis;
+      const existingGame = await redisClient.hget(hashedUserId, 'games');
+      if(existingGame){
+        return res.status(409).json({ message: 'You already have a game in progress', game: JSON.parse(existingGame) });
+      }
 
       //get countries from cache or cache them if not already for one week 
-      let seperatedCountries = await createHelper.getCountries();
+      let seperatedCountries = await gameService.getCountries();
       
       
       //select a random country depending on difficulty level and checking if country was already played from user
       const countriesByDifficulty = seperatedCountries[difficulty];
-      let selectedCountry = await createHelper.getRandomCountryForDifficulty(countriesByDifficulty);
+      let selectedCountry = await gameService.getRandomCountryForDifficulty(countriesByDifficulty);
 
-      const game = {
-        id: req.session.id, 
-        user_id: req.user.id, 
-        current_round: 1,
-        max_rounds: 3,
-        ttl: 900,
-        created_at: new Date().toISOString(),
-        difficulty: selectedCountry.difficultyMultiplier,
-        country_id: Number(selectedCountry.id),
-        country_name: selectedCountry.name,
-        total_score: 0,
-      }
+      //creates game and stores in redis db
+      const game = await gameService.createGameInDatabase(redisClient, hashedUserId, userID, selectedCountry.difficultyMultiplier, selectedCountry.id, selectedCountry.name);
 
       const links = {
         nextStep: {
@@ -52,9 +43,6 @@ async function createGame(req, res){
           }
         }
       }
-
-      //saving created game in session - each session will automatically be identified by the unique session-id and a player can only play one game at a time.
-      req.session.game = game;
 
       res.status(201).json({
         game,
@@ -116,6 +104,10 @@ async function deleteGame(req, res){
     res.status(500).json({ error: 'Internal Server Error', message: error.message });
   }
 }
+
+
+
+
 
 module.exports = {createGame, getGame, deleteGame}
 
