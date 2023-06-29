@@ -1,6 +1,13 @@
 const axios = require('axios');
 
-
+/**
+ * Fetches geo-information and borders for a country using the Overpass API.
+ * Sends a request to the Overpass API based on the country name.
+ * 
+ * @param {String} countryName - The name of the country.
+ * @returns {Object} - The fetched geo-information and borders in JSON format.
+ * @throws {Error} - If an error occurs during the process.
+ */
 async function fetchOsmData(countryName){//gameid als parameter?
     try{
         const url = `https://overpass-api.de/api/interpreter?data=[out:json];relation["boundary"="administrative"]["name:en"="${countryName}"];out geom;`;
@@ -14,6 +21,12 @@ async function fetchOsmData(countryName){//gameid als parameter?
     }
 }
 
+/**
+ * Retrieves the center coordinates of a country based on the provided geo-information.
+ * 
+ * @param {*} osmData - The retrieved geo-information and borders for a country.
+ * @returns {Object} - The center coordinates of the country.
+ */
 function getCenterOfCountry(osmData){
     let latCenter = "";
     let lonCenter = ""; 
@@ -33,6 +46,13 @@ function getCenterOfCountry(osmData){
     return center;
 }
 
+/**
+ * Calculates the distance between two points using the Haversine formula.
+ * 
+ * @param {*} markerPosition - The coordinates of the marker position.
+ * @param {*} center - The center coordinates of a country.
+ * @returns {number} - The calculated distance in kilometers.
+ */
 function calculateDistance(markerPosition, center){
     //Calculate the distance between 2 Points based on the Haversine formula 
     let latRadPosition = markerPosition.lat * Math.PI / 180;

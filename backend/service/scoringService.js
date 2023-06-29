@@ -126,25 +126,33 @@ async function calculateRatingFacts(facts, guessedData){
     return score;
   }
 
-  function calculateGeoInformation(distance, time, difficulty){
-    let score;
-    max_time = 300; //Timelimit of 5 mins
+/**
+ * Calculates the geo-information score based on distance, time, and difficulty factors.
+ * 
+ * @param {number} distance - The distance in kilometers.
+ * @param {number} time - The time in seconds.
+ * @param {number} difficulty - The difficulty factor.
+ * @returns {number} - The calculated geo-information score.
+ */
+function calculateGeoInformation(distance, time, difficulty){
+  let score;
+  max_time = 300; //Timelimit of 5 mins
 
-    //if the distance is greater than 2000 km, the score is 0 
-    score = 2000 - distance; 
-    
-    if(score <= 0) {
-        return 0;
-    }
-
-    //add the remaining time to the score 
-    score += max_time - time;
-    
-    //Multiply the Score with the difficulty
-    score = score * difficulty;
-
-    return score;
+  //if the distance is greater than 2000 km, the score is 0 
+  score = 2000 - distance; 
+  
+  if(score <= 0) {
+      return 0;
   }
+
+  //add the remaining time to the score 
+  score += max_time - time;
+  
+  //Multiply the Score with the difficulty
+  score = score * difficulty;
+
+  return score;
+}
 
   
 
