@@ -10,17 +10,6 @@ const {checkSessionTTL} = require('../service/sessionService')
 const Redis = require('ioredis');
 
 
-
-//middleware
-
-/*gameRoutes.use((req,res,next) => {
-    if(req.path !== '/' ) checkSessionTTL(req,res,next);
-    else next();
-})*/
-
-//ROUTES
-//Game
-
 //TODO: REDIS-TEST entfernen
 
 const redis = new Redis({
@@ -53,18 +42,6 @@ gameRoutes.get('/testredis', async (req, res) =>{
       }
     
 });
-// Function to simulate fetching game data from the database
-function fetchGameDataFromDatabase() {
-    return new Promise((resolve, reject) => {
-      // Simulating asynchronous database query
-      setTimeout(() => {
-        const gameData = { id: 1, name: 'Example Game' };
-        resolve(gameData);
-      }, 1000);
-    });
-}
-
-
 
 gameRoutes.get('/:id',passport.authenticate('jwt', { session: false }), gameController.getGame);
 gameRoutes.delete('/:id',passport.authenticate('jwt', { session: false }), gameController.deleteGame);

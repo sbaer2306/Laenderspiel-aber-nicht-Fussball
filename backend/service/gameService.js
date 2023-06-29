@@ -64,7 +64,6 @@ async function createGameInDatabase(redisClient, hashedUserId, userID, difficult
         user_id: userID, 
         current_round: 1,
         max_rounds: 3,
-        ttl: 900,
         created_at: new Date().toISOString(),
         difficulty: difficultyMultiplier,
         country_id: Number(countryId),
@@ -75,6 +74,8 @@ async function createGameInDatabase(redisClient, hashedUserId, userID, difficult
       }
     return new Promise(async(resolve, reject) => {
       await redisClient.hset(game.id, 'games', JSON.stringify(game));
+      //for the ttl
+      await redisClient.expire(game.id, 900);
       resolve(game)
     });
 }
