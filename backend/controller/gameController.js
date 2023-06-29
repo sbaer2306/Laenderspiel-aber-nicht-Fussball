@@ -12,7 +12,7 @@ const bcrypt = require('bcrypt');
  */
 async function createGame(req, res){
   const userID = req.user.id;
-  const hashedUserId = await bcrypt.hash(userID, 5)
+  const hashedUserId = await bcrypt.hash(String(userID), 5)
   const difficulty = req.body.difficulty;
   try{
       // Check if the user already has a game in the session
