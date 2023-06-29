@@ -49,8 +49,8 @@ services:
     volumes:
       - ./backend:/app
     links:
-      - mysql-db-
-      - redis-db
+      - mysql-db
+      - redis
     command: >
       sh -c "
         while ! nc -z mysql-db 3306; do
