@@ -7,17 +7,20 @@ const sightsService = require('../service/sightsService');
 
 async function calculateRatingFacts(req, res){
   const {id} = req.params;
+  const redisClient = req.redis;
+  const userID = req.user.id;
   try {
-    const user_id = req.user.id;
-    //get game from session
-    const game = req.session.game;  
-    if( game.user_id !== user_id){
+    //Game from redis
+    const gameString = await redisClient.hget(id, 'games');
+    const game = JSON.parse(gameString);
+
+    if(!game) return res.status(404).json({error: "Game not found"}) 
+    if( game.user_id !== userID){
       return res.status(403).json({error: "Forbidden. User is not player of the game.", game: game, user_id: user_id})
     }
 
-    if(!game) return res.status(404).json({message: "Game not found"})
     //get facts from session
-    const facts = req.session.facts;
+    const facts = factsService.getFactsFromCache(game.country_code);
     //get user-input from body
     const {data} = req.body;
     //return res.status(406).json({message: "Not acceptable"})
@@ -26,10 +29,7 @@ async function calculateRatingFacts(req, res){
 
     game.total_score = score;
     game.current_round = 2;
-    const country_name = game.country_name;
-    req.session.game = game;
-    req.session.facts = facts;
-
+    await redisClient.hset(id, 'games', JSON.stringify(game));
     
     const links = {
       nextStep: {
@@ -37,7 +37,7 @@ async function calculateRatingFacts(req, res){
         operationRef: `/game/geo-information`,   
         parameters: {
           id: id,
-          country_name: country_name
+          country_name: game.country_name
         }
       }
     }

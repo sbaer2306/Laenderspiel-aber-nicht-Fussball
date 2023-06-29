@@ -96,5 +96,9 @@ async function fetchCountryFacts(countryCode){
     }
 }
 
+function getFactsFromCache(countryCode){
+  let facts = cache.get(`${countryCode}-facts`);
+  return facts;
+}
 
-module.exports = {fetchCountryFacts};
+module.exports = {fetchCountryFacts, getFactsFromCache};

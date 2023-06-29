@@ -32,7 +32,7 @@ async function createGame(req, res){
       let selectedCountry = await gameService.getRandomCountryForDifficulty(countriesByDifficulty);
 
       //creates game and stores in redis db
-      const game = await gameService.createGameInDatabase(redisClient, encrpytedUser, userID, selectedCountry.difficultyMultiplier, selectedCountry.id, selectedCountry.name);
+      const game = await gameService.createGameInDatabase(redisClient, encrpytedUser, userID, selectedCountry.difficultyMultiplier, selectedCountry.id, selectedCountry.name, selectedCountry.countryCode);
 
       const links = {
         nextStep: {

@@ -58,7 +58,7 @@ const getRandomCountryForDifficulty = async (countriesByDifficulty) => {
 }
 
 
-async function createGameInDatabase(redisClient, hashedUserId, userID, difficultyMultiplier, countryId, countryName)  {
+async function createGameInDatabase(redisClient, hashedUserId, userID, difficultyMultiplier, countryId, countryName, countryCode)  {
     const game = {
         id: hashedUserId, 
         user_id: userID, 
@@ -69,6 +69,7 @@ async function createGameInDatabase(redisClient, hashedUserId, userID, difficult
         difficulty: difficultyMultiplier,
         country_id: Number(countryId),
         country_name: countryName,
+        country_code: countryCode,
         total_score: 0,
       }
     return new Promise(async(resolve, reject) => {
