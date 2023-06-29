@@ -46,8 +46,8 @@ function LoggenInHomepage() {
             const game = error.response.data.game;
             console.log("round: ", game);
             if(game.current_round == 1) navigate('/game/facts', {state: {id: game.id}})
-            if(game.current_round == 2) navigate('/game/geo-information', {state: {id: game.id}})
-            if(game.current_round == 3) navigate('/game/sights', {state: {id: game.id}})
+            if(game.current_round == 2) navigate('/game/geo-information', {state: {id: game.id, country_name: game.country_name}})
+            if(game.current_round == 3) navigate('/game/sights', {state: {id: game.id, country_name: game.country_name}})
           } 
           else console.log("error: ", error.message)
       }

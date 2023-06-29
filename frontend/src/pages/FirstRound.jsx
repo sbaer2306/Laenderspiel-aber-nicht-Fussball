@@ -199,8 +199,9 @@ export const FirstRound = () => {
             return;
         }catch(error){
             console.log("error fetching: "+error.response.data.message);
-            console.log("game-id: ", error.response.data.gameid);
+            console.log("game-id: ", error.response.data.game_user_id);
             console.log("id: ", error.response.data.id);
+            console.log("id: ", error.response.data.userid);
         }
     }
   return (
