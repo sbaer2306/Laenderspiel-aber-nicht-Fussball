@@ -2,6 +2,14 @@ const geoService = require('../service/geoService');
 const prisma = require('../prisma/prisma');
 const prismaClient = prisma.getPrisma();
 
+/**
+ * Get the OSM-Data from the OverPass-API
+ * 
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns - A Promise that resolves when the response is sent.
+ * @throws {Error} - If an error occurs during the process.
+ */
 async function getOsmData(req, res){
     try{
       //ID from url

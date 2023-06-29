@@ -23,19 +23,17 @@ app.use(cors({
 const authRoutes = require('./routes/authRoutes');
 app.use('/auth', authRoutes);
 
-app.get('/example', (req, res) => {
-  res.send('Hello, this is the example route!');
+const redis = new Redis({
+  host: 'redis-db',
+  port: '6379',
+  password: 'DieZeugenSeehofers2023',
+  db: 0,
 });
 
-app.use(session({
-  secret: 'geheimnis', // Passen Sie dies an ein sicheres Geheimnis an
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 600000 //10 minutes after start
-  }
-}));
-
+app.use((req, res, next) => {
+  req.redis = redis; // Add Redis client to the request object
+  next();
+});
 
 app.use(express.json()); // body parsing middleware (express does not parse the body by default)
 
