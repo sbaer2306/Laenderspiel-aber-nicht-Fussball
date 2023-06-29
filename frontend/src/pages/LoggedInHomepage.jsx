@@ -41,7 +41,7 @@ function LoggenInHomepage() {
         }
         console.log("Game from response.data: ", game);
       }catch(error){
-          if(error.response && error.response.status === 403){
+          if(error.response && error.response.status === 409){
             alert(error.response.data.message);
             const game = error.response.data.game;
             console.log("round: ", game);

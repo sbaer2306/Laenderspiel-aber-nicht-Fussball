@@ -1,5 +1,5 @@
 const gameService = require('../service/gameService');
-const bcrypt = require('bcrypt');
+const {encryptUserID} = require('../helpers/encryptUserID');
 
 /**
  * Creates a new game for a player depending on the difficulty chosen. 
@@ -11,13 +11,14 @@ const bcrypt = require('bcrypt');
  * @returns {Object} The links object for hypermedia in JSON format when the creation is successful (HTTP 200).
  */
 async function createGame(req, res){
+  console.log(encryptUserID);
   const userID = req.user.id;
-  const hashedUserId = await bcrypt.hash(String(userID), 5)
   const difficulty = req.body.difficulty;
   try{
-      // Check if the user already has a game in the session
+      encrpytedUser = encryptUserID(userID);
+     
       const redisClient = req.redis;
-      const existingGame = await redisClient.hget(hashedUserId, 'games');
+      const existingGame = await redisClient.hget(encrpytedUser, 'games');
       if(existingGame){
         return res.status(409).json({ message: 'You already have a game in progress', game: JSON.parse(existingGame) });
       }
@@ -31,7 +32,7 @@ async function createGame(req, res){
       let selectedCountry = await gameService.getRandomCountryForDifficulty(countriesByDifficulty);
 
       //creates game and stores in redis db
-      const game = await gameService.createGameInDatabase(redisClient, hashedUserId, userID, selectedCountry.difficultyMultiplier, selectedCountry.id, selectedCountry.name);
+      const game = await gameService.createGameInDatabase(redisClient, encrpytedUser, userID, selectedCountry.difficultyMultiplier, selectedCountry.id, selectedCountry.name);
 
       const links = {
         nextStep: {
