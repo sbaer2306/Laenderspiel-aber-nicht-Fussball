@@ -62,17 +62,15 @@ async function createGame(req, res){
  * @returns {Object} The game object in JSON format when the retrieval is successful (HTTP 200).
  */
 async function getGame(req, res){
-  
   const {id} = req.params;
-  //if(validateId(id, res)) return; //400
+  const redisClient = req.redis;
+  const userID = req.user.id;
   
   try{
-    const game = req.session.game;
-    const userID = game.user_id;
-
-    if(userID !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
-    if(game.id !== id) return res.status(404).json({message: "Game not found"})
-    req.session.game = game;
+    const gameString = await redisClient.hget(id, 'games');
+    const game = JSON.parse(gameString);
+    if(!game) return res.status(404).json({message: "Game not found", gameid: game.id, id: id})
+    if(game.user_id !== userID) return res.status(403).json({error: "Forbidden. User is not player of the game.", game_user_id: game.user_id, id: id, userid: userID});
     res.status(200).json({ game: game });
 
   }catch(error){
