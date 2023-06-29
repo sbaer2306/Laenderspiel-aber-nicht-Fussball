@@ -3,11 +3,11 @@ const prisma = require('../prisma/prisma');
 const prismaClient = prisma.getPrisma();
 
 /**
- * Get the OSM-Data from the OverPass-API
+ * Retrieves OSM data from the Overpass API based on the request.
  * 
  * @param {Object} req - The request object.
  * @param {Object} res - The response object.
- * @returns - A Promise that resolves when the response is sent.
+ * @returns {Promise<void>} - A Promise that resolves when the response is sent.
  * @throws {Error} - If an error occurs during the process.
  */
 async function getOsmData(req, res){
