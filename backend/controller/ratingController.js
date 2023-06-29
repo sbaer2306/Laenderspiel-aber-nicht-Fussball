@@ -49,17 +49,26 @@ async function calculateRatingFacts(req, res){
   }
 }
 
+/**
+ * Calculates the distance between the guessed position and the center of the country,
+ * and calculates the score based on the distance, time, and difficulty level.
+ * 
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A Promise that resolves when the response is sent.
+ * @throws {Error} - If an error occurs during the process.
+ */
 async function calculateDistance(req, res){
-  try{
-    //ID from url
-    const {id} = req.params;
+  const {id} = req.params;
+  const redisClient = req.redis;
 
-    //Game from session
-    const game = req.session.game;
-    const userID = game.user_id;
+  try{
+    const gameString = await redisClient.hget(id, 'games');
+    const game = JSON.parse(gameString);
 
     if(!game) return res.status(404).json({error: "Game not found"});
-    if(userID !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
+
+    if(game.user_id !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
     
 
     const guessed_position = req.body.guessed_position;
@@ -67,7 +76,7 @@ async function calculateDistance(req, res){
 
     const center = req.body.center;
     const time = req.body.time;
-    const difficulty = req.session.game.difficulty;
+    const difficulty = game.difficulty;
 
     let distance = geoService.calculateDistance(guessed_position, center);
     
@@ -75,7 +84,7 @@ async function calculateDistance(req, res){
     game.total_score = score;
     
     game.current_round = 3;
-    req.session.game = game;
+    await redisClient.hset(id, 'games', JSON.stringify(game));
    
     const links = {
       nextStep: {

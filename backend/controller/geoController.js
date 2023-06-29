@@ -12,15 +12,15 @@ const prismaClient = prisma.getPrisma();
  */
 async function getOsmData(req, res){
   const {id} = req.params;
-  const userID = game.user_id;
   const redisClient = req.redis;
 
   try{
-     const game = await redisClient.hget(id, 'games');
+    const gameString = await redisClient.hget(id, 'games');
+    const game = JSON.parse(gameString);
 
-     //if(!game) return res.status(404).json({error: "Game not found"});
+    if(!game) return res.status(404).json({error: "Game not found"});
 
-    //if(userID !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
+    if(game.user_id !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
   
 
     const country = await prismaClient.country.findUnique({
@@ -32,7 +32,9 @@ async function getOsmData(req, res){
     const osmData = await geoService.fetchOsmData(country.name);
     const center = geoService.getCenterOfCountry(osmData.elements[0].members);
     
-    req.session.game = game;
+    game.country_center = center;
+    await redisClient.hset(id, 'games', JSON.stringify(game));
+
     res.status(200).json({geometry: osmData, center: center});
   }catch(error){
       res.status(500).json({error: 'Internal server error'});
