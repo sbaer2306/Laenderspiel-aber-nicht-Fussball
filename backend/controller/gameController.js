@@ -1,4 +1,3 @@
-const gameService = require('../helpers/createGameHelper')
 const gameService = require('../service/gameService');
 const bcrypt = require('bcrypt');
 

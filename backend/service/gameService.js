@@ -71,7 +71,7 @@ async function createGameInDatabase(redisClient, hashedUserId, userID, difficult
         country_name: countryName,
         total_score: 0,
       }
-    return new Promise((resolve, reject) => {
+    return new Promise(async(resolve, reject) => {
       await redisClient.hset(game.id, 'games', JSON.stringify(game));
       resolve(game)
     });

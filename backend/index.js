@@ -4,6 +4,7 @@ const passport = require('passport');
 require('dotenv').config();
 const prisma = require('./prisma/prisma.js')
 const cors = require('cors');
+const Redis = require('ioredis');
 
 const app = express();
 prisma.initializePrisma();
