@@ -34,6 +34,11 @@
         "tags": [
           "user"
         ],
+        "security": [
+          {
+            "GoogleAuth": []
+          }
+        ],
         "parameters": [],
         "responses": {
           "200": {
@@ -262,7 +267,7 @@
       "delete": {
         "security": [
           {
-            "google_oauth": []
+            "JWT": []
           }
         ],
         "tags": [
@@ -367,7 +372,7 @@
       "get": {
         "security": [
           {
-            "google_oauth": []
+            "JWT": []
           }
         ],
         "tags": [
@@ -460,7 +465,7 @@
         "description": "Retrieves statistics for a specific user. Most played games. Total time played, ...",
         "security": [
           {
-            "google_oauth": []
+            "JWT": []
           }
         ],
         "tags": [
@@ -561,7 +566,7 @@
         "description": "User profile gets created on Signup, this endpoint will always return 409 - Conflict since a profile already exists for a signed up user.",
         "security": [
           {
-            "google_oauth": []
+            "JWT": []
           }
         ],
         "requestBody": {
@@ -653,7 +658,7 @@
       "get": {
         "security": [
           {
-            "google_oauth": []
+            "JWT": []
           }
         ],
         "tags": [
@@ -723,7 +728,7 @@
         "description": "User profile gets created on Signup. The created profile can be updated. All fields in the body if request are optional. Only set values will be updated. An empty body is not allowed (400). Invalid fields will result in a 400 error. Length limit contraint violations also result in a 400 response.",
         "security": [
           {
-            "google_oauth": []
+            "JWT": []
           }
         ],
         "summary": "Update an existing profile (only owner of the profile is allowed to do so)",
@@ -1391,26 +1396,15 @@
                   "type": "object",
                   "properties": {
                     "city_name": {
-                      "type": "object",
-                      "properties": {
-                        "sights": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/Sight",
-                            "minItems": 1,
-                            "maxItems": 3
-                          }
-                        },
-                        "coordinates": {
-                          "type": "array",
-                          "items": {
-                            "type": "number",
-                            "format": "float",
-                            "example": 52.520008
-                          },
-                          "minItems": 2,
-                          "maxItems": 2
-                        }
+                      "type": "string",
+                      "description": "name of the city"
+                    },
+                    "sights": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "$ref": "#/components/schemas/City"
                       }
                     }
                   }
@@ -1465,42 +1459,21 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "gameDuration": {
-                    "type": "integer",
-                    "example": 46
-                  },
-                  "time": {
-                    "type": "integer",
-                    "example": 16
-                  },
-                  "city_name": {
-                    "type": "object",
-                    "properties": {
-                      "coordinates": {
-                        "type": "array",
-                        "items": {
-                          "type": "number",
-                          "format": "float",
-                          "example": 52.444
-                        },
-                        "minItems": 2,
-                        "maxItems": 2
-                      },
-                      "guessed_coordinates": {
-                        "type": "array",
-                        "items": {
-                          "type": "number",
-                          "format": "float",
-                          "example": 52.444
-                        },
-                        "minItems": 2,
-                        "maxItems": 2
-                      },
-                      "sights": {
-                        "type": "integer",
-                        "example": 2
-                      }
+                  "coordinates": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
                     }
+                  },
+                  "coordinates_guessed": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "time_to_complete_game": {
+                    "type": "integer",
+                    "example": 408
                   }
                 }
               }
@@ -1556,7 +1529,7 @@
         ],
         "security": [
           {
-            "google_oauth": []
+            "JWT": []
           }
         ],
         "summary": "Get list of played games by user (a.k.a game history).",
@@ -1676,7 +1649,7 @@
         ],
         "security": [
           {
-            "google_oauth": []
+            "JWT": []
           }
         ],
         "summary": "Delete all played games by user.",
@@ -2181,6 +2154,28 @@
           }
         }
       },
+      "City": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "sights": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Sight",
+              "minItems": 3,
+              "maxItems": 3
+            }
+          },
+          "coordinates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "ProfileViolation": {
         "type": "object",
         "properties": {
@@ -2411,16 +2406,23 @@
       }
     },
     "securitySchemes": {
-      "google_oauth": {
+      "GoogleAuth": {
         "type": "oauth2",
-        "description": "Google OAuth",
         "flows": {
           "authorizationCode": {
-            "authorizationUrl": "/oauth/authorize",
-            "tokenUrl": "/oauth/token",
-            "scopes": {}
+            "authorizationUrl": "https://accounts.google.com/o/oauth2/v2/auth",
+            "tokenUrl": "https://accounts.google.com/o/oauth2/token",
+            "scopes": {
+              "email": "Access to your email address",
+              "profile": "Access to your profile info"
+            }
           }
         }
+      },
+      "JWT": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }

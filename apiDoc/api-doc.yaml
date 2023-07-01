@@ -29,6 +29,8 @@ paths:
       summary: Google callback endpoint
       tags:
         - user
+      security:
+        - GoogleAuth: []
       parameters: []
       responses:
         '200':
@@ -186,7 +188,7 @@ paths:
         description: The ID of the user to delete.
     delete:
       security:
-        - google_oauth: []
+        - JWT: []
       tags:
         - user
       summary: Delete all user data. (game history, profile, scores)
@@ -250,7 +252,7 @@ paths:
         description: The ID of the user profile.
     get:
       security:
-        - google_oauth: []
+        - JWT: []
       tags:
         - Profile
       summary: Get the user's profile information
@@ -315,7 +317,7 @@ paths:
         Retrieves statistics for a specific user. Most played games. Total time
         played, ...
       security:
-        - google_oauth: []
+        - JWT: []
       tags:
         - user
       parameters:
@@ -376,7 +378,7 @@ paths:
       summary: Create a profile for the currently authenticated user. [DEPRECATED]
       description: User profile gets created on Signup, this endpoint will always return 409 - Conflict since a profile already exists for a signed up user.
       security:
-        - google_oauth: []
+        - JWT: []
       requestBody:
         required: true
         content:
@@ -431,7 +433,7 @@ paths:
         description: The ID of the user profile.
     get:
       security:
-        - google_oauth: []
+        - JWT: []
       tags:
         - Profile
       summary: Get the profile information
@@ -473,7 +475,7 @@ paths:
         - Profile
       description: User profile gets created on Signup. The created profile can be updated. All fields in the body if request are optional. Only set values will be updated. An empty body is not allowed (400). Invalid fields will result in a 400 error. Length limit contraint violations also result in a 400 response.
       security:
-        - google_oauth: []
+        - JWT: []
       summary: >-
         Update an existing profile (only owner of the profile is allowed to do
         so)
@@ -987,7 +989,7 @@ paths:
       tags:
         - Gamehistory
       security:
-        - google_oauth: []
+        - JWT: []
       summary: Get list of played games by user (a.k.a game history).
       description: >-
         Returns a paginated list of all the games a user has played, ordered by
@@ -1067,7 +1069,7 @@ paths:
       tags:
         - Gamehistory
       security:
-        - google_oauth: []
+        - JWT: []
       summary: Delete all played games by user.
       description: >-
         Deletes ALL the games a user has played (clears game history). Only the
@@ -1603,11 +1605,17 @@ components:
                           lon:
                             type: number
   securitySchemes:
-    google_oauth:
+    GoogleAuth:
       type: oauth2
-      description: Google OAuth
       flows:
         authorizationCode:
-          authorizationUrl: /oauth/authorize
-          tokenUrl: /oauth/token
-          scopes: {}
+          authorizationUrl: https://accounts.google.com/o/oauth2/v2/auth
+          tokenUrl: https://accounts.google.com/o/oauth2/token
+          scopes: 
+            # define the scopes your application needs here
+            email: Access to your email address
+            profile: Access to your profile info
+    JWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

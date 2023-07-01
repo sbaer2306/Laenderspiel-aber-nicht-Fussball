@@ -29,17 +29,11 @@ Hochschule für angewandte Wissenschaften Hof<br>
 
 ## Setup:<br>
 1. Repository clonen
-2. .env File erstellen mit den Parametern
-    - Test
-    - Test2
-3. ```DATABASE_URL= "mysql://root:<rootpasswort>@mysql-db:3306/laenderspiel"``` in .env backend hinzufügen (migrate braucht privilegien um shadow db anzulegen)
-4. Starten Container: ```docker-compose up -d```
-5. Eventuell manuell npm install im backend container ausführen
+2. ```DATABASE_URL= "mysql://root:<rootpasswort>@mysql-db:3306/laenderspiel"``` in .env backend hinzufügen (migrate braucht privilegien um shadow db anzulegen)
+3. Starten Container: ```docker-compose up -d```
+4. Eventuell manuell npm install im backend container ausführen
 ### Datenbankoperationen:
-Müssen (noch) manuell durchgeführt werden, falls der db-Container noch nicht rechtzeitig aktiv ist.
-
-6. ```docker exec node_backend_container npx prisma db push --accept-data-loss``` (Letzte Migration anwenden, Hinweis: DB Container muss dafür schon oben sein sonst Fehler)
-7. ```docker exec node_backend_container npx prisma db seed``` (Füllt Datenbank mit sample Daten)
+5. ```docker exec node_backend_container npx prisma db seed``` (Füllt Datenbank mit sample Daten)
 
 ## API Credentials
 - **TODO**: API Zugangsdaten bzw. Anleitung zum Erstellen und setzen dieser für die 3rd party APIs (RESTcountries, Wikipedia, ...)

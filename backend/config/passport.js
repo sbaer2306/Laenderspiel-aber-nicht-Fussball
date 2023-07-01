@@ -34,7 +34,6 @@ module.exports = function (passport) {
             user = await createUser(newUser)
             done(null, user)
           }
-          console.log("Done");
         } catch (err) {
           console.error(err)
         }
