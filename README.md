@@ -52,7 +52,13 @@ Hochschule für angewandte Wissenschaften Hof<br>
         'out geom;' : Dieser Teil der Abfrage gibt an, dass neben den Informationen der administrativen Grenzen auch die Geometriedaten (Koordinaten) zurückgegeben werden sollen. Damit erhält man die tatsächlichen Grenzkoordinaten des Landes.
 
 # Wikipedia API: 
-    URL = "https://en.wikipedia.org/w/api.php?action=query&format=json&generator=categorymembers&gcmtitle=Category:Tourist_attractions_in_${city.name}&gcmlimit=max&prop=pageimages&piprop=original&pithumbsize=500"
+
+    - ist frei zugänglich, benötigt keine credentials
+    - Link zur Doc: https://www.mediawiki.org/wiki/API:Main_page
+
+    Folgende URL wird für die Requests an die Wikipedia API genutzt.
+
+        URL = "https://en.wikipedia.org/w/api.php?action=query&format=json&generator=categorymembers&gcmtitle=Category:Tourist_attractions_in_${city.name}&gcmlimit=max&prop=pageimages&piprop=original&pithumbsize=500"
 
     Die Wikipedia-API wird genutzt, um Informationen über touristische Attraktionen einer bestimmten Stadt abzurufen. Indem man die richtigen Parameter verwendet und einstellt, erhält man eine Liste im JSON-Format, die Namen und Bilder der touristischen Attraktionen in der angegebenen Stadt enthält.
 
