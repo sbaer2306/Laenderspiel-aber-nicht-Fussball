@@ -4,6 +4,8 @@ const geoService = require('../service/geoService');
 const factsService = require('../service/factsService');
 const scoringService = require('../service/scoringService')
 const sightsService = require('../service/sightsService');
+const gameController = require('../controller/gameController');
+
 
 async function calculateRatingFacts(req, res){
   const {id} = req.params;
@@ -180,9 +182,13 @@ async function saveScore(userId, score, gameDuration, countryId, createdAt) {
 
 
 async function calculateRatingSights(req, res) {
+
+  const {id} = req.params;
+  const redisClient = req.redis;
+
   try {
-    const {id} = req.params;
-    const game = req.session.game;
+    const gameString = await redisClient.hget(id, 'games');
+    const game = JSON.parse(gameString);
 
     const userId = game.user_id;
     const countryId = game.country_id;
@@ -190,19 +196,20 @@ async function calculateRatingSights(req, res) {
     const data = req.body;
     const gameDuration = data.gameDuration;
 
-    if(!game){
-      return res.status(404).json({error: "Game not found", game: game, id: id})
-    }
-    if(userId !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
+    if(!game) return res.status(404).json({error: "Game not found"});
+
+    if(game.user_id !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
 
     const difficulty = game.difficulty;
 
     const score = await scoringService.calculateRatingSights(data, Math.round(difficulty)) + game.total_score;
-
+    
+    await redisClient.hset(id, 'games', JSON.stringify(game));
+    await redisClient.hdel(id, 'games');
+    
     const ranking = await saveScore(userId, score, gameDuration, countryId, createdAt);
-
-    delete req.session.game;
-    delete game;
+    
+    // await gameController.deleteGame(req, res);
 
     res.status(200).json({ score: score });
   }
