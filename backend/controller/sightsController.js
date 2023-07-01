@@ -2,6 +2,15 @@ const sightsService = require('../service/sightsService');
 const prisma = require('../prisma/prisma');
 const prismaClient = prisma.getPrisma();
 
+
+/**
+ * Retrieves the sights for each city and their coordinates for third round of game.
+ * 
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A Promise that resolves when the response is sent.
+ * @throws {Error} - If an error occurs during the process.
+ */
 async function getSights(req, res) {
     try {
         
@@ -18,15 +27,6 @@ async function getSights(req, res) {
           return res.status(403).json({error: "Forbidden. User is not player of the game."});
         } 
         
-        /*
-        const country_id = Number(game.country_id);
-        const country = await prismaClient.country.findUnique({
-          where: {
-            id: country_id,
-          },
-        })
-        const countryCode = country.countryCode;
-        */
         const sights = await sightsService.fetchRandomCities(game.country_code); 
         res.status(200).json(sights);
       } catch (error) {

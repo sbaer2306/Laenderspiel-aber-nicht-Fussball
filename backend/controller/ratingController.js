@@ -105,7 +105,17 @@ async function calculateDistance(req, res){
     res.status(500).json({error: 'Internal server error'});
   }
 }
-
+/**
+* Saves the user's score, game duration, and country information in the database,
+* and updates the monthly and all-time rankings.
+* @param {string} userId - The ID of the user.
+* @param {number} score - The user's score.
+* @param {number} gameDuration - The duration of the game.
+* @param {string} countryId - The ID of the country.
+* @param {Date} createdAt - The date and time when the game was created.
+* @returns {Promise<Object>} - A Promise that resolves to an object containing the all-time and monthly rankings.
+* @throws {Error} - If an error occurs during the process.
+*/
 async function saveScore(userId, score, gameDuration, countryId, createdAt) {
   try {
     const prismaClient = getPrisma();
@@ -121,16 +131,14 @@ async function saveScore(userId, score, gameDuration, countryId, createdAt) {
     });
 
     const currentDate = new Date();
-    const currentMonth = currentDate.getMonth() + 1; // Monate in JavaScript sind nullbasiert, daher +1
+    const currentMonth = currentDate.getMonth() + 1; 
     const currentYear = currentDate.getFullYear();
 
-    // Prüfe, ob ein Datensatz für das aktuelle Monat und Jahr vorhanden ist
     const existingMonthlyRanking = await prismaClient.monthlyRanking.findFirst({
       where: { userId, month: currentMonth, year: currentYear }
     });
 
     if (existingMonthlyRanking) {
-      // Wenn ein Datensatz vorhanden ist, aktualisiere den Score
       await prismaClient.monthlyRanking.update({
         where: { id: existingMonthlyRanking.id },
         data: {
@@ -139,7 +147,6 @@ async function saveScore(userId, score, gameDuration, countryId, createdAt) {
         }
       });
     } else {
-      // Wenn kein Datensatz vorhanden ist, erstelle einen neuen Datensatz
       await prismaClient.monthlyRanking.create({
         data: {
           userId,
@@ -180,7 +187,16 @@ async function saveScore(userId, score, gameDuration, countryId, createdAt) {
   }
 }
 
-
+/**
+ * Calculates the score based on the distance between the city coordinates and the markers location, 
+ * time, and difficulty level.
+ * Accumulates the total score and calls saveScore to save the rating into the database.
+ * 
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A Promise that resolves when the response is sent.
+ * @throws {Error} - If an error occurs during the process.
+ */
 async function calculateRatingSights(req, res) {
 
   const {id} = req.params;
@@ -208,8 +224,6 @@ async function calculateRatingSights(req, res) {
     await redisClient.hdel(id, 'games');
     
     const ranking = await saveScore(userId, score, gameDuration, countryId, createdAt);
-    
-    // await gameController.deleteGame(req, res);
 
     res.status(200).json({ score: score });
   }

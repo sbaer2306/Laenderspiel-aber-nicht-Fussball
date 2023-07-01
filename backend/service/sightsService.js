@@ -1,10 +1,22 @@
 const axios = require('axios');
 
-
+/**
+* Converts degrees to radians.
+* @param {number} degrees - The value in degrees.
+* @returns {number} - The value converted to radians.
+*/
 function degToRad(degrees) {
   return (degrees * Math.PI) / 180;
 }
 
+/**
+* Calculates the distance between two coordinates using the Haversine formula.
+* @param {number} latitude - The latitude of the actual position.
+* @param {number} longitude - The longitude of the actual position.
+* @param {number} guessedLatitude - The latitude of the guessed position.
+* @param {number} guessedLongitude - The longitude of the guessed position.
+* @returns {number} - The calculated distance between the coordinates in kilometers.
+*/
 function calculateDistance(latitude, longitude, guessedLatitude, guessedlongitude) {
   
   const earthRadius = 6371;
@@ -30,7 +42,12 @@ return distance;
 
 }
 
-
+/**
+* Fetches the top 10 cities with the highest population in the specified country.
+* @param {string} countryCode - The country code (ISO 3166-1) of the country.
+* @returns {Promise<Object[]>} - A Promise that resolves to an array of city objects containing their name, latitude, and longitude.
+* @throws {Error} - If an error occurs during the process.
+*/
 async function fetchCities(countryCode) {
   try {
     const query = `[out:json][timeout:5000];area['ISO3166-1'='${countryCode}'];node[place=city](area)[population~"^[0-9]{6,}$"];out center;`;
@@ -57,6 +74,12 @@ async function fetchCities(countryCode) {
   }
 }
 
+/**
+* Fetches the top tourist attractions in the cities of the specified country.
+* @param {string} countryCode - The country code (ISO 3166-1) of the country.
+* @returns {Promise<Object>} - A Promise that resolves to an object containing the tourist attractions grouped by city.
+* @throws {Error} - If an error occurs during the process.
+*/
 async function fetchSights(countryCode) {
     try {
       const cities = await fetchCities(countryCode);
@@ -98,6 +121,12 @@ async function fetchSights(countryCode) {
     }
 }
 
+/**
+* Fetches random cities with their associated tourist attractions in the specified country.
+* @param {string} countryCode - The country code (ISO 3166-1) of the country.
+* @returns {Promise<Object>} - A Promise that resolves to an object containing random cities with their tourist attractions.
+* @throws {Error} - If an error occurs during the process.
+*/
 async function fetchRandomCities(countryCode) {
   try {
     const response = await fetchSights(countryCode);

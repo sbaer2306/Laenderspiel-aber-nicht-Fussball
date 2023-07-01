@@ -1,5 +1,14 @@
 const sightsService = require('../service/sightsService');
 
+/**
+* Calculates the rating for each sight in the provided data based on the guessed coordinates,
+* and returns the total score for the game taking into account the distance, number of sights,
+* time, and difficulty level.
+* @param {Object} data - The data containing information about the cities, coordinates, guessed coordinates, and number of sights.
+* @param {number} difficulty - The difficulty level of the game.
+* @returns {Promise<number>} - A Promise that resolves to the total score for the game.
+* @throws {Error} - If an error occurs during the process.
+*/
 async function calculateRatingSights(data, difficulty) {
   try {
 
@@ -34,6 +43,12 @@ async function calculateRatingSights(data, difficulty) {
   }
 }
 
+/**
+* Calculates the score based on the distance and the number of sights.
+* @param {number} distance - The distance between the guessed coordinates and the actual coordinates.
+* @param {number} numberOfSights - The number of sights for the given city.
+* @returns {number} - The calculated score.
+*/
 function calculateScore(distance, numberOfSights) {
 
   let score = 500 - Math.round(distance);
