@@ -25,10 +25,9 @@ function App() {
           <Route path='/' element={<HomePage/>} />
           <Route path='/login' element={<Login/>} />
           <Route path='/ranking' element={<Ranking/>} />
-          <Route path='/logged' element={<LoggedHomePage/>} /> {/*welcome Page benutzen*/}
           <Route path='/api/doc' element={<SwaggerDocDisplay/>} />
 
-          {/*GAME ROUTES -- should be protected too!*/}
+          {/*GAME ROUTES - protected!*/}
           <Route path='/game/facts' element={<ProtectedRoute><FirstRound/></ProtectedRoute>} /> 
           <Route path='/game/geo-information' element={<ProtectedRoute><SecondRound/></ProtectedRoute>} />
           <Route path='game/sights' element={<ProtectedRoute><ThirdRound/></ProtectedRoute>} />
