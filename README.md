@@ -14,7 +14,7 @@ Gruppe 1<br>
 
 ### Dokumentation
 
- Die **API Dokumentation** wird unter [/api/doc](http://localhost:3000/api/doc) im Frontend angezeit. Das React package benötigt die Dokumentation allerdings als json, deshalb im Swagger Editor als json exportieren (File > Convert and save as json) und dann im frontend in /src/components/ApiDoc einfügen bzw. altes File überschreiben, damit die Dokumentation auch unter [/api/doc](http://localhost:3000/api/doc) angezeigt wird.<br>
+ Die **API Dokumentation** wird unter [/api/doc](http://localhost:3000/api/doc) im Frontend angezeit. Die yaml Datei ist im Ordner **./apiDoc** des Projekts gespeichert.<br>
 Die **Anfangspräsentation der Idee** ist im selben Ordner abgelegt.
 
 ## Vorraussetzung:
