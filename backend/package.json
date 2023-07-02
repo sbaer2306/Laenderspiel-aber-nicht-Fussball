@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@googleapis/people": "^3.0.2",
-    "@prisma/client": "^4.15.0",
+    "@prisma/client": "^4.16.2",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
@@ -38,7 +38,7 @@
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
     "nodemon": "^2.0.22",
-    "prisma": "^4.15.0",
+    "prisma": "^4.16.2",
     "typescript": "^5.1.3"
   }
 }
