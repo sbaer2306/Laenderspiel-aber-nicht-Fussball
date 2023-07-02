@@ -19,7 +19,7 @@ const PrivateProfileOverview = () => {
   const { isOpen: deletionModalIsOpen, onOpen: onOpenDeletionModal, onClose: onCloseDeletionModal } = useDisclosure();
   const { isOpen: usernameEditingIsOpen, onOpen: onOpenUsernameEditing, onClose: onCloseUsernameEditing } = useDisclosure();
 
-  const { currentUser, setCurrentUser, setUserToken } = useUserAuth();
+  const { currentUser, setCurrentUser, setUserToken, setCurrentUserName } = useUserAuth();
 
   const navigate = useNavigate();
 
@@ -109,9 +109,16 @@ const PrivateProfileOverview = () => {
   };
 
   const editUsername = async (values) => {
-    // TODO: Implement username editing endpoint call @basti
-    // Dran denken: Username muss auch im kontext lokal danach aktualisiert werden!
-    alert('TODO: Implement username editing');
+
+    try {
+      const response = await api.put(`/user/${currentUser.id}/username`,values);
+      if (response.status === 200) {
+        setCurrentUserName(values.username);
+        showToastMessage("Success!", `You have changed your username`, "success");
+      }
+    } catch (error) {
+      handleApiError(error);
+    }
     onCloseUsernameEditing();
   };
   

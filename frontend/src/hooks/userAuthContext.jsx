@@ -68,6 +68,13 @@ export const UserAuthContextProvider = ({ children }) => {
     return currentToken !== null;
   }
 
+  const setCurrentUserName = (newUserName) => {
+    let newUser = currentUser;
+    newUser.username = newUserName
+    setCurrentUser(newUser)
+  }
+
+
   const logout = () => {
     setCurrentToken(null);
     setCurrentUser(null);
@@ -75,7 +82,7 @@ export const UserAuthContextProvider = ({ children }) => {
   };
 
   return (
-    <userAuthContext.Provider value={{ currentUser, setCurrentUser, currentToken, handleGoogleLogin, setUserToken, logout, userIsLoggedIn, getCurrentUser }}>
+    <userAuthContext.Provider value={{ currentUser, setCurrentUser, currentToken, handleGoogleLogin, setUserToken, logout, userIsLoggedIn, getCurrentUser,setCurrentUserName }}>
       {children}
     </userAuthContext.Provider>
   );

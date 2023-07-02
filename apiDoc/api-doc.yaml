@@ -530,6 +530,8 @@ paths:
     post:
       tags:
         - Game
+      security:
+        - JWT: []
       summary: Create a new game
       description: >-
         Creates a new game with a random country based on the chosen difficulty
@@ -585,6 +587,8 @@ paths:
     get:
       tags:
         - Game
+      security:
+        - JWT: []
       summary: Retrieve a game
       description: Retrieves the details of a game by its id.
       parameters:
@@ -612,6 +616,8 @@ paths:
     delete:
       tags:
         - Game
+      security:
+        - JWT: []
       summary: Cancel a game
       description: Cancels a game session by its id.
       parameters:
@@ -642,6 +648,8 @@ paths:
     get:
       tags:
         - Game
+      security:
+        - JWT: []
       summary: Retrieve the facts for the country of the game.
       parameters:
         - name: id
@@ -685,6 +693,8 @@ paths:
     post:
       tags:
         - Game
+      security:
+        - JWT: []
       summary: Rating of first round of the game
       operationId: getRatingRoundOne
       parameters:
@@ -735,6 +745,8 @@ paths:
     get:
       tags:
         - Game
+      security:
+        - JWT: []
       parameters:
         - name: id
           in: path
@@ -792,6 +804,8 @@ paths:
     post:
       tags:
         - Game
+      security:
+        - JWT: []
       operationId: getRatingRoundTwo
       requestBody:
         required: true
@@ -884,6 +898,8 @@ paths:
     get:
       tags:
         - Game
+      security:
+        - JWT: []
       operationId: getThirdRound
       parameters:
         - name: id
@@ -931,6 +947,8 @@ paths:
     post:
       tags:
         - Game
+      security:
+        - JWT: []
       parameters:
         - name: id
           in: path

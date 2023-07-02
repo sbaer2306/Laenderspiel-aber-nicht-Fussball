@@ -19,6 +19,39 @@ const purgeUserData = async (userId) => {
 };
 
 /**
+ * Checks if a username already exists
+ *
+ * @param {number} userName - The ID of the user.
+ * @returns {Promise<Object>} - A Promise that resolves when the user is deleted.
+ */
+const checkIfUsernameExists = async (username) => {
+
+    const existingUsername = await prismaClient.user.findUnique({ where: { username: username } });
+
+    return existingUsername;
+};
+
+const updateUsername = async (userId,userName) => {
+/**
+ * Updates a username
+ * 
+ * @param {number} userId - The ID of the user.
+ * @param {number} userName - The ID of the user.
+ * @returns {Promise<Object>} - A Promise that resolves when the user is deleted.
+ */
+    const id = parseInt(userId);
+    
+    const UpdateResult = await prismaClient.user.update({
+        where: {
+            id: parseInt(id),
+        },
+        data: {
+            username: userName,
+        },
+    });
+    return UpdateResult;
+};
+/**
  * Retrieves a user by ID.
  *
  * @param {number} id - The ID of the user to retrieve.
@@ -101,4 +134,4 @@ const createUser = async (newUser) => {
 };
 
 
-module.exports = { purgeUserData, getUserById, getProfileByUserId, getUserByOAuthID, createUser };
+module.exports = { purgeUserData, getUserById, getProfileByUserId, getUserByOAuthID, createUser,updateUsername,checkIfUsernameExists };

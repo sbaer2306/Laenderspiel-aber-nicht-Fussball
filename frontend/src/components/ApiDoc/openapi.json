@@ -821,6 +821,11 @@
         "tags": [
           "Game"
         ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
         "summary": "Create a new game",
         "description": "Creates a new game with a random country based on the chosen difficulty level. The Game will live for ttl seconds after that the game is deleted and can not be accessed. If the ttl expires the game will not be saved in the game history of a player.",
         "requestBody": {
@@ -902,6 +907,11 @@
         "tags": [
           "Game"
         ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
         "summary": "Retrieve a game",
         "description": "Retrieves the details of a game by its id.",
         "parameters": [
@@ -943,6 +953,11 @@
       "delete": {
         "tags": [
           "Game"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
         ],
         "summary": "Cancel a game",
         "description": "Cancels a game session by its id.",
@@ -991,6 +1006,11 @@
       "get": {
         "tags": [
           "Game"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
         ],
         "summary": "Retrieve the facts for the country of the game.",
         "parameters": [
@@ -1059,6 +1079,11 @@
       "post": {
         "tags": [
           "Game"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
         ],
         "summary": "Rating of first round of the game",
         "operationId": "getRatingRoundOne",
@@ -1138,6 +1163,11 @@
       "get": {
         "tags": [
           "Game"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
         ],
         "parameters": [
           {
@@ -1228,6 +1258,11 @@
       "post": {
         "tags": [
           "Game"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
         ],
         "operationId": "getRatingRoundTwo",
         "requestBody": {
@@ -1373,6 +1408,11 @@
         "tags": [
           "Game"
         ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
         "operationId": "getThirdRound",
         "parameters": [
           {
@@ -1440,6 +1480,11 @@
       "post": {
         "tags": [
           "Game"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
         ],
         "parameters": [
           {
