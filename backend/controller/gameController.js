@@ -11,14 +11,14 @@ const {encryptUserID} = require('../helpers/encryptUserID');
  * @returns {Object} The links object for hypermedia in JSON format when the creation is successful (HTTP 200).
  */
 async function createGame(req, res){
-  console.log(encryptUserID);
   const userID = req.user.id;
   const difficulty = req.body.difficulty;
   try{
-      encrpytedUser = encryptUserID(userID);
-     
+      //for easy access
+      const gameID = userID
+
       const redisClient = req.redis;
-      const existingGame = await redisClient.hget(encrpytedUser, 'games');
+      const existingGame = await redisClient.hget(userID, 'games');
       if(existingGame){
         return res.status(409).json({ message: 'You already have a game in progress', game: JSON.parse(existingGame) });
       }
@@ -32,7 +32,7 @@ async function createGame(req, res){
       let selectedCountry = await gameService.getRandomCountryForDifficulty(countriesByDifficulty);
 
       //creates game and stores in redis db
-      const game = await gameService.createGameInDatabase(redisClient, encrpytedUser, userID, selectedCountry.difficultyMultiplier, selectedCountry.id, selectedCountry.name, selectedCountry.countryCode);
+      const game = await gameService.createGameInDatabase(redisClient, userID, userID, selectedCountry.difficultyMultiplier, selectedCountry.id, selectedCountry.name, selectedCountry.countryCode);
 
       const links = {
         nextStep: {

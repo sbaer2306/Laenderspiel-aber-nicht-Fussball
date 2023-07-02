@@ -58,6 +58,7 @@ services:
           sleep 1
         done
         npx prisma db push --accept-data-loss &&
+        npx prisma db seed &&
         npm start
       "
   frontend:
