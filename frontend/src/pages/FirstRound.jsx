@@ -74,7 +74,6 @@ export const FirstRound = () => {
             const response = await api.get(`/game/${id}/facts`); 
             
             const factObject = response.data.facts;
-            console.log("fact object facts: ", factObject.facts);
             setFacts(factObject.facts);
             setFlags(factObject.flags);
             setCountryAnswer(factObject.country_name)
@@ -86,7 +85,6 @@ export const FirstRound = () => {
                 }
                 //other status controlls
             }
-            else console.log("error fetching: "+error.message);
         }
     }
     
@@ -114,7 +112,6 @@ export const FirstRound = () => {
     }
 
     const updateAnswer = (answer, correct) => {
-        console.log("Updating answer with question_keyword: ", answer.question_keyword, " answer: ",answer.answer, "and if correct: ",correct);
         setAnswer(prevState => {
           const updatedAnswers = prevState.answers.map(ans => {
             const question_keyword = ans.question_keyword;
@@ -132,7 +129,6 @@ export const FirstRound = () => {
             answers: updatedAnswers
           };
         });
-        console.log("Answer:  ", answer)
         if(answer.question_keyword === "country_name" && (correct ||  answer.tries === 3)) setCountryAnswered(true)
     }
 
@@ -153,7 +149,6 @@ export const FirstRound = () => {
         const requestBody = {
             data: answer
         }
-        console.log("requestBody: ", requestBody.data)
         try{
             const response = await api.post(`/game/${id}/rating/facts`, requestBody, {
                 headers: {
@@ -161,7 +156,6 @@ export const FirstRound = () => {
                 }
             }, {withCredentials: true}); 
 
-            console.log(response.data);
             
             const {score, links } = response.data;
             showToastMessage("Points", `Wow, you made ${score} Points`, "success")
@@ -176,7 +170,6 @@ export const FirstRound = () => {
                 }
                 //other status controlls
             }
-            else console.log("error fetching: "+error.message);
         }
     }
 
@@ -198,10 +191,6 @@ export const FirstRound = () => {
             navigate('/welcome', {replace: true})
             return;
         }catch(error){
-            console.log("error fetching: "+error.response.data.message);
-            console.log("game-id: ", error.response.data.game_user_id);
-            console.log("id: ", error.response.data.id);
-            console.log("id: ", error.response.data.userid);
         }
     }
   return (
