@@ -80,3 +80,24 @@ Die Wikipedia-API wird genutzt, um Informationen über touristische Attraktionen
 - `piprop=original`: Ruft das Originalbild anstatt eines Miniaturbilds ab.
 - `pithumbsize=500`: Legt die Größe des Miniaturbilds fest (maximale Breite von 500px).
 ***
+
+### Restcountries API:
+
+ - ist frei zugänglich, benötigt keine credentials
+ - Link zur Doc: https://restcountries.com/
+
+Um Fakten für ein spezifisches Land zu erhalten wird folgende URL aufgerufen: https://restcountries.com/v3.1/alpha/{code}
+(Runde 1)
+
+### CountryFlags API:
+ - ist frei zugänglich, benötigt keine credentials
+ - Link zur Doc: https://flagsapi.com/
+
+Um die Flagge für ein spezifisches Land zu erhalten wird folgende URL aufgerufen: https://flagsapi.com/{code}/{style}/{size}.png
+Der Code Parameter unterliegt folgendem Format: cca2, ccn3, cca3 or cioc country code
+(Runde 1)
+
+**Beschreibung der Parameter:**
+- 'code': CountryCode im Format  cca2, ccn3, cca3 or cioc country code
+- 'style': https://flagsapi.com/#themes
+- 'size': https://flagsapi.com/#sizes
