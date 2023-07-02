@@ -971,9 +971,15 @@ paths:
                   type: array
                   items:
                     type: string
-                time_to_complete_game:
+                time:
+                  type: integer
+                  example: 102
+                gameDuration:
                   type: integer
                   example: 408
+                sights:
+                  type: integer
+                  example: 2
       summary: Rating of third round of the game
       description: >-
         Scoring of the final round. Since the round completes the game, the time
