@@ -94,10 +94,10 @@ Um Fakten für ein spezifisches Land zu erhalten wird folgende URL aufgerufen: h
  - Link zur Doc: https://flagsapi.com/
 
 Um die Flagge für ein spezifisches Land zu erhalten wird folgende URL aufgerufen: https://flagsapi.com/{code}/{style}/{size}.png
-Der Code Parameter unterliegt folgendem Format: cca2, ccn3, cca3 or cioc country code
 (Runde 1)
 
 **Beschreibung der Parameter:**
 - 'code': CountryCode im Format  cca2, ccn3, cca3 or cioc country code
 - 'style': https://flagsapi.com/#themes
 - 'size': https://flagsapi.com/#sizes
+***
