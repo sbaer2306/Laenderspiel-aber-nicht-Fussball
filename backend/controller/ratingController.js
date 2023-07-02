@@ -22,7 +22,9 @@ async function calculateRatingFacts(req, res){
     }
 
     //get facts from session
-    const facts = factsService.getFactsFromCache(game.country_code);
+    //const facts = factsService.getFactsFromCache(game.country_code);
+    const factsString = await redisClient.hget(game.country_code, 'facts');
+    const facts = JSON.parse(factsString);
     //get user-input from body
     const {data} = req.body;
     //return res.status(406).json({message: "Not acceptable"})

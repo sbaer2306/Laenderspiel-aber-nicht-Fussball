@@ -17,11 +17,17 @@ async function getFacts(req, res){
       return res.status(403).json({error: "Forbidden. User is not player of the game.", game: game, user_id: userID})
     }
 
-    const facts = await factsService.fetchCountryFacts(game.country_code); 
+    //facts from redis
+    const existingFactsString = await redisClient.hget(game.country_code, 'facts');
+    const existingFacts = JSON.parse(existingFactsString);
+    if(existingFacts) return res.status(200).json({facts:existingFacts});
 
+    const facts = await factsService.fetchCountryFacts(game.country_code); 
+    await redisClient.hset(game.country_code, 'facts', JSON.stringify(facts));
     
     res.status(200).json({facts: facts});
   } catch (error) {
+    console.log(error);
       res.status(500).json({ error: error.message+" / getfacts"});
   }
 }
