@@ -3,6 +3,7 @@
 **Studienarbeit RESTful Webservices<br>**
 Sommersemester 2023<br>
 Hochschule für angewandte Wissenschaften Hof<br>
+Gruppe 1<br>
 
 #### Gruppenmitglieder:
 - Sebastian Bär
@@ -11,9 +12,10 @@ Hochschule für angewandte Wissenschaften Hof<br>
 - Johannes Matus
 - David Weiß
 
-### API Dokumentation
+### Dokumentation
 
- Die API Dokumentation wird unter [/api/doc](http://localhost:3000/api/doc) im Frontend angezeit. Das React package benötigt die Dokumentation allerdings als json, deshalb im Swagger Editor als json exportieren (File > Convert and save as json) und dann im frontend in /src/components/ApiDoc einfügen bzw. altes File überschreiben, damit die Dokumentation auch unter [/api/doc](http://localhost:3000/api/doc) angezeigt wird.
+ Die **API Dokumentation** wird unter [/api/doc](http://localhost:3000/api/doc) im Frontend angezeit. Das React package benötigt die Dokumentation allerdings als json, deshalb im Swagger Editor als json exportieren (File > Convert and save as json) und dann im frontend in /src/components/ApiDoc einfügen bzw. altes File überschreiben, damit die Dokumentation auch unter [/api/doc](http://localhost:3000/api/doc) angezeigt wird.<br>
+Die **Anfangspräsentation der Idee** ist im selben Ordner abgelegt.
 
 ## Vorraussetzung:
 
@@ -41,6 +43,7 @@ Hochschule für angewandte Wissenschaften Hof<br>
 4. Eventuell manuell npm install im backend container ausführen
 ### Datenbankoperationen:
 5. ```docker exec node_backend_container npx prisma db seed``` **Hinweis:** Lange genug warten, sonst kann es zu Problemen kommen (Error: Cannot find module '.prisma/client/index')
+***
 
 ## APIs
 Die Nachfolgenden APIs wurden genutzt.
@@ -76,4 +79,4 @@ Die Wikipedia-API wird genutzt, um Informationen über touristische Attraktionen
 - `prop=pageimages`: Ruft die Bilder der Seiten auf.
 - `piprop=original`: Ruft das Originalbild anstatt eines Miniaturbilds ab.
 - `pithumbsize=500`: Legt die Größe des Miniaturbilds fest (maximale Breite von 500px).
-
+***
