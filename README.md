@@ -38,11 +38,11 @@ Die **Anfangspräsentation der Idee** ist im selben Ordner abgelegt.
 
 ## Setup:<br>
 1. Repository clonen
-2. ```DATABASE_URL= "mysql://root:root@mysql-db:3306/laenderspiel"``` in .env backend hinzufügen, falls nicht vorhanden (migrate braucht privilegien um shadow db anzulegen, deshalb root)
-3. Starten Container: ```docker-compose up -d```
-4. Eventuell manuell npm install im backend container ausführen
+2. Starten Container: ```docker-compose up -d```
+Bei Fehlern im Backend manuell npm install im container ausführen.
 ### Datenbankoperationen:
-5. ```docker exec node_backend_container npx prisma db seed``` **Hinweis:** Lange genug warten, sonst kann es zu Problemen kommen (Error: Cannot find module '.prisma/client/index')
+Fall nötig: (Wird normalerweise automatisch ausgeführt)
+```docker exec node_backend_container npx prisma db seed``` **Hinweis:** Lange genug warten, sonst kann es zu Problemen kommen (Error: Cannot find module '.prisma/client/index'), Seed Daten in der country Tabelle sind notwendig, damit das Spiel funktioniert.
 ***
 
 ## APIs
