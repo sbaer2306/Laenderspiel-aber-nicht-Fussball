@@ -6,7 +6,7 @@ import { Text, Button, Spinner, Box, Center, CircularProgress, useToast } from '
 import { MapContainer, TileLayer } from 'react-leaflet';
 import {useLocation, useNavigate} from 'react-router-dom'
 import api from '../helpers/axios';
-import CityMarker from '../components/map/CityMarker'; // adjusted
+import CityMarker from '../components/map/CityMarker'; 
 
 const ThirdRound = () => {
 
@@ -80,7 +80,6 @@ const ThirdRound = () => {
       const response = await api.get(`/game/${id}/sights`);
       setSights(response.data);
 
-      console.log(response.data)
       setIsLoading(false);
     } 
     catch (error) {
