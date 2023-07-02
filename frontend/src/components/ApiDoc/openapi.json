@@ -885,7 +885,7 @@
             "content": {
               "application/json": {
                 "example": {
-                  "message": "User not found."
+                  "message": "Profile not found."
                 }
               }
             }
