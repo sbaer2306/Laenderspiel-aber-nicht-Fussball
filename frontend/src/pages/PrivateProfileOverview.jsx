@@ -72,7 +72,7 @@ const PrivateProfileOverview = () => {
   const updateProfile = async (values) => {
     const { id, userId, createdAt, updatedAt, ...profileData } = values;
     try {
-      const response = await api.put(`/profile/${id}`, profileData);
+      const response = await api.patch(`/profile/${id}`, profileData);
       if (response.status === 200) {
         setProfile(response.data);
         showToastMessage("Profile updated!", "", "success");

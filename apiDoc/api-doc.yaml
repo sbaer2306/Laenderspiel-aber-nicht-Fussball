@@ -524,7 +524,7 @@ paths:
             application/json:
               example:
                 message: Internal server error.
-    put:
+    patch:
       tags:
         - Profile
       description: User profile gets created on Signup. The created profile can be updated. All fields in the body if request are optional. Only set values will be updated. An empty body is not allowed (400). Invalid fields will result in a 400 error. Length limit contraint violations also result in a 400 response.
