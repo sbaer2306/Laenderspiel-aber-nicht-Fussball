@@ -49,7 +49,7 @@ Die **Anfangspräsentation der Idee** ist im selben Ordner abgelegt.
 Die Nachfolgenden APIs wurden genutzt.
 
 ### Overpass-API
-
+- Freier Zugriff --> keine Anmeldung erforderlich.
 Die Overpass API ist eine Schnittstelle für den Zugriff auf geografische Daten in der OpenStreetMap (OSM). Sie ermöglicht es gezielte Abfragen an die OSM-Datenbank zu stellen und spezifische Informationen über geografische Objekte abzurufen. (Runde 2 und 3)
 
 URL = "https://overpass-api.de/api/interpreter?data=[out:json];relation["boundary"="administrative"]["name:en"="${countryName}"];out geom;"
@@ -62,10 +62,8 @@ URL = "https://overpass-api.de/api/interpreter?data=[out:json];relation["boundar
 
 ### Wikipedia API
 
-- Freier Zugriff ohne Anmeldung erforderlich.
+- Freier Zugriff --> keine Anmeldung erforderlich.
 - [Dokumentation](https://www.mediawiki.org/wiki/API:Main_page)
-
-URL = "https://en.wikipedia.org/w/api.php?action=query&format=json&generator=categorymembers&gcmtitle=Category:Tourist_attractions_in_${city.name}&gcmlimit=max&prop=pageimages&piprop=original&pithumbsize=500"
 
 Die Wikipedia-API wird genutzt, um Informationen über touristische Attraktionen einer bestimmten Stadt abzurufen. (Runde 3)
 
@@ -78,26 +76,25 @@ Die Wikipedia-API wird genutzt, um Informationen über touristische Attraktionen
 - `gcmlimit=max`: Setzt das Limit für die Anzahl der zurückgegebenen Ergebnisse.
 - `prop=pageimages`: Ruft die Bilder der Seiten auf.
 - `piprop=original`: Ruft das Originalbild anstatt eines Miniaturbilds ab.
-- `pithumbsize=500`: Legt die Größe des Miniaturbilds fest (maximale Breite von 500px).
-***
 
-### Restcountries API:
+### Restcountries API
 
- - ist frei zugänglich, benötigt keine credentials
- - Link zur Doc: https://restcountries.com/
+- Freier Zugriff --> keine Anmeldung erforderlich.
+- [Dokumentation](https://restcountries.com/)
 
-Um Fakten für ein spezifisches Land zu erhalten wird folgende URL aufgerufen: https://restcountries.com/v3.1/alpha/{code}
-(Runde 1)
+Um Fakten für ein spezifisches Land zu erhalten, wird folgende URL aufgerufen: `https://restcountries.com/v3.1/alpha/{code}`
 
-### CountryFlags API:
- - ist frei zugänglich, benötigt keine credentials
- - Link zur Doc: https://flagsapi.com/
+### CountryFlags API
 
-Um die Flagge für ein spezifisches Land zu erhalten wird folgende URL aufgerufen: https://flagsapi.com/{code}/{style}/{size}.png
-(Runde 1)
+- Freier Zugriff --> keine Anmeldung erforderlich.
+- [Dokumentation](https://flagsapi.com/)
+
+Um die Flagge für ein spezifisches Land zu erhalten, wird folgende URL aufgerufen: `https://flagsapi.com/{code}/{style}/{size}.png`
 
 **Beschreibung der Parameter:**
-- 'code': CountryCode im Format  cca2, ccn3, cca3 or cioc country code
-- 'style': https://flagsapi.com/#themes
-- 'size': https://flagsapi.com/#sizes
+
+- `code`: CountryCode im Format cca2, ccn3, cca3 oder cioc Country Code.
+- `style`: [Flaggenstile](https://flagsapi.com/#themes) (siehe Dokumentation).
+- `size`: [Flaggengrößen](https://flagsapi.com/#sizes) (siehe Dokumentation).
+
 ***
