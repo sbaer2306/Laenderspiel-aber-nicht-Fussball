@@ -28,6 +28,12 @@ Hochschule für angewandte Wissenschaften Hof<br>
 - **3306**: Mysql
 - **6379**: redis
 
+## StA-Kriterien
+- [x] **Hypermedia:** Pagination bei /user/{id}/played-games
+- [x] **ETag Caching:** /user/{id}/stats
+- [x] **Time Based Caching:** zum Beispiel factsService.js (Fakten über Länder)
+- [x] **Google-Authentication**
+
 ## Setup:<br>
 1. Repository clonen
 2. ```DATABASE_URL= "mysql://root:<rootpasswort>@mysql-db:3306/laenderspiel"``` in .env backend hinzufügen (migrate braucht privilegien um shadow db anzulegen)
@@ -72,9 +78,3 @@ Hochschule für angewandte Wissenschaften Hof<br>
         `prop=pageimages`: ruft die Bilder der Seiten auf.
         `piprop=original`: ruft das Originalbild auf anstatt ein Miniaturbild.
         `pithumbsize=500`: legt die Größe des Miniaturbilds fest (Maximale Breite 500px).
-
-## StA-Kriterien
-- [x] **Hypermedia:** Pagination bei /user/{id}/played-games
-- [x] **ETag Caching:** /user/{id}/stats
-- [x] Time Based Caching: zum Beispiel factsService.js (Fakten über Länder)
-- [x] Google-Authentication
