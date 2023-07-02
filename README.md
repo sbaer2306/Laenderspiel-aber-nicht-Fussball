@@ -26,6 +26,7 @@ Hochschule für angewandte Wissenschaften Hof<br>
 - **8000**: Backend
 - **8080**: PhpMyAdmin
 - **3306**: Mysql
+- **6379**: redis
 
 ## Setup:<br>
 1. Repository clonen
@@ -33,7 +34,7 @@ Hochschule für angewandte Wissenschaften Hof<br>
 3. Starten Container: ```docker-compose up -d```
 4. Eventuell manuell npm install im backend container ausführen
 ### Datenbankoperationen:
-5. ```docker exec node_backend_container npx prisma db seed``` (Füllt Datenbank mit sample Daten)
+5. ```docker exec node_backend_container npx prisma db seed``` **Hinweis:** Lange genug warten, sonst kann es zu Problemen kommen (Error: Cannot find module '.prisma/client/index')
 
 ## API Credentials
 - **TODO**: API Zugangsdaten bzw. Anleitung zum Erstellen und setzen dieser für die 3rd party APIs (RESTcountries, Wikipedia, ...)
