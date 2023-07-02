@@ -38,7 +38,7 @@ Die **Anfangspräsentation der Idee** ist im selben Ordner abgelegt.
 
 ## Setup:<br>
 1. Repository clonen
-2. ```DATABASE_URL= "mysql://root:<rootpasswort>@mysql-db:3306/laenderspiel"``` in .env backend hinzufügen (migrate braucht privilegien um shadow db anzulegen)
+2. ```DATABASE_URL= "mysql://root:root@mysql-db:3306/laenderspiel"``` in .env backend hinzufügen, falls nicht vorhanden (migrate braucht privilegien um shadow db anzulegen, deshalb root)
 3. Starten Container: ```docker-compose up -d```
 4. Eventuell manuell npm install im backend container ausführen
 ### Datenbankoperationen:
