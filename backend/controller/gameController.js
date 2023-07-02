@@ -1,5 +1,4 @@
 const gameService = require('../service/gameService');
-const {encryptUserID} = require('../helpers/encryptUserID');
 
 /**
  * Creates a new game for a player depending on the difficulty chosen. 
