@@ -42,39 +42,38 @@ Hochschule für angewandte Wissenschaften Hof<br>
 ### Datenbankoperationen:
 5. ```docker exec node_backend_container npx prisma db seed``` **Hinweis:** Lange genug warten, sonst kann es zu Problemen kommen (Error: Cannot find module '.prisma/client/index')
 
-## API Credentials
-- **TODO**: API Zugangsdaten bzw. Anleitung zum Erstellen und setzen dieser für die 3rd party APIs (RESTcountries, Wikipedia, ...)
+## APIs
+Die Nachfolgenden APIs wurden genutzt.
 
-# Overpass-API:
-    Die Overpass API ist eine Schnittstelle für den Zugriff auf geografische Daten in der OpenStreetMap (OSM). Sie ermöglicht es Entwicklern und Benutzern, gezielte Abfragen an die OSM-Datenbank zu stellen und spezifische Informationen über geografische Objekte abzurufen. Die Overpass API bietet eine flexible Abfragesprache, die es ermöglicht, komplexe Anfragen zu stellen und verschiedene Kriterien wie Tags, Geometrie und geografischen Bereich zu berücksichtigen. Mit dieser API können Benutzer beispielsweise nach bestimmten Arten von POIs (Points of Interest), Straßen, Gebäuden oder anderen geografischen Elementen suchen.
+### Overpass-API
 
-    URL = "https://overpass-api.de/api/interpreter?data=[out:json];relation["boundary"="administrative"]["name:en"="${countryName}"];out geom;"
-    
-    Beschreibung der Parameter:
-        'data=[out:json];' : : Dieser Teil der Abfrage definiert das gewünschte Ausgabeformat der Daten
-        'relation["boundary"="administrative"]["name:en"="${countryName}"];' : Dieser Teil der Abfrage definiert die spezifischen Kriterien für die zu suchende administrative Grenze. 
-            Hier werden zwei Filterkriterien verwendet:
-                - ["boundary"="administrative"] filtert nach Beziehungen (relations), die den "boundary"-Tag mit dem Wert "administrative" haben. Dadurch werden nur administrative Grenzen ausgewählt.
-                - ["name:en"="${countryName}"] filtert nach Beziehungen, deren "name:en"-Tag den Wert des Platzhalters "${countryName}" hat. Der Platzhalter ${countryName} rmöglicht die dynamische Anpassung der Abfrage für verschiedene Länder.
-        'out geom;' : Dieser Teil der Abfrage gibt an, dass neben den Informationen der administrativen Grenzen auch die Geometriedaten (Koordinaten) zurückgegeben werden sollen. Damit erhält man die tatsächlichen Grenzkoordinaten des Landes.
+Die Overpass API ist eine Schnittstelle für den Zugriff auf geografische Daten in der OpenStreetMap (OSM). Sie ermöglicht es gezielte Abfragen an die OSM-Datenbank zu stellen und spezifische Informationen über geografische Objekte abzurufen. (Runde 2 und 3)
 
-# Wikipedia API: 
+URL = "https://overpass-api.de/api/interpreter?data=[out:json];relation["boundary"="administrative"]["name:en"="${countryName}"];out geom;"
 
-    - ist frei zugänglich, benötigt keine credentials
-    - Link zur Doc: https://www.mediawiki.org/wiki/API:Main_page
+**Beschreibung der Parameter:**
 
-    Folgende URL wird für die Requests an die Wikipedia API genutzt.
+- `data=[out:json];`: Definiert das Ausgabeformat der Daten.
+- `relation["boundary"="administrative"]["name:en"="${countryName}"];`: Definiert die spezifischen Kriterien für die gesuchte administrative Grenze.
+- `out geom;`: Gibt die Geometriedaten (Koordinaten) der administrativen Grenzen zurück.
 
-        URL = "https://en.wikipedia.org/w/api.php?action=query&format=json&generator=categorymembers&gcmtitle=Category:Tourist_attractions_in_${city.name}&gcmlimit=max&prop=pageimages&piprop=original&pithumbsize=500"
+### Wikipedia API
 
-    Die Wikipedia-API wird genutzt, um Informationen über touristische Attraktionen einer bestimmten Stadt abzurufen. Indem man die richtigen Parameter verwendet und einstellt, erhält man eine Liste im JSON-Format, die Namen und Bilder der touristischen Attraktionen in der angegebenen Stadt enthält.
+- Freier Zugriff ohne Anmeldung erforderlich.
+- [Dokumentation](https://www.mediawiki.org/wiki/API:Main_page)
 
-    Beschreibung der Parameter: 
-        `action=query`: gibt, das Abfrage an Wikipedia API gesendet wird.
-        `format=json`: die Antwort wird im JSON-Format zurückgegeben.
-        `generator=categorymembers`: ruft die Seiten in der angegegeben Kategorie auf.
-        `gcmtitle=Category:Tourist_attractions_in_${city.name}`: gibt die Kategorie an, nach der gesucht werden soll.
-        `gcmlimit=max`: setzt das Limit für die Anzahl der zurückgegebenen Ergebnisse.
-        `prop=pageimages`: ruft die Bilder der Seiten auf.
-        `piprop=original`: ruft das Originalbild auf anstatt ein Miniaturbild.
-        `pithumbsize=500`: legt die Größe des Miniaturbilds fest (Maximale Breite 500px).
+URL = "https://en.wikipedia.org/w/api.php?action=query&format=json&generator=categorymembers&gcmtitle=Category:Tourist_attractions_in_${city.name}&gcmlimit=max&prop=pageimages&piprop=original&pithumbsize=500"
+
+Die Wikipedia-API wird genutzt, um Informationen über touristische Attraktionen einer bestimmten Stadt abzurufen. (Runde 3)
+
+**Beschreibung der Parameter:**
+
+- `action=query`: Sendet eine Abfrage an die Wikipedia API.
+- `format=json`: Die Antwort wird im JSON-Format zurückgegeben.
+- `generator=categorymembers`: Ruft die Seiten in der angegebenen Kategorie auf.
+- `gcmtitle=Category:Tourist_attractions_in_${city.name}`: Gibt die zu suchende Kategorie an.
+- `gcmlimit=max`: Setzt das Limit für die Anzahl der zurückgegebenen Ergebnisse.
+- `prop=pageimages`: Ruft die Bilder der Seiten auf.
+- `piprop=original`: Ruft das Originalbild anstatt eines Miniaturbilds ab.
+- `pithumbsize=500`: Legt die Größe des Miniaturbilds fest (maximale Breite von 500px).
+
