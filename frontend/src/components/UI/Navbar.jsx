@@ -26,7 +26,7 @@ function Navbar() {
     return (
         <><Flex alignItems="center" justifyContent="space-between" px={4} py={2}>
             <Flex alignItems="center">
-                <Link to="/">
+                <Link to="/welcome">
                     <Text fontSize="xl" fontFamily={'mono'}>⚽🌎 - Laenderspiel</Text>
                 </Link>
             </Flex>

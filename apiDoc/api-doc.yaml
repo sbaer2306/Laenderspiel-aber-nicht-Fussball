@@ -911,7 +911,7 @@ paths:
       summary: Third round of Länderspiel
       description: >-
         Three sights of 3 cities. The player has to guess the cites based on the
-        provided sights.
+        provided sights. If no cities will be returned the response will be empty.
       responses:
         '200':
           description: OK
@@ -988,7 +988,9 @@ paths:
                 properties:
                   score:
                     type: integer
-                    description: scoring from the third round
+                    description: >- 
+                      Returns the total score of the game, when third round does not return any cities
+                      and sights score of third round wil be 0 and total score will be saved to the database.
           links:
             next:
               operationId: Get next page for scoreboard
@@ -1457,12 +1459,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Sight'
-            minItems: 3
+            minItems: 1
             maxItems: 3
         coordinates:
           type: array
           items:
             type: string
+      minProperties: 0
+      maxProperties: 3
     ProfileViolation:
       type: object
       properties:

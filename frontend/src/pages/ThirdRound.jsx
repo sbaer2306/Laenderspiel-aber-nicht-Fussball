@@ -33,7 +33,7 @@ const ThirdRound = () => {
   const [time, setTime] = useState(0)
   const [isTimerRunning, setIsTimerRunning] = useState(true);
 
-  const MAX_TIME = 180; // 3 Minuten
+  const MAX_TIME = 180; 
 
   const sendGameData = async () => {
 
@@ -58,8 +58,6 @@ const ThirdRound = () => {
 
       const score = response.data;
 
-      console.log(gameData);
-
       toast({
         title: "Your Total Points",
         description: `Wow, you made ${score.score} points this game!!!`,
@@ -70,7 +68,6 @@ const ThirdRound = () => {
 
       setShowScoreButton(true);
         
-      console.log(response.data);
     } catch (error) {
       console.error('Failed to send game data:', error);
     }
@@ -82,8 +79,6 @@ const ThirdRound = () => {
       setSights(response.data);
 
       setIsLoading(false);
-      console.log(response.data);
-
     } 
     catch (error) {
       if(error.response) {
@@ -136,7 +131,7 @@ const ThirdRound = () => {
       setCurrentCityIndex(nextIndex);
     } else {
       setIsSubmitted(true);
-      setIsTimerRunning(false); // Timer stoppen
+      setIsTimerRunning(false); 
   
       const updatedCoordinatesData = Object.keys(sights).reduce((acc, city, index) => {
         const cityData = {
@@ -147,14 +142,11 @@ const ThirdRound = () => {
         return acc;
       }, {});
   
-      console.log('Coordinates data:', updatedCoordinatesData);
-      console.log('Time:', time); // Zeit ausgeben
-  
       setCoordinatesData(updatedCoordinatesData);
   
-      sendGameData(); // Daten an den Endpunkt senden
+      sendGameData(); 
 
-      setIsRoundCompleted(true); // adjusted.
+      setIsRoundCompleted(true); 
     }
   };
 
@@ -198,6 +190,7 @@ const ThirdRound = () => {
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                noWrap="false"
               />
               {
                 // https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png

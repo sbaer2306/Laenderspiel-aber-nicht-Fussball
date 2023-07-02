@@ -12,8 +12,6 @@ async function getFacts(req, res){
     //Game from redis
     const gameString = await redisClient.hget(id, 'games');
     const game = JSON.parse(gameString);
-    console.log("game from facts:", game);
-    console.log("code from country in facts:", game.country_code);
     if(!game) return res.status(404).json({error: "Game not found"})
     if( game.user_id !== userID){
       return res.status(403).json({error: "Forbidden. User is not player of the game.", game: game, user_id: userID})
