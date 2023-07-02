@@ -56,57 +56,36 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": "failed"
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Bad Request."
-                    }
-                  }
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Bad Request."
                 }
               }
             }
           },
-          "409": {
-            "description": "Conflict",
+          "401": {
+            "description": "Unauthorized or Authentication Failed",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": "error"
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Username is already taken"
-                    }
-                  }
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Conflict."
                 }
               }
             }
           },
           "500": {
-            "description": "Bad Request",
+            "description": "Internal Server Error",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": "failed"
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Internal Server Error."
-                    }
-                  }
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Internal server error."
                 }
               }
             }
@@ -548,6 +527,114 @@
             "description": "Internal Server Error",
             "content": {
               "application/json": {
+                "example": {
+                  "message": "Internal server error."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{id}/username": {
+      "put": {
+        "summary": "Updates the username.",
+        "description": "Updates the username - username must be unique",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "tags": [
+          "user"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "example": "myusername"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated user profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Username successfully updated"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Unauthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "User not found"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Profile already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
+                "example": {
+                  "message": "Username already exits."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                },
                 "example": {
                   "message": "Internal server error."
                 }
@@ -1426,7 +1513,7 @@
           }
         ],
         "summary": "Third round of Länderspiel",
-        "description": "Three sights of 3 cities. The player has to guess the cites based on the provided sights.",
+        "description": "Three sights of 3 cities. The player has to guess the cites based on the provided sights. If no cities will be returned the response will be empty.",
         "responses": {
           "200": {
             "description": "OK",
@@ -1537,7 +1624,7 @@
                   "properties": {
                     "score": {
                       "type": "integer",
-                      "description": "scoring from the third round"
+                      "description": "Returns the total score of the game, when third round does not return any cities and sights score of third round wil be 0 and total score will be saved to the database."
                     }
                   }
                 }
@@ -2209,7 +2296,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Sight",
-              "minItems": 3,
+              "minItems": 1,
               "maxItems": 3
             }
           },
@@ -2219,7 +2306,9 @@
               "type": "string"
             }
           }
-        }
+        },
+        "minProperties": 0,
+        "maxProperties": 3
       },
       "ProfileViolation": {
         "type": "object",

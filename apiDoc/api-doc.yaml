@@ -44,40 +44,26 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: failed
-                  message:
-                    type: string
-                    example: Bad Request.
-        '409':
-          description: Conflict
+                $ref:  '#/components/schemas/MessageResponse'
+              example:
+                message: Bad Request.
+        '401':
+          description: Unauthorized or Authentication Failed
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: error
-                  message:
-                    type: string
-                    example: Username is already taken
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: Conflict.
         '500':
-          description: Bad Request
+          description: Internal Server Error
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: failed
-                  message:
-                    type: string
-                    example: Internal Server Error.
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: Internal server error.
+
   /ranking/all-time:
     get:
       tags:
@@ -369,6 +355,74 @@ paths:
           description: Internal Server Error
           content:
             application/json:
+              example:
+                message: Internal server error.
+  /user/{id}/username:
+    put:
+      summary: Updates the username.
+      description: >-
+        Updates the username - username must be unique
+      security:
+        - JWT: []
+      tags:
+        - user
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: >-
+                      myusername
+      responses:
+        '200':
+          description: Successfully updated user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: Username successfully updated
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: Unauthorized 
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: User not found
+        '409':
+          description: Conflict - Profile already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: Username already exits.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
               example:
                 message: Internal server error.
   /profile:
