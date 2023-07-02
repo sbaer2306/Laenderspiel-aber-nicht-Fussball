@@ -80,6 +80,7 @@ const ThirdRound = () => {
       const response = await api.get(`/game/${id}/sights`);
       setSights(response.data);
 
+      console.log(response.data)
       setIsLoading(false);
     } 
     catch (error) {
@@ -94,17 +95,10 @@ const ThirdRound = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await getSights();
-      } catch (error) {
-        console.log(error);
-      }
-    };
-  
-    fetchData();
-  }, []);
+  const handleGetSights = () => {
+    setIsLoading(true);
+    getSights();
+  };
   
   useEffect(() => {
     if (isTimerRunning && !isLoading) {
@@ -162,64 +156,70 @@ const ThirdRound = () => {
     navigate('/ranking');
   };
   
-  return (
-    <div>
-      <div className="Timer-Container">
-        <CircularProgress value={time * (100 / MAX_TIME)} size="70px" />
-      </div>
+return (
+  <div>
+    <div className="Timer-Container">
+      <CircularProgress value={time * (100 / MAX_TIME)} size="70px" />
+    </div>
 
-      <Text mb={1} fontSize='2xl' textAlign="center">Round 3</Text>
-      <Text m={2} fontSize='xl'>Try to guess the cities based on some sights of</Text>
-      <Text m={2} fontSize='xl' fontWeight='700'>{countryName}</Text>
+    <Text mb={1} fontSize='2xl' textAlign="center">Round 3</Text>
+    <Text m={2} fontSize='xl'>Try to guess the cities based on some sights</Text>
+    <Text m={2} fontSize='xl' fontWeight='700'>{countryName}</Text>
 
-      {isLoading ? (
-        <Box display="flex" justifyContent="center" alignItems="center">
-          <Spinner size="lg" />
-        </Box>
-      ) : (
-        <div className='SightCards-Container'>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'space-between',
-            }}
-          >
-            {Object.keys(sights).length > 0 ? (
-              sights[Object.keys(sights)[currentCityIndex]].sights.map((sight, sightIndex) => (
-                <SightCard key={sightIndex} title={sight.name} imageURL={sight.image} />
-              ))
-            ) : (
-              <p>No sights available</p>
-            )}
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-            <MapContainer center={[center.lat, center.lon]} zoom={6} scrollWheelZoom={true}>
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-                noWrap="false"
-              />
-              {
-                // https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png
-              }
-              
-              {isRoundCompleted && <CityMarker cities={sights} guessedCoordinates={guessedCoordinates} />}
-              {!isRoundCompleted && <LocationMarker childToParent={handleMarkerClick} clicked={isSubmitted} />}
-              
-            </MapContainer>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-            {showScoreButton ? (
-              <Button spacing={5} colorScheme='blue' size='md' align='center' onClick={handleScoreButtonClick}>Go to Ranking</Button>
-            ) : (
-            <Button spacing={5} colorScheme='blue' size='md' align='center' onClick={handleNextCity}>Submit</Button>
+    {isLoading ? (
+      <Button spacing={5} colorScheme='blue' size='md' align='center' onClick={handleGetSights}>
+        Display Sights
+      </Button>
+    ) : (
+      <div className='SightCards-Container'>
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+          }}
+        >
+          {Object.keys(sights).length > 0 ? (
+            sights[Object.keys(sights)[currentCityIndex]].sights.map((sight, sightIndex) => (
+              <SightCard key={sightIndex} title={sight.name} imageURL={sight.image} />
+            ))
+          ) : (
+            <p>No sights available</p>
           )}
         </div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+          <MapContainer center={[center.lat, center.lon]} zoom={6} scrollWheelZoom={true}>
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+              noWrap="false"
+            />
+            {
+              // https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png
+            }
+            
+            {isRoundCompleted && <CityMarker cities={sights} guessedCoordinates={guessedCoordinates} />}
+            {!isRoundCompleted && <LocationMarker childToParent={handleMarkerClick} clicked={isSubmitted} />}
+            
+          </MapContainer>
         </div>
-      )}
-    </div>
-  );
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+          {showScoreButton ? (
+            <Button spacing={5} colorScheme='blue' size='md' align='center' onClick={handleScoreButtonClick}>
+              Go to Ranking
+            </Button>
+          ) : (
+            <>
+              <Button spacing={5} colorScheme='blue' size='md' align='center' onClick={handleNextCity}>
+                Submit
+              </Button>
+            </>
+          )}
+        </div>
+      </div>
+    )}
+  </div>
+);
 };
 
 export default ThirdRound;
