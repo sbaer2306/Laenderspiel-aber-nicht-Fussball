@@ -530,8 +530,6 @@ paths:
     post:
       tags:
         - Game
-      security:
-        - JWT: []
       summary: Create a new game
       description: >-
         Creates a new game with a random country based on the chosen difficulty
@@ -587,8 +585,6 @@ paths:
     get:
       tags:
         - Game
-      security:
-        - JWT: []
       summary: Retrieve a game
       description: Retrieves the details of a game by its id.
       parameters:
@@ -616,8 +612,6 @@ paths:
     delete:
       tags:
         - Game
-      security:
-        - JWT: []
       summary: Cancel a game
       description: Cancels a game session by its id.
       parameters:
@@ -648,8 +642,6 @@ paths:
     get:
       tags:
         - Game
-      security:
-        - JWT: []
       summary: Retrieve the facts for the country of the game.
       parameters:
         - name: id
@@ -693,8 +685,6 @@ paths:
     post:
       tags:
         - Game
-      security:
-        - JWT: []
       summary: Rating of first round of the game
       operationId: getRatingRoundOne
       parameters:
@@ -745,8 +735,6 @@ paths:
     get:
       tags:
         - Game
-      security:
-        - JWT: []
       parameters:
         - name: id
           in: path
@@ -804,8 +792,6 @@ paths:
     post:
       tags:
         - Game
-      security:
-        - JWT: []
       operationId: getRatingRoundTwo
       requestBody:
         required: true
@@ -898,8 +884,6 @@ paths:
     get:
       tags:
         - Game
-      security:
-        - JWT: []
       operationId: getThirdRound
       parameters:
         - name: id
@@ -947,8 +931,6 @@ paths:
     post:
       tags:
         - Game
-      security:
-        - JWT: []
       parameters:
         - name: id
           in: path
@@ -963,23 +945,31 @@ paths:
             schema:
               type: object
               properties:
-                coordinates:
-                  type: array
-                  items:
-                    type: string
-                coordinates_guessed:
-                  type: array
-                  items:
-                    type: string
-                time:
-                  type: integer
-                  example: 102
                 gameDuration:
                   type: integer
-                  example: 408
-                sights:
-                  type: integer
-                  example: 2
+                  example: 100
+                city_name:
+                  type: object
+                  properties:
+                    coordinates:
+                      type: array
+                      items:
+                        type: number
+                        format: float
+                        example: 10.5
+                      minItems: 2
+                      maxItems: 2
+                    guessed_coordinates:
+                      type: array
+                      items:
+                        type: number
+                        format: float
+                        example: 10.5
+                      minItems: 2
+                      maxItems: 2
+                    sights:
+                      type: integer
+                      example: 2
       summary: Rating of third round of the game
       description: >-
         Scoring of the final round. Since the round completes the game, the time

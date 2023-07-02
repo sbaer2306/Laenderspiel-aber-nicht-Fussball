@@ -18,9 +18,11 @@ const ThirdRound = () => {
   const countryName = location.state?.country_name;
   const center = location.state?.center;
 
-  const [isRoundCompleted, setIsRoundCompleted] = useState(false); // adjusted.
+  const [isRoundCompleted, setIsRoundCompleted] = useState(false);
 
   const [showScoreButton, setShowScoreButton] = useState(false);
+
+  const [guessedCoordinates, setGuessedCoordinates] = useState([]);
 
   const [sights, setSights] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -122,6 +124,12 @@ const ThirdRound = () => {
       updatedCoordinates[currentCityIndex] = position;
       return updatedCoordinates;
     });
+  
+    setGuessedCoordinates((prevCoordinates) => {
+      const updatedCoordinates = [...prevCoordinates];
+      updatedCoordinates[currentCityIndex] = position;
+      return updatedCoordinates;
+    });
   };
   
   const handleNextCity = () => {
@@ -196,7 +204,7 @@ const ThirdRound = () => {
                 // https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png
               }
               
-              {isRoundCompleted && <CityMarker cities={sights} />}
+              {isRoundCompleted && <CityMarker cities={sights} guessedCoordinates={guessedCoordinates} />}
               {!isRoundCompleted && <LocationMarker childToParent={handleMarkerClick} clicked={isSubmitted} />}
               
             </MapContainer>
