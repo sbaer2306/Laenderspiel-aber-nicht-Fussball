@@ -76,7 +76,7 @@ function LoggenInHomepage() {
       <Center>
         <Box maxW="md" borderWidth="1px" borderRadius="lg" p={24}>
           <Text mb={4} fontSize='2xl' textAlign="center">
-            Spiel
+            Game
           </Text>
           <Select
             placeholder="Select Difficulty"

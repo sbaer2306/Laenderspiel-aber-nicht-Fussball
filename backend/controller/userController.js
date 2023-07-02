@@ -3,27 +3,6 @@ const prisma = require('../prisma/prisma');
 const prismaClient = prisma.getPrisma();
 const userService = require('../service/userService')
 
-const createUser = async (req, res) => {
-    const { email, username, OAuthID } = req.body;
-
-    if (!email || !username || !OAuthID) {
-        return res.status(400).json({ error: 'Missing required fields: email, username, and OAuthID.' });
-    }
-
-    //TODO Datenbankstuff
-    const id = 1;
-
-    return id;
-
-}
-
-const checkUserExists = async (OAuthID) => {
-    /* TODO
-    const user = await db.users.findOne({ OAuthID });
-
-    return user !== null;*/
-    return false;
-}
 
 /**
  * Deletes a user by ID.
@@ -97,5 +76,46 @@ const getProfileByUserId = async (req, res) => {
     }
 
 }
+/**
+ * Updates a username
+ *
+ * @param {Request} req - The request object containing parameters.
+ * @param {Object} res - The response object to send the result.
+ * @returns {void}
+ */
+const changeUsername = async (req, res) => {
+    const { id } = req.params;
+    const username = req.body.username;
 
-module.exports = { deleteUser, getProfileByUserId, checkUserExists, createUser };
+    if (validateId(id, res)) return;
+
+    if (id != req.user.id) {
+        res.status(403).json({ message: 'Unauthorized.' });
+    }
+
+    try {
+        const parsedId = parseInt(id);
+        const user = await prismaClient.user.findUnique({ where: { id: parsedId } });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        
+        const existingUsername = await userService.checkIfUsernameExists(username);
+
+        if (existingUsername && existingUsername.id !== parsedId) {
+            return res.status(409).json({ message: 'Username already exits' });
+        }
+
+
+        await userService.updateUsername(id,username)
+
+        res.status(200).json({ message: 'Username successfully updated' });
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+
+module.exports = { deleteUser, getProfileByUserId, changeUsername };

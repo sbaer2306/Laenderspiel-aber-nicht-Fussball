@@ -42,7 +42,6 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
     };
 
     useEffect(() => {
-      console.log(`${title}:  with solution: ${solution}`);
       setSolutionInput(solution.toString().toLowerCase())
       if(title.toLowerCase() == 'border countries'){
         setBorderSolutions(solution.split(',').map(item => item.trim().toLowerCase()))
@@ -172,7 +171,6 @@ export const Facts = ({title, solution, tip, updateAnswer}) => {
               onChange={(a) => setArea(a)}
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
-              onChangeEnd={(val) =>console.log("areaval: ", val)}
               isReadOnly={tip || maxTriesReached}
             >
               <SliderTrack>

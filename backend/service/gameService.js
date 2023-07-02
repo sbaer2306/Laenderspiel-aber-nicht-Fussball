@@ -45,14 +45,17 @@ const getRandomCountryForDifficulty = async (countriesByDifficulty) => {
     while(!selectedCountry){
       const randomIndex = Math.floor(Math.random() * countriesByDifficulty.length)
       const randomCountry = countriesByDifficulty[randomIndex];
+      /*   
       const playedGame = await prismaClient.playedGame.findFirst({
         where: {
           userId: 3, //userId comes from middleware - please give it to me bastiiii :D
           countryId: randomCountry.id,
         }
       });
+      */
+      //if(!playedGame) selectedCountry = randomCountry;
 
-      if(!playedGame) selectedCountry = randomCountry;
+      selectedCountry = randomCountry
     }
     return selectedCountry;
 }

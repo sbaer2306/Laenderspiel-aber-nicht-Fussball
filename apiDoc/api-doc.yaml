@@ -530,6 +530,8 @@ paths:
     post:
       tags:
         - Game
+      security:
+        - JWT: []
       summary: Create a new game
       description: >-
         Creates a new game with a random country based on the chosen difficulty
@@ -585,6 +587,8 @@ paths:
     get:
       tags:
         - Game
+      security:
+        - JWT: []
       summary: Retrieve a game
       description: Retrieves the details of a game by its id.
       parameters:
@@ -612,6 +616,8 @@ paths:
     delete:
       tags:
         - Game
+      security:
+        - JWT: []
       summary: Cancel a game
       description: Cancels a game session by its id.
       parameters:
@@ -642,6 +648,8 @@ paths:
     get:
       tags:
         - Game
+      security:
+        - JWT: []
       summary: Retrieve the facts for the country of the game.
       parameters:
         - name: id
@@ -685,6 +693,8 @@ paths:
     post:
       tags:
         - Game
+      security:
+        - JWT: []
       summary: Rating of first round of the game
       operationId: getRatingRoundOne
       parameters:
@@ -735,6 +745,8 @@ paths:
     get:
       tags:
         - Game
+      security:
+        - JWT: []
       parameters:
         - name: id
           in: path
@@ -792,6 +804,8 @@ paths:
     post:
       tags:
         - Game
+      security:
+        - JWT: []
       operationId: getRatingRoundTwo
       requestBody:
         required: true
@@ -884,6 +898,8 @@ paths:
     get:
       tags:
         - Game
+      security:
+        - JWT: []
       operationId: getThirdRound
       parameters:
         - name: id
@@ -895,7 +911,7 @@ paths:
       summary: Third round of Länderspiel
       description: >-
         Three sights of 3 cities. The player has to guess the cites based on the
-        provided sights.
+        provided sights. If no cities will be returned the response will be empty.
       responses:
         '200':
           description: OK
@@ -931,6 +947,8 @@ paths:
     post:
       tags:
         - Game
+      security:
+        - JWT: []
       parameters:
         - name: id
           in: path
@@ -970,7 +988,9 @@ paths:
                 properties:
                   score:
                     type: integer
-                    description: scoring from the third round
+                    description: >- 
+                      Returns the total score of the game, when third round does not return any cities
+                      and sights score of third round wil be 0 and total score will be saved to the database.
           links:
             next:
               operationId: Get next page for scoreboard
@@ -1439,12 +1459,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Sight'
-            minItems: 3
+            minItems: 1
             maxItems: 3
         coordinates:
           type: array
           items:
             type: string
+      minProperties: 0
+      maxProperties: 3
     ProfileViolation:
       type: object
       properties:
