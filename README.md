@@ -38,7 +38,7 @@ Die **Anfangspräsentation der Idee** ist im selben Ordner abgelegt.
 
 ## Setup:<br>
 1. Repository clonen
-2. Starten Container: ```docker-compose up -d```
+2. Starten Container: ```docker-compose up -d``` (Seeding wird automatisch ausgeführt, dauert aber ein bisschen)
 Bei Fehlern im Backend manuell npm install im container ausführen.
 ### Datenbankoperationen:
 Fall nötig: (Wird normalerweise automatisch ausgeführt)
