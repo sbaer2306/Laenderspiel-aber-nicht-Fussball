@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import SightCard from '../components/Sights/SightCard';
 import LocationMarker from '../components/map/LocationMarker';
 import '../css/ThirdRound.css'
-import { Text, Button, Spinner, Box, Center, CircularProgress, useToast } from '@chakra-ui/react';
+import { Text, Button, Spinner, Box, Center, CircularProgress, useToast, useDisclosure } from '@chakra-ui/react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import {useLocation, useNavigate} from 'react-router-dom'
 import api from '../helpers/axios';
-import CityMarker from '../components/map/CityMarker'; 
+import CityMarker from '../components/map/CityMarker';
+import ConfirmationModal from '../components/UI/ConfirmationModal';
 
 const ThirdRound = () => {
 
@@ -18,6 +19,8 @@ const ThirdRound = () => {
   const countryName = location.state?.country_name;
   const center = location.state?.center;
 
+
+  const { isOpen: deletionModalIsOpen, onOpen: onOpenDeletionModal, onClose: onCloseDeletionModal } = useDisclosure();
   const [isRoundCompleted, setIsRoundCompleted] = useState(false);
 
   const [showScoreButton, setShowScoreButton] = useState(false);
@@ -36,6 +39,18 @@ const ThirdRound = () => {
   const [isTimerRunning, setIsTimerRunning] = useState(true);
 
   const MAX_TIME = 180; 
+
+  const showToastMessage = (title, description, status) => {
+    toast({
+      title: title,
+      description: description,
+      status: status,
+      duration: 3000,
+      isClosable: true,
+      position: "bottom-left",
+      variant: "left-accent"
+    });
+  };
 
   const sendGameData = async () => {
 
@@ -56,7 +71,15 @@ const ThirdRound = () => {
     };
   
     try {
+      // post /game/id/rating/sights
       const response = await api.post(`/game/${id}/rating/sights`, gameData);
+      console.log(response)
+      // post /game/id/end
+      const playedGame = await api.post(`/game/${id}/end`,{gameDuration: gameData.gameDuration});
+      console.log(playedGame)
+      //del game/id
+      await api.delete(`/game/${id}`)
+      console.log("deleted")
 
       const score = response.data;
 
@@ -154,6 +177,27 @@ const ThirdRound = () => {
   const handleScoreButtonClick = () => {
     navigate('/ranking');
   };
+
+  const cancelGame = async () => {
+    try{
+      
+        const response = await api.delete(`/game/${id}`, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true
+            }); 
+
+        showToastMessage("Deletion",`${response.data.message}`, "success" );
+        navigate('/welcome', {replace: true})
+        return;
+    }catch(error){
+      console.log(error);
+/*         console.log("error fetching: "+error.response.data.message);
+        console.log("game-id: ", error.response.data.gameid);
+        console.log("id: ", error.response.data.id); */
+    }
+}
   
 return (
   <div>
@@ -164,7 +208,8 @@ return (
     <Text mb={1} fontSize='2xl' textAlign="center">Round 3</Text>
     <Text m={2} fontSize='xl'>Try to guess the cities based on some sights</Text>
     <Text m={2} fontSize='xl' fontWeight='700'>{countryName}</Text>
-
+    <Button onClick={onOpenDeletionModal} colorScheme='red' size="md">Cancel</Button>
+    <ConfirmationModal isOpen={deletionModalIsOpen} onClose={onCloseDeletionModal} onConfirm={cancelGame} title='Cancel Game.'/>
     {isLoading ? (
       <Button spacing={5} colorScheme='blue' size='md' align='center' onClick={handleGetSights}>
         Display Sights
