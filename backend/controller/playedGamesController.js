@@ -61,21 +61,26 @@ const deleteAllPlayedGames = async (req, res) => {
 
     try {
         const parsedId = parseInt(id);
-        const user = await prismaClient.user.findUnique({ where: { id: parsedId } });
+        const user = await prismaClient.user.findUnique({
+            where: { id: parsedId },
+            include: { Profile: true },
+          });
+          
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
+        console.log(user.Profile)
 
         if (user.Profile.userId !== req.user.id) {
             return res.status(403).json({ message: 'Unauthorized.' });
         }
 
-        const deletionResult = await gameHistoryService.deletePlayedGamesByUser(id);
+        const deletionResult = await gameHistoryService.deletePlayedGamesByUser(parsedId);
 
         res.status(200).json(deletionResult);
     } catch (error) {
-        console.error(error)
+        console.log(error)
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
