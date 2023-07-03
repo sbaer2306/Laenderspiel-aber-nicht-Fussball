@@ -40,13 +40,14 @@ const updateUsername = async (userId,userName) => {
  * @returns {Promise<Object>} - A Promise that resolves when the user is deleted.
  */
     const id = parseInt(userId);
+    const trimmedUserName = userName.trim().substring(0, 30);
     
     const UpdateResult = await prismaClient.user.update({
         where: {
             id: parseInt(id),
         },
         data: {
-            username: userName,
+            username: trimmedUserName,
         },
     });
     return UpdateResult;
