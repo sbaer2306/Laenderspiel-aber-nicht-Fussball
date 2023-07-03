@@ -73,14 +73,7 @@ const ThirdRound = () => {
     try {
       // post /game/id/rating/sights
       const response = await api.post(`/game/${id}/rating/sights`, gameData);
-      console.log(response)
       // post /game/id/end
-      const playedGame = await api.post(`/game/${id}/end`,{gameDuration: gameData.gameDuration});
-      console.log(playedGame)
-      //del game/id
-      await api.delete(`/game/${id}`)
-      console.log("deleted")
-
       const score = response.data;
 
       toast({
@@ -187,7 +180,6 @@ const ThirdRound = () => {
             },
             withCredentials: true
             }); 
-
         showToastMessage("Deletion",`${response.data.message}`, "success" );
         navigate('/welcome', {replace: true})
         return;
