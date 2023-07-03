@@ -358,8 +358,8 @@ paths:
               example:
                 message: Internal server error.
   /user/{id}/username:
-    put:
-      summary: Updates the username.
+    patch:
+      summary: Updates (only) the username for the user.
       description: >-
         Updates the username - username must be unique
       security:

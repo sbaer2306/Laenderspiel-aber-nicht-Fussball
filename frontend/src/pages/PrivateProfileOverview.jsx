@@ -111,7 +111,7 @@ const PrivateProfileOverview = () => {
   const editUsername = async (values) => {
 
     try {
-      const response = await api.put(`/user/${currentUser.id}/username`,values);
+      const response = await api.patch(`/user/${currentUser.id}/username`,values);
       if (response.status === 200) {
         setCurrentUserName(values.username);
         showToastMessage("Success!", `You have changed your username`, "success");

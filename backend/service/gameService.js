@@ -55,7 +55,7 @@ const getRandomCountryForDifficulty = async (countriesByDifficulty) => {
       */
       //if(!playedGame) selectedCountry = randomCountry;
 
-      selectedCountry = randomCountry
+      selectedCountry = {"id":549,"name":"Canada","realName":"Canada","countryCode":"CA","difficultyMultiplier":1}
     }
     return selectedCountry;
 }
