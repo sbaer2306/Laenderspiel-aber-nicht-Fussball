@@ -1,10 +1,7 @@
 const { getPrisma } = require('../prisma/prisma');
 
 const geoService = require('../service/geoService');
-const factsService = require('../service/factsService');
 const scoringService = require('../service/scoringService')
-const sightsService = require('../service/sightsService');
-const gameController = require('../controller/gameController');
 
 
 async function calculateRatingFacts(req, res){
@@ -20,14 +17,11 @@ async function calculateRatingFacts(req, res){
     if( game.user_id !== userID){
       return res.status(403).json({error: "Forbidden. User is not player of the game.", game: game, user_id: user_id})
     }
-
-    //get facts from session
-    //const facts = factsService.getFactsFromCache(game.country_code);
     const factsString = await redisClient.hget(game.country_code, 'facts');
     const facts = JSON.parse(factsString);
     //get user-input from body
     const {data} = req.body;
-    //return res.status(406).json({message: "Not acceptable"})
+    
 
     const score = await scoringService.calculateRatingFacts(facts, data);
 
@@ -225,7 +219,7 @@ async function calculateRatingSights(req, res) {
     await redisClient.hset(id, 'games', JSON.stringify(game));
     await redisClient.hdel(id, 'games');
     
-    const ranking = await saveScore(userId, score, gameDuration, countryId, createdAt);
+    await saveScore(userId, score, gameDuration, countryId, createdAt);
 
     res.status(200).json({ score: score });
   }
