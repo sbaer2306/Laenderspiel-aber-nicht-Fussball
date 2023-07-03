@@ -102,6 +102,26 @@ async function deleteGame(req, res){
   }
 }
 
+async function endGame(req, res){
+  const {id} = req.params;
+  const redisClient = req.redis;
+  const userID = req.user.id;
+  
+  try{
+    const gameString = await redisClient.hget(id, 'games');
+    const game = JSON.parse(gameString);
+    if(!game) return res.status(404).json({message: "Game not found", gameid: game.id, id: id})
+    if(game.user_id !== userID) return res.status(403).json({error: "Forbidden. User is not player of the game.", game_user_id: game.user_id, id: id, userid: userID});
+    
+    await redisClient.hdel(id, 'games');
+    res.status(200).json({ message: "Game successfully cancelled." });
+
+  }catch(error){
+    res.status(500).json({ error: 'Internal Server Error', message: error.message });
+  }
+}
+
+
 
 
 
