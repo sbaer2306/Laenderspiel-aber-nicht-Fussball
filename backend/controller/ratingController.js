@@ -13,6 +13,7 @@ async function calculateRatingFacts(req, res){
     const gameString = await redisClient.hget(id, 'games');
     const game = JSON.parse(gameString);
 
+    if(game.current_round > 1 ) return res.status(400).json({message: "Already scored"});
     if(!game) return res.status(404).json({error: "Game not found"}) 
     if( game.user_id !== userID){
       return res.status(403).json({error: "Forbidden. User is not player of the game.", game: game, user_id: user_id})
@@ -63,7 +64,7 @@ async function calculateDistance(req, res){
   try{
     const gameString = await redisClient.hget(id, 'games');
     const game = JSON.parse(gameString);
-
+    if(game.current_round > 2 ) return res.status(400).json({message: "Already scored"});
     if(!game) return res.status(404).json({error: "Game not found"});
 
     if(game.user_id !== req.user.id) return res.status(403).json({error: "Forbidden. User is not player of the game."});
