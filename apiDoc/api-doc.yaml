@@ -1024,13 +1024,13 @@ paths:
                     sights:
                       type: integer
                       example: 2
-      summary: Rating of third round of the game
+      summary: Rating of third round of the game (ends the game)
       description: >-
         Scoring of the final round. Since the round completes the game, the time
-        of the users attempt will also be used for scoring the whole game.
+        of the users attempt will also be used for scoring the whole game. Additionally Ranking scores will be incremented (Monthly and All-Time). The game entity will be deleted and a played game object will be stored for the user.
       responses:
         '200':
-          description: OK
+          description: OK - Scoring for third round
           content:
             application/hal+json:
               schema:
@@ -1041,11 +1041,6 @@ paths:
                     description: >- 
                       Returns the total score of the game, when third round does not return any cities
                       and sights score of third round wil be 0 and total score will be saved to the database.
-          links:
-            next:
-              operationId: Get next page for scoreboard
-              parameters:
-                artifact-id: /game/scoreboard
         '400':
           description: Bad Request - e.g. wrong coordinate formatting.
         '403':

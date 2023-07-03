@@ -908,11 +908,6 @@
         "tags": [
           "Game"
         ],
-        "security": [
-          {
-            "JWT": []
-          }
-        ],
         "summary": "Create a new game",
         "description": "Creates a new game with a random country based on the chosen difficulty level. The Game will live for ttl seconds after that the game is deleted and can not be accessed. If the ttl expires the game will not be saved in the game history of a player.",
         "requestBody": {
@@ -994,11 +989,6 @@
         "tags": [
           "Game"
         ],
-        "security": [
-          {
-            "JWT": []
-          }
-        ],
         "summary": "Retrieve a game",
         "description": "Retrieves the details of a game by its id.",
         "parameters": [
@@ -1040,11 +1030,6 @@
       "delete": {
         "tags": [
           "Game"
-        ],
-        "security": [
-          {
-            "JWT": []
-          }
         ],
         "summary": "Cancel a game",
         "description": "Cancels a game session by its id.",
@@ -1093,11 +1078,6 @@
       "get": {
         "tags": [
           "Game"
-        ],
-        "security": [
-          {
-            "JWT": []
-          }
         ],
         "summary": "Retrieve the facts for the country of the game.",
         "parameters": [
@@ -1166,11 +1146,6 @@
       "post": {
         "tags": [
           "Game"
-        ],
-        "security": [
-          {
-            "JWT": []
-          }
         ],
         "summary": "Rating of first round of the game",
         "operationId": "getRatingRoundOne",
@@ -1250,11 +1225,6 @@
       "get": {
         "tags": [
           "Game"
-        ],
-        "security": [
-          {
-            "JWT": []
-          }
         ],
         "parameters": [
           {
@@ -1345,11 +1315,6 @@
       "post": {
         "tags": [
           "Game"
-        ],
-        "security": [
-          {
-            "JWT": []
-          }
         ],
         "operationId": "getRatingRoundTwo",
         "requestBody": {
@@ -1495,11 +1460,6 @@
         "tags": [
           "Game"
         ],
-        "security": [
-          {
-            "JWT": []
-          }
-        ],
         "operationId": "getThirdRound",
         "parameters": [
           {
@@ -1568,11 +1528,6 @@
         "tags": [
           "Game"
         ],
-        "security": [
-          {
-            "JWT": []
-          }
-        ],
         "parameters": [
           {
             "name": "id",
@@ -1591,32 +1546,49 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "coordinates": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "coordinates_guessed": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "time_to_complete_game": {
+                  "gameDuration": {
                     "type": "integer",
-                    "example": 408
+                    "example": 100
+                  },
+                  "city_name": {
+                    "type": "object",
+                    "properties": {
+                      "coordinates": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 10.5
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      },
+                      "guessed_coordinates": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 10.5
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      },
+                      "sights": {
+                        "type": "integer",
+                        "example": 2
+                      }
+                    }
                   }
                 }
               }
             }
           }
         },
-        "summary": "Rating of third round of the game",
-        "description": "Scoring of the final round. Since the round completes the game, the time of the users attempt will also be used for scoring the whole game.",
+        "summary": "Rating of third round of the game (ends the game)",
+        "description": "Scoring of the final round. Since the round completes the game, the time of the users attempt will also be used for scoring the whole game. Additionally Ranking scores will be incremented (Monthly and All-Time). The game entity will be deleted and a played game object will be stored for the user.",
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "OK - Scoring for third round",
             "content": {
               "application/hal+json": {
                 "schema": {
@@ -1627,14 +1599,6 @@
                       "description": "Returns the total score of the game, when third round does not return any cities and sights score of third round wil be 0 and total score will be saved to the database."
                     }
                   }
-                }
-              }
-            },
-            "links": {
-              "next": {
-                "operationId": "Get next page for scoreboard",
-                "parameters": {
-                  "artifact-id": "/game/scoreboard"
                 }
               }
             }
