@@ -9,40 +9,6 @@ const passport = require('passport');
 const {checkSessionTTL} = require('../service/sessionService')
 const Redis = require('ioredis');
 
-
-//TODO: REDIS-TEST entfernen
-
-const redis = new Redis({
-    host: 'redis-db',
-    port: '6379',
-    password: 'DieZeugenSeehofers2023',
-    db: 0,
-  });
-  
-gameRoutes.get('/testredis', async (req, res) =>{
-    try {
-        // Check if the data exists in Redis cache
-        const cachedData = await redis.get('gameData');
-    
-        if (cachedData) {
-          // If data exists in cache, return it
-          return res.json({ message: 'Data retrieved from Redis cache', data: JSON.parse(cachedData) });
-        } else {
-          // If data does not exist in cache, fetch it from the database
-          const gameData = await fetchGameDataFromDatabase();
-    
-          // Store the fetched data in Redis cache
-          await redis.set('gameData', JSON.stringify(gameData));
-    
-          return res.json({ message: 'Data fetched from the database and stored in Redis', data: gameData });
-        }
-      } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'An error occurred' });
-      }
-    
-});
-
 gameRoutes.get('/:id',passport.authenticate('jwt', { session: false }), gameController.getGame);
 gameRoutes.delete('/:id',passport.authenticate('jwt', { session: false }), gameController.deleteGame);
 

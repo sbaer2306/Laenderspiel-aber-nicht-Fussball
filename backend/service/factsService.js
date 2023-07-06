@@ -11,8 +11,6 @@ const cache = new NodeCache({stdTTL: 604800}); //cache TTL 1 week
  */
 async function fetchCountryFacts(countryCode){
     try{
-        // let facts = cache.get(`${countryCode}-facts`);
-        // if(facts) return facts;
 
         const urlFacts = `https://restcountries.com/v3.1/alpha/${countryCode}`;
 
@@ -89,9 +87,6 @@ async function fetchCountryFacts(countryCode){
           flags: flagResponses,
         }
 
-
-        
-        //cache.set(`${countryCode}-facts`, facts);
         return facts;
     }catch(error){
         return {error: error.message, data:"No facts retrieved", countryCode: countryCode};
